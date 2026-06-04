@@ -52,7 +52,7 @@ function archSVG(id) {
 // ── Build one featured card face ────────────────────────────────────────
 function buildCardFace(p, i) {
   return `
-    <article class="pcard rv d${Math.min(i + 1, 6)}" data-id="${p.id}" tabindex="0">
+    <article class="pcard rv d${Math.min(i + 1, 6)}" data-id="${p.id}" tabindex="0" role="button" aria-label="Open ${p.name} case study">
       <div class="sheet">
         <div class="creases"></div>
         <div class="crease-v"></div>
@@ -168,28 +168,69 @@ const ovBackdrop = document.getElementById('ov-backdrop');
 const ovCloseX   = document.getElementById('ov-close-x');
 const ovHandle   = document.getElementById('ov-handle');
 
-function openOverlay(projectId) {
+function openOverlay(projectId, sourceEl) {
   const p = featuredProjects.find(x => x.id === projectId);
   if (!p) return;
   populateOverlay(p);
+
+  const ovCard = document.getElementById('ov-card');
+
+  if (sourceEl) {
+    const rect    = sourceEl.getBoundingClientRect();
+    const centerX = window.innerWidth  / 2;
+    const centerY = window.innerHeight / 2;
+    const fromX   = (rect.left + rect.width  / 2) - centerX;
+    const fromY   = (rect.top  + rect.height / 2) - centerY;
+    const ovW     = Math.min(1080, window.innerWidth - 48);
+    const fromS   = rect.width / ovW;
+
+    ovCard.style.transition = 'none';
+    ovCard.style.transform  = `translate(${fromX}px,${fromY}px) scale(${fromS})`;
+    ovCard.style.opacity    = '0.55';
+  }
+
   overlay.classList.add('active');
   document.body.style.overflow = 'hidden';
   overlay.scrollTop = 0;
+
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    ovCard.style.transition = '';
+    ovCard.style.transform  = '';
+    ovCard.style.opacity    = '';
+  }));
+
   ovCloseX.focus();
 }
 
+let _closing = false;
 function closeOverlay() {
-  overlay.classList.remove('active');
-  document.body.style.overflow = '';
-  // reset grid + rotateX so re-open re-animates from folded state
+  if (_closing) return;
+  _closing = true;
+  const ovCard = document.getElementById('ov-card');
+
+  // freeze flaps in current position during shrink-out
   const outers = overlay.querySelectorAll('.ov-top-outer,.ov-bottom-outer');
   const panels  = overlay.querySelectorAll('.ov-top,.ov-bottom');
   outers.forEach(el => el.style.transition = 'none');
   panels.forEach(el => el.style.transition  = 'none');
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    outers.forEach(el => el.style.transition = '');
-    panels.forEach(el => el.style.transition  = '');
-  }));
+
+  ovCard.style.transition = 'transform 0.28s cubic-bezier(.5,0,.4,1.25), opacity 0.22s ease';
+  ovCard.style.transform  = 'scale(0.9) translateY(14px)';
+  ovCard.style.opacity    = '0';
+
+  setTimeout(() => {
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+    ovCard.style.transition = 'none';
+    ovCard.style.transform  = '';
+    ovCard.style.opacity    = '';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      outers.forEach(el => el.style.transition = '');
+      panels.forEach(el => el.style.transition  = '');
+      ovCard.style.transition = '';
+      _closing = false;
+    }));
+  }, 300);
 }
 
 ovBackdrop?.addEventListener('click', closeOverlay);
@@ -203,13 +244,10 @@ if (projGrid) {
   projGrid.innerHTML = featuredProjects.map(buildCardFace).join('');
   projGrid.querySelectorAll('.pcard').forEach(card => {
     const id = card.dataset.id;
-    card.addEventListener('click', () => openOverlay(id));
+    card.addEventListener('click', () => openOverlay(id, card));
     card.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openOverlay(id); }
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openOverlay(id, card); }
     });
-    if (window.matchMedia('(hover:hover)').matches) {
-      card.addEventListener('mouseenter', () => openOverlay(id));
-    }
   });
 }
 

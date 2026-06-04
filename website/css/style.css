@@ -60,6 +60,24 @@ h1 em{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;col
 .building{margin-top:24px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted)}
 .building b{color:var(--build)}
 
+/* ══ SKILLS BAR ═══════════════════════════════════════════════════════ */
+.skills-bar{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--card);padding:0 32px}
+.skills-bar-inner{max-width:var(--maxw);margin:0 auto;display:flex;flex-wrap:wrap;gap:0;align-items:stretch}
+.sk-group{display:flex;align-items:center;gap:10px;padding:14px 0;flex-wrap:wrap;
+  border-right:1px solid var(--line);padding-right:22px;margin-right:22px}
+.sk-group:last-child{border-right:none;padding-right:0;margin-right:0}
+.sk-label{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--accent);white-space:nowrap;flex-shrink:0}
+.sk-tags{display:flex;flex-wrap:wrap;gap:5px}
+.sk-tag{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);
+  background:rgba(22,21,15,.04);border:1px solid var(--line);
+  padding:3px 8px;border-radius:3px;white-space:nowrap}
+@media(max-width:800px){
+  .skills-bar-inner{flex-direction:column}
+  .sk-group{border-right:none;padding-right:0;margin-right:0;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:0}
+  .sk-group:last-child{border-bottom:none}
+}
+
 /* ══ FEATURED WORK — DARK DESK ═══════════════════════════════════════ */
 .work-wrap{
   background:
@@ -129,20 +147,20 @@ h1 em{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;col
 /* ══ FULL-SCREEN OVERLAY ══════════════════════════════════════════════ */
 .card-overlay{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:clamp(12px,3vw,28px);opacity:0;pointer-events:none;transition:opacity .3s ease;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .card-overlay.active{opacity:1;pointer-events:all}
-.ov-backdrop{position:fixed;inset:0;background:rgba(21,18,13,.48);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.ov-backdrop{position:fixed;inset:0;background:rgba(21,18,13,.52);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .ov-card{
   position:relative;z-index:1;
   background:linear-gradient(135deg, var(--cp) 0%, var(--cp2) 100%);
   width:100%;max-width:1080px;border-radius:8px;
   box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 60px 120px -20px rgba(0,0,0,.85);
-  transform:scale(.95) translateY(18px);
-  transition:transform .6s var(--cs-open);
+  transform:none;
+  transition:transform 0.55s var(--cs-open), opacity 0.3s ease;
   overflow:hidden;
   /* paper texture */
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E"),linear-gradient(135deg, var(--cp) 0%, var(--cp2) 100%);
   background-blend-mode:multiply,normal;background-size:120px,100%;
 }
-.card-overlay.active .ov-card{transform:scale(1) translateY(0)}
+.card-overlay.active .ov-card{transform:none;opacity:1}
 
 /* mobile handle */
 .ov-handle{display:none;padding:12px 0 4px;cursor:pointer;text-align:center;flex-shrink:0}
@@ -164,27 +182,40 @@ h1 em{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;col
 .ov-close:hover::before,.ov-close:hover::after{width:17px}
 
 /* ══ TRIFOLD PANELS ═══════════════════════════════════════════════════ */
+/* Paper crease lines at the two fold points — persistent memory like prototype */
+.ov-body{position:relative}
+.ov-body::before,.ov-body::after{
+  content:'';position:absolute;left:0;right:0;height:2px;z-index:10;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(34,28,20,.18) 20%,rgba(34,28,20,.22) 50%,rgba(34,28,20,.18) 80%,transparent);
+  box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.ov-body::before{top:0}   /* crease between header and top flap */
+.ov-body::after{bottom:0} /* crease at very bottom */
+
 /* TOP FLAP: height via grid trick + rotateX fold */
-.ov-top-outer{display:grid;grid-template-rows:0fr;transition:grid-template-rows .85s var(--cs-open) .01s}
+.ov-top-outer{display:grid;grid-template-rows:0fr;transition:grid-template-rows .88s var(--cs-open) .20s}
 .card-overlay.active .ov-top-outer{grid-template-rows:1fr}
-.ov-top-inner{overflow:hidden;min-height:0}
-.ov-top{position:relative;padding:24px 28px 6px;transform-origin:bottom center;transform:perspective(1100px) rotateX(-60deg);opacity:0;transition:transform .9s var(--cs-open) .06s, opacity .5s ease .06s}
+.ov-top-inner{overflow:hidden;min-height:0;position:relative}
+/* internal crease between top flap and center anchor */
+.ov-top-inner::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(34,28,20,.16) 20%,rgba(34,28,20,.20) 50%,rgba(34,28,20,.16) 80%,transparent);
+  box-shadow:0 1px 2px rgba(0,0,0,.06);z-index:5;pointer-events:none}
+.ov-top{position:relative;padding:24px 28px 6px;transform-origin:bottom center;transform:perspective(1100px) rotateX(-62deg);opacity:0;transition:transform .92s var(--cs-open) .22s, opacity .5s ease .22s}
 .card-overlay.active .ov-top{transform:perspective(1100px) rotateX(0deg);opacity:1}
 
-/* CENTER ANCHOR */
-.ov-center{padding:20px 28px;border-top:1px solid var(--ca-line)}
+/* CENTER ANCHOR — slightly recessed to feel like the physical middle panel */
+.ov-center{padding:20px 28px;border-top:1px solid var(--ca-line);background:rgba(34,28,20,.025)}
 
 /* BOTTOM FLAP */
-.ov-bottom-outer{display:grid;grid-template-rows:0fr;transition:grid-template-rows .85s var(--cs-open) .10s}
+.ov-bottom-outer{display:grid;grid-template-rows:0fr;transition:grid-template-rows .88s var(--cs-open) .32s}
 .card-overlay.active .ov-bottom-outer{grid-template-rows:1fr}
 .ov-bottom-inner{overflow:hidden;min-height:0}
-.ov-bottom{position:relative;border-top:1px solid var(--ca-line);transform-origin:top center;transform:perspective(1100px) rotateX(60deg);opacity:0;transition:transform .9s var(--cs-open) .12s, opacity .5s ease .12s}
+.ov-bottom{position:relative;border-top:1px solid var(--ca-line);transform-origin:top center;transform:perspective(1100px) rotateX(62deg);opacity:0;transition:transform .92s var(--cs-open) .34s, opacity .5s ease .34s}
 .card-overlay.active .ov-bottom{transform:perspective(1100px) rotateX(0deg);opacity:1}
 
 /* SHADE — crease shadow fades as paper catches light (from trifold prototype) */
-.ov-shade{position:absolute;inset:0;z-index:4;pointer-events:none;transition:opacity .7s ease .2s}
-.ov-top .ov-shade{background:linear-gradient(180deg,rgba(10,7,3,.38),rgba(10,7,3,0) 65%)}
-.ov-bottom .ov-shade{background:linear-gradient(0deg,rgba(10,7,3,.38),rgba(10,7,3,0) 65%)}
+.ov-shade{position:absolute;inset:0;z-index:4;pointer-events:none;transition:opacity .7s ease .4s}
+.ov-top .ov-shade{background:linear-gradient(180deg,rgba(10,7,3,.52),rgba(10,7,3,0) 65%)}
+.ov-bottom .ov-shade{background:linear-gradient(0deg,rgba(10,7,3,.52),rgba(10,7,3,0) 65%)}
 .card-overlay.active .ov-shade{opacity:.04}
 
 /* ══ OVERLAY CONTENT STYLES ═══════════════════════════════════════════ */
