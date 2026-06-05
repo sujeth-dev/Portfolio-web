@@ -1,0 +1,877 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Loop — Admin prototype</title>
+<link rel="stylesheet" href="shared/tokens.css" />
+<style>
+  body { background: var(--paper-2); }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 28px; border-bottom: 0.5px solid var(--line); position: sticky; top: 0; background: rgba(244,240,232,0.92); backdrop-filter: blur(10px); z-index: 30; }
+  .topbar .links { display: flex; gap: 18px; font-size: 13px; }
+  .topbar .links a { color: var(--ink-3); text-decoration: none; }
+  .topbar .links a:hover, .topbar .links a.active { color: var(--ink); }
+
+  .wrap { max-width: 1500px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  .head { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; margin-bottom: 22px; }
+  .title { font-family: var(--font-display); font-size: clamp(40px, 5vw, 60px); line-height: 1; letter-spacing: -0.025em; margin: 6px 0 0; font-weight: 400; }
+  .title em { font-style: italic; color: var(--coral); }
+  .sub { font-size: 15px; color: var(--ink-2); margin-top: 12px; max-width: 580px; }
+
+  /* Section switcher */
+  .nav-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; padding: 8px; background: #FCFAF4; border: 0.5px solid var(--line); border-radius: var(--r-pill); width: fit-content; max-width: 100%; }
+  .nav-row button { background: transparent; border: 0; padding: 8px 14px; border-radius: var(--r-pill); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); cursor: pointer; }
+  .nav-row button.on { background: var(--ink); color: var(--paper); }
+
+  /* App in browser window */
+  .browser-host { display: flex; justify-content: center; padding: 18px 0; }
+
+  /* === Admin app styles === */
+  .ax { font-family: var(--font-sans); color: var(--ink); background: var(--paper); height: 100%; display: grid; grid-template-columns: 220px 1fr; }
+  .ax-side { background: #FCFAF4; border-right: 0.5px solid var(--line); padding: 22px 16px; display: flex; flex-direction: column; gap: 4px; height: 100%; overflow: auto; }
+  .ax-side .biz { display: flex; align-items: center; gap: 10px; padding: 6px 8px 18px; }
+  .ax-side .biz .logo { width: 30px; height: 30px; border-radius: 8px; background: var(--ink); color: var(--paper); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 16px; }
+  .ax-side .biz .nm { font-size: 13.5px; font-weight: 500; line-height: 1.1; }
+  .ax-side .biz .ty { font-size: 11px; color: var(--ink-3); font-family: var(--font-mono); letter-spacing: 0.05em; }
+  .ax-side .lbl { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); padding: 14px 8px 6px; }
+  .ax-side a { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 10px; border-radius: var(--r); text-decoration: none; color: var(--ink); font-size: 13.5px; cursor: pointer; }
+  .ax-side a:hover { background: var(--paper-2); }
+  .ax-side a.on { background: var(--paper-2); font-weight: 500; }
+  .ax-side a .ico { width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; color: var(--ink-3); }
+  .ax-side a.on .ico { color: var(--coral); }
+  .ax-side a .count { font-family: var(--font-mono); font-size: 10px; padding: 2px 6px; background: var(--coral-soft); color: var(--coral-deep); border-radius: var(--r-pill); }
+  .ax-side .foot { margin-top: auto; padding: 12px 8px 0; border-top: 0.5px solid var(--line); font-size: 11px; color: var(--ink-3); font-family: var(--font-mono); letter-spacing: 0.05em; }
+
+  .ax-main { padding: 26px 32px 40px; overflow: auto; height: 100%; }
+  .ax-head { display: flex; align-items: end; justify-content: space-between; margin-bottom: 26px; gap: 20px; }
+  .ax-head .ttl { font-family: var(--font-display); font-size: 36px; line-height: 1; letter-spacing: -0.02em; margin: 0; font-weight: 400; }
+  .ax-head .hi { font-size: 13px; color: var(--ink-3); margin: 4px 0 0; }
+  .ax-head .actions { display: flex; gap: 8px; }
+
+  /* KPI cards */
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px; }
+  .kpi { background: #FCFAF4; border: 0.5px solid var(--line); border-radius: var(--r-lg); padding: 20px 22px; }
+  .kpi .nm { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 10px; }
+  .kpi .v { font-family: var(--font-display); font-size: 42px; line-height: 1; letter-spacing: -0.02em; }
+  .kpi .delta { font-size: 12px; margin-top: 6px; font-family: var(--font-mono); }
+  .kpi .delta.up { color: var(--forest); }
+  .kpi .delta.dn { color: var(--rose); }
+  .kpi .target { font-size: 11px; color: var(--ink-3); margin-top: 6px; }
+  .kpi .bar { height: 4px; background: var(--paper-3); border-radius: 2px; margin-top: 12px; overflow: hidden; }
+  .kpi .bar > span { display: block; height: 100%; background: var(--coral); border-radius: 2px; }
+
+  .grid-2 { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 22px; }
+  .panel { background: #FCFAF4; border: 0.5px solid var(--line); border-radius: var(--r-lg); padding: 20px 22px; }
+  .panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .panel-head h3 { font-family: var(--font-display); font-size: 22px; margin: 0; font-weight: 400; letter-spacing: -0.015em; }
+  .panel-head .more { font-size: 12px; color: var(--ink-3); cursor: pointer; }
+
+  /* Chart */
+  .chart { height: 200px; position: relative; }
+  .chart svg { width: 100%; height: 100%; }
+
+  /* Verification queue rows */
+  .vq-row { display: grid; grid-template-columns: 60px 1fr 130px 110px auto; gap: 14px; align-items: center; padding: 14px 0; border-bottom: 0.5px solid var(--line-soft); }
+  .vq-row:last-child { border-bottom: 0; }
+  .vq-row .thumb { width: 52px; height: 52px; border-radius: var(--r); background: var(--paper-2); display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--ink-3); }
+  .vq-row .info .nm { font-size: 14px; font-weight: 500; }
+  .vq-row .info .sub { font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+  .vq-row .type { font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); }
+  .vq-row .sla { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; }
+  .vq-row .sla.ok { color: var(--forest); }
+  .vq-row .sla.warn { color: #B47A0E; }
+  .vq-row .sla.late { color: var(--rose); }
+  .vq-row .acts { display: flex; gap: 6px; }
+  .vq-row .acts button { height: 28px; padding: 0 12px; border-radius: var(--r-pill); border: 0.5px solid var(--line); background: var(--paper); font-size: 12px; cursor: pointer; font-family: var(--font-sans); }
+  .vq-row .acts button.go { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .vq-row .acts button.no { background: var(--rose-soft); color: var(--rose); border-color: rgba(184,58,94,0.2); }
+
+  /* Customer list */
+  .ct-list .ct-row { display: grid; grid-template-columns: 40px 2fr 1fr 1fr 1fr 100px; gap: 14px; align-items: center; padding: 12px 0; border-bottom: 0.5px solid var(--line-soft); font-size: 13.5px; }
+  .ct-list .ct-row.head { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); padding: 8px 0; }
+  .ct-list .ct-row .av { width: 32px; height: 32px; border-radius: 50%; background: var(--paper-2); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; }
+  .ct-list .ct-row .nm { font-weight: 500; }
+  .ct-list .ct-row .phone { font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); }
+  .seg { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: var(--r-pill); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .seg.new { background: var(--slate-soft); color: var(--slate); }
+  .seg.active { background: var(--forest-soft); color: var(--forest); }
+  .seg.regular { background: var(--coral-soft); color: var(--coral-deep); }
+  .seg.lapsed { background: var(--amber-soft); color: #6E4E0B; }
+
+  /* Loop builder */
+  .lb-step { display: flex; flex-direction: column; gap: 8px; padding: 18px 0; border-bottom: 0.5px solid var(--line-soft); }
+  .lb-step .ln { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+  .lb-step .ti { font-family: var(--font-display); font-size: 22px; letter-spacing: -0.01em; }
+  .lb-step .opts { display: flex; gap: 8px; flex-wrap: wrap; }
+  .lb-step .opt { padding: 8px 14px; border: 0.5px solid var(--line); border-radius: var(--r-pill); background: var(--paper); cursor: pointer; font-size: 12.5px; }
+  .lb-step .opt.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .lb-visits { display: flex; gap: 6px; }
+  .lb-visits .v { width: 42px; height: 42px; border-radius: var(--r); background: var(--paper-2); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-weight: 500; font-size: 14px; color: var(--ink-3); }
+  .lb-visits .v.on { background: var(--coral); color: white; }
+  .lb-visits .v.tar { background: var(--ink); color: var(--paper); border: 2px solid var(--coral); }
+
+  /* Activity tile */
+  .acts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .act-tile { padding: 16px; background: var(--paper-2); border-radius: var(--r); border: 0.5px solid var(--line-soft); position: relative; }
+  .act-tile.on { background: var(--coral-soft); border-color: rgba(229,75,28,0.25); }
+  .act-tile .check { position: absolute; top: 12px; right: 12px; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--line); }
+  .act-tile.on .check { background: var(--coral); border-color: var(--coral); }
+  .act-tile .ti { font-size: 13.5px; font-weight: 500; margin-bottom: 4px; }
+  .act-tile .rew { font-size: 12px; color: var(--ink-3); }
+
+  /* Brand setup */
+  .brand-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .brand-preview { background: linear-gradient(135deg, #2A1F1A 0%, #0F0908 100%); border-radius: var(--r-lg); padding: 32px; min-height: 380px; display: flex; flex-direction: column; justify-content: flex-end; position: relative; overflow: hidden; }
+  .brand-preview .pp { background: white; border-radius: 24px 24px 0 0; padding: 24px; margin: 0 -32px -32px; }
+  .brand-preview .pp h2 { font-family: var(--font-display); font-size: 28px; margin: 0 0 8px; letter-spacing: -0.01em; color: var(--ink); font-weight: 400; }
+  .brand-preview .pp p { font-size: 13px; color: var(--ink-3); margin: 0 0 18px; }
+  .brand-preview .pp .btn-p { background: var(--ink); color: white; padding: 12px 16px; border-radius: 12px; text-align: center; font-size: 14px; font-weight: 500; }
+
+  .form-row { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+  .form-row label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+  .form-row input, .form-row select, .form-row textarea {
+    border: 0.5px solid var(--line); background: var(--paper); border-radius: var(--r);
+    padding: 10px 14px; font-family: var(--font-sans); font-size: 14px; color: var(--ink); outline: none;
+  }
+  .swatch-row { display: flex; gap: 8px; }
+  .swatch { width: 36px; height: 36px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
+  .swatch.on { border-color: var(--ink); transform: scale(1.05); }
+
+  /* Report panel */
+  .report { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .report .left { padding: 24px; background: var(--ink); color: var(--paper); border-radius: var(--r-lg); }
+  .report .left .lbl { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; color: rgba(244,240,232,0.6); text-transform: uppercase; margin-bottom: 8px; }
+  .report .left h2 { font-family: var(--font-display); font-size: 36px; margin: 0 0 24px; line-height: 1.05; font-weight: 400; }
+  .report .left .ln { display: flex; justify-content: space-between; padding: 14px 0; border-top: 0.5px solid rgba(244,240,232,0.15); font-size: 14px; }
+  .report .left .ln b { color: var(--paper); font-weight: 500; }
+  .report .left .ln .v { font-family: var(--font-mono); }
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<nav class="topbar">
+  <a href="index.html" class="loop-mark">Loop</a>
+  <div class="links">
+    <a href="index.html">All</a>
+    <a href="1-overview.html">Overview</a>
+    <a href="2-engines-atlas.html">Engines</a>
+    <a href="3-customer-prototype.html">Customer</a>
+    <a href="4-admin-prototype.html" class="active">Admin</a>
+    <a href="5-counter-mode.html">Counter</a>
+  </div>
+</nav>
+
+<div class="wrap" data-screen-label="04 Admin Prototype">
+  <div class="head">
+    <div>
+      <div class="eyebrow">04 · Restaurant admin panel</div>
+      <h1 class="title">The restaurant rarely <em>logs in.</em><br/>When they do, every job takes one tap.</h1>
+      <p class="sub">Designed so the owner can run Loop in 10 minutes a week. Verification queue, customer list, loop builder, monthly report — and an onboarding wizard that takes a restaurant live without our team touching it.</p>
+    </div>
+  </div>
+
+  <div id="nav-mount"></div>
+  <div class="browser-host" id="browser-mount"></div>
+</div>
+
+<script type="text/babel" src="shared/browser-window.jsx"></script>
+
+<script type="text/babel">
+const { useState } = React;
+
+// ─── DASHBOARD ───────────────────────────────────────────
+function Dashboard() {
+  return (
+    <div className="ax-main">
+      <div className="ax-head">
+        <div>
+          <h2 className="ttl">Overview</h2>
+          <p className="hi">Hey Arjun — here's the last 30 days.</p>
+        </div>
+        <div className="actions">
+          <button className="btn">Last 30d ↓</button>
+          <button className="btn primary">Export</button>
+        </div>
+      </div>
+
+      <div className="kpis">
+        <div className="kpi">
+          <div className="nm">New members</div>
+          <div className="v">147</div>
+          <div className="delta up">↑ 23 vs prev 30d</div>
+        </div>
+        <div className="kpi">
+          <div className="nm">Loop completion %</div>
+          <div className="v">48<span style={{ fontSize: 22, color: 'var(--ink-3)' }}>%</span></div>
+          <div className="target">Target &gt; 40% · healthy</div>
+          <div className="bar"><span style={{ width: '80%' }}/></div>
+        </div>
+        <div className="kpi">
+          <div className="nm">Return rate (30d)</div>
+          <div className="v">62<span style={{ fontSize: 22, color: 'var(--ink-3)' }}>%</span></div>
+          <div className="target">Target &gt; 50% · healthy</div>
+          <div className="bar"><span style={{ width: '94%' }}/></div>
+        </div>
+        <div className="kpi">
+          <div className="nm">Redemption rate</div>
+          <div className="v">71<span style={{ fontSize: 22, color: 'var(--ink-3)' }}>%</span></div>
+          <div className="target">Target &gt; 60% · healthy</div>
+          <div className="bar"><span style={{ width: '90%' }}/></div>
+        </div>
+      </div>
+
+      <div className="grid-2">
+        <div className="panel">
+          <div className="panel-head">
+            <h3>Visits — last 30 days</h3>
+            <span className="more">Daily ↓</span>
+          </div>
+          <div className="chart">
+            <svg viewBox="0 0 600 200" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="ga" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stopColor="#E54B1C" stopOpacity="0.25"/>
+                  <stop offset="100%" stopColor="#E54B1C" stopOpacity="0"/>
+                </linearGradient>
+              </defs>
+              {[0,1,2,3].map(i => (
+                <line key={i} x1="0" x2="600" y1={i*50} y2={i*50} stroke="#E0D6C0" strokeDasharray="2 4" strokeWidth="0.5"/>
+              ))}
+              <path d="M 0,140 L 20,128 L 40,134 L 60,110 L 80,122 L 100,98 L 120,104 L 140,82 L 160,94 L 180,76 L 200,70 L 220,90 L 240,68 L 260,54 L 280,82 L 300,72 L 320,46 L 340,58 L 360,38 L 380,52 L 400,32 L 420,46 L 440,24 L 460,18 L 480,40 L 500,28 L 520,12 L 540,22 L 560,8 L 580,16 L 600,4 L 600,200 L 0,200 Z" fill="url(#ga)"/>
+              <path d="M 0,140 L 20,128 L 40,134 L 60,110 L 80,122 L 100,98 L 120,104 L 140,82 L 160,94 L 180,76 L 200,70 L 220,90 L 240,68 L 260,54 L 280,82 L 300,72 L 320,46 L 340,58 L 360,38 L 380,52 L 400,32 L 420,46 L 440,24 L 460,18 L 480,40 L 500,28 L 520,12 L 540,22 L 560,8 L 580,16 L 600,4" stroke="#E54B1C" strokeWidth="1.5" fill="none"/>
+            </svg>
+          </div>
+        </div>
+
+        <div className="panel">
+          <div className="panel-head">
+            <h3>Pending now</h3>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <a href="#" style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 14px', background: 'var(--rose-soft)', borderRadius: 10, textDecoration: 'none', color: 'var(--ink)' }}>
+              <span style={{ fontSize: 13 }}><b>3 IG stories</b> — 4h left</span>
+              <span style={{ color: 'var(--rose)' }}>→</span>
+            </a>
+            <a href="#" style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 14px', background: 'var(--amber-soft)', borderRadius: 10, textDecoration: 'none', color: 'var(--ink)' }}>
+              <span style={{ fontSize: 13 }}><b>8 reviews</b> — within SLA</span>
+              <span>→</span>
+            </a>
+            <a href="#" style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 14px', background: 'var(--paper-2)', borderRadius: 10, textDecoration: 'none', color: 'var(--ink)' }}>
+              <span style={{ fontSize: 13 }}><b>12 lapsed</b> — win-back ready</span>
+              <span>→</span>
+            </a>
+          </div>
+
+          <hr className="hairline" style={{ margin: '18px 0' }}/>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: 1.4, textTransform: 'uppercase', color: 'var(--ink-3)', marginBottom: 10 }}>
+            WhatsApp credits
+          </div>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+            <span style={{ fontFamily: 'var(--font-display)', fontSize: 28 }}>1,247</span>
+            <span style={{ fontSize: 12, color: 'var(--ink-3)' }}>of 2,000 left this month</span>
+          </div>
+          <div style={{ height: 4, background: 'var(--paper-3)', borderRadius: 2, marginTop: 8 }}>
+            <div style={{ height: '100%', width: '62%', background: 'var(--ink)', borderRadius: 2 }}/>
+          </div>
+        </div>
+      </div>
+
+      <div className="panel">
+        <div className="panel-head">
+          <h3>Top regulars · this month</h3>
+          <span className="more">All customers →</span>
+        </div>
+        <div className="ct-list">
+          {[
+            { i: 'P', n: 'Priya M.', p: '+91 98765 43210', v: 14, l: '2 days', s: 'regular' },
+            { i: 'R', n: 'Rahul K.', p: '+91 99876 11220', v: 11, l: '4 days', s: 'regular' },
+            { i: 'S', n: 'Sneha A.', p: '+91 98123 88770', v: 9, l: 'today', s: 'regular' },
+            { i: 'V', n: 'Vikram T.', p: '+91 91234 56789', v: 7, l: '1 week', s: 'active' },
+            { i: 'M', n: 'Maya R.', p: '+91 90909 12121', v: 6, l: '3 days', s: 'active' },
+          ].map((c, i) => (
+            <div key={i} className="ct-row">
+              <div className="av" style={{ background: ['#FBE3D9','#DDE9E2','#F3D9E0','#DCE2EA','#F4E6C1'][i] }}>{c.i}</div>
+              <div>
+                <div className="nm">{c.n}</div>
+                <div className="phone">{c.p}</div>
+              </div>
+              <div className="mono" style={{ fontSize: 12, color: 'var(--ink-3)' }}>{c.v} visits</div>
+              <div className="mono" style={{ fontSize: 12, color: 'var(--ink-3)' }}>last: {c.l}</div>
+              <div><span className={'seg ' + c.s}>{c.s}</span></div>
+              <div style={{ textAlign: 'right' }}><a href="#" style={{ color: 'var(--ink-3)', fontSize: 13, textDecoration: 'none' }}>View →</a></div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
+// ─── VERIFICATION QUEUE ──────────────────────────────────
+function Verify() {
+  const items = [
+    { i: 'P', n: 'Priya M.', p: '+91 98765 43210', t: 'Instagram story', sla: '4h 12m', slaC: 'late', emoji: '📸' },
+    { i: 'R', n: 'Rahul K.', p: '+91 99876 11220', t: 'Google review', sla: '1h 02m', slaC: 'warn', emoji: '🌐' },
+    { i: 'S', n: 'Sneha A.', p: '+91 98123 88770', t: 'IG reel link', sla: '23m', slaC: 'warn', emoji: '🎬' },
+    { i: 'V', n: 'Vikram T.', p: '+91 91234 56789', t: 'Bill photo', sla: '12m', slaC: 'warn', emoji: '🧾' },
+    { i: 'M', n: 'Maya R.', p: '+91 90909 12121', t: 'Zomato review', sla: '5m', slaC: 'ok', emoji: '🌐' },
+    { i: 'A', n: 'Anjali P.', p: '+91 97777 88888', t: 'Google review', sla: 'fresh', slaC: 'ok', emoji: '🌐' },
+  ];
+  return (
+    <div className="ax-main">
+      <div className="ax-head">
+        <div>
+          <h2 className="ttl">Verify activities</h2>
+          <p className="hi">6 pending · 1 past 2h SLA</p>
+        </div>
+        <div className="actions">
+          <button className="btn">Filter: All ↓</button>
+          <button className="btn primary">Approve all safe</button>
+        </div>
+      </div>
+
+      <div className="panel">
+        {items.map((it, i) => (
+          <div className="vq-row" key={i}>
+            <div className="thumb">{it.emoji}</div>
+            <div className="info">
+              <div className="nm">{it.n}</div>
+              <div className="sub">{it.p}</div>
+            </div>
+            <div className="type">{it.t}</div>
+            <div className={'sla ' + it.slaC}>{it.sla} {it.slaC === 'late' && '⚠'}</div>
+            <div className="acts">
+              <button className="no">Reject</button>
+              <button>View</button>
+              <button className="go">Approve</button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="panel" style={{ marginTop: 14 }}>
+        <div className="panel-head">
+          <h3>Trusted-customer auto-approve <span className="chip amber" style={{ marginLeft: 8 }}>Phase 2</span></h3>
+        </div>
+        <p style={{ fontSize: 13.5, color: 'var(--ink-2)', lineHeight: 1.55, margin: 0 }}>
+          After a customer has had 3 activities manually approved with no fraud, future submissions auto-approve after 30 minutes unless you manually reject. Reduces queue volume by an estimated 40–60% for established programs.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ─── CUSTOMERS ───────────────────────────────────────────
+function Customers() {
+  const rows = [
+    { i: 'P', n: 'Priya Menon',     p: '+91 98765 43210', v: 14, l: '2d ago',  s: 'regular' },
+    { i: 'R', n: 'Rahul Kapoor',    p: '+91 99876 11220', v: 11, l: '4d ago',  s: 'regular' },
+    { i: 'S', n: 'Sneha Aiyer',     p: '+91 98123 88770', v: 9,  l: 'today',   s: 'regular' },
+    { i: 'V', n: 'Vikram Thakur',   p: '+91 91234 56789', v: 7,  l: '1w ago',  s: 'active' },
+    { i: 'M', n: 'Maya Rao',        p: '+91 90909 12121', v: 6,  l: '3d ago',  s: 'active' },
+    { i: 'A', n: 'Anjali Pillai',   p: '+91 97777 88888', v: 5,  l: '6d ago',  s: 'active' },
+    { i: 'K', n: 'Karthik Ramesh',  p: '+91 96666 77777', v: 3,  l: '2w ago',  s: 'active' },
+    { i: 'D', n: 'Deepika Iyer',    p: '+91 95555 66666', v: 2,  l: '34d ago', s: 'lapsed' },
+    { i: 'N', n: 'Nikhil Bhat',     p: '+91 94444 55555', v: 1,  l: '3d ago',  s: 'new' },
+    { i: 'J', n: 'Janhavi Shetty',  p: '+91 93333 44444', v: 1,  l: '5h ago',  s: 'new' },
+  ];
+  return (
+    <div className="ax-main">
+      <div className="ax-head">
+        <div>
+          <h2 className="ttl">Customers <span style={{ fontFamily: 'var(--font-sans)', color: 'var(--ink-3)', fontSize: 22 }}>· 312</span></h2>
+          <p className="hi">Search, filter, or export the whole list. Your data — always.</p>
+        </div>
+        <div className="actions">
+          <button className="btn">Filter: All ↓</button>
+          <button className="btn">Export CSV</button>
+          <button className="btn primary">+ Add manually</button>
+        </div>
+      </div>
+
+      <div className="panel">
+        <div className="ct-list">
+          <div className="ct-row head">
+            <div></div>
+            <div>Customer</div>
+            <div>Visits</div>
+            <div>Last seen</div>
+            <div>Segment</div>
+            <div style={{ textAlign: 'right' }}>Actions</div>
+          </div>
+          {rows.map((c, i) => (
+            <div key={i} className="ct-row">
+              <div className="av" style={{ background: ['#FBE3D9','#DDE9E2','#F3D9E0','#DCE2EA','#F4E6C1','#EFD8DC','#F4E6C1','#DDE9E2','#DCE2EA','#FBE3D9'][i] }}>{c.i}</div>
+              <div>
+                <div className="nm">{c.n}</div>
+                <div className="phone">{c.p}</div>
+              </div>
+              <div className="mono" style={{ fontSize: 12, color: 'var(--ink-3)' }}>{c.v}</div>
+              <div className="mono" style={{ fontSize: 12, color: 'var(--ink-3)' }}>{c.l}</div>
+              <div><span className={'seg ' + c.s}>{c.s}</span></div>
+              <div style={{ textAlign: 'right' }}><a href="#" style={{ color: 'var(--ink-3)', fontSize: 13, textDecoration: 'none' }}>View →</a></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── LOOP BUILDER ────────────────────────────────────────
+function Loops() {
+  const target = 5;
+  return (
+    <div className="ax-main">
+      <div className="ax-head">
+        <div>
+          <h2 className="ttl">Loops &amp; rewards</h2>
+          <p className="hi">Set the milestone shape. Customers already in-progress are grandfathered to old rules.</p>
+        </div>
+        <div className="actions">
+          <button className="btn">Preview as customer</button>
+          <button className="btn primary">Publish</button>
+        </div>
+      </div>
+
+      <div className="grid-2">
+        <div className="panel">
+          <div className="panel-head">
+            <h3>L1 · Entry loop</h3>
+            <span className="chip coral">Active</span>
+          </div>
+
+          <div className="lb-step">
+            <div className="ln">Step 1 · Pick visits to milestone</div>
+            <div className="lb-visits">
+              {[1,2,3,4,5,6,7,8,9,10].map(n => (
+                <div key={n} className={'v ' + (n <= target ? 'on' : '') + (n === target ? ' tar' : '')}>{n}</div>
+              ))}
+            </div>
+            <p style={{ fontSize: 12, color: 'var(--ink-3)', margin: '6px 0 0' }}>5 visits — first reward in ~3 weeks for weekly visitors. Sweet spot.</p>
+          </div>
+
+          <div className="lb-step">
+            <div className="ln">Step 2 · The reward</div>
+            <div className="opts">
+              <span className="opt on">Free cold brew</span>
+              <span className="opt">Free pastry</span>
+              <span className="opt">20% off bill</span>
+              <span className="opt">Free upgrade</span>
+              <span className="opt">+ custom</span>
+            </div>
+          </div>
+
+          <div className="lb-step">
+            <div className="ln">Step 3 · Expiry window</div>
+            <div className="opts">
+              <span className="opt">7 days</span>
+              <span className="opt on">14 days</span>
+              <span className="opt">30 days</span>
+            </div>
+            <p style={{ fontSize: 12, color: 'var(--ink-3)', margin: '6px 0 0' }}>Recommended for high-frequency: 14 days creates urgency without feeling punishing.</p>
+          </div>
+
+          <div className="lb-step" style={{ borderBottom: 0 }}>
+            <div className="ln">Step 4 · Start at 1/5 on first scan (endowed progress)</div>
+            <div className="opts"><span className="opt on">On (recommended)</span><span className="opt">Off</span></div>
+          </div>
+        </div>
+
+        <div className="panel">
+          <div className="panel-head">
+            <h3>Activities · pick 3</h3>
+            <span style={{ fontSize: 12, color: 'var(--ink-3)' }}>3 active · max 3</span>
+          </div>
+          <div className="acts-grid">
+            <div className="act-tile on">
+              <div className="check">✓</div>
+              <div className="ti">Google review</div>
+              <div className="rew">→ free pastry today</div>
+            </div>
+            <div className="act-tile on">
+              <div className="check">✓</div>
+              <div className="ti">Refer a friend</div>
+              <div className="rew">→ free for both</div>
+            </div>
+            <div className="act-tile on">
+              <div className="check">✓</div>
+              <div className="ti">Off-peak visit</div>
+              <div className="rew">→ 2× progress</div>
+            </div>
+            <div className="act-tile">
+              <div className="check"/>
+              <div className="ti">IG story tag</div>
+              <div className="rew">→ 20% off</div>
+            </div>
+            <div className="act-tile">
+              <div className="check"/>
+              <div className="ti">Birthday visit</div>
+              <div className="rew">→ free dessert</div>
+            </div>
+            <div className="act-tile">
+              <div className="check"/>
+              <div className="ti">Zomato review</div>
+              <div className="rew">→ free coffee</div>
+            </div>
+          </div>
+
+          <hr className="hairline" style={{ margin: '20px 0' }}/>
+
+          <div className="panel-head" style={{ marginBottom: 8 }}>
+            <h3 style={{ fontSize: 18 }}>L2 · Engagement</h3>
+            <span className="chip amber">Phase 2 · locked</span>
+          </div>
+          <p style={{ fontSize: 13, color: 'var(--ink-3)', margin: 0, lineHeight: 1.5 }}>
+            Unlocks after L1 completes. Category-specific loops (weekend brunch, cocktail evenings). Set up once, runs forever.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── BRAND SETUP ─────────────────────────────────────────
+function Brand() {
+  return (
+    <div className="ax-main">
+      <div className="ax-head">
+        <div>
+          <h2 className="ttl">Brand &amp; setup</h2>
+          <p className="hi">What customers see when they scan. Preview updates as you change.</p>
+        </div>
+        <div className="actions">
+          <button className="btn">Generate QR poster</button>
+          <button className="btn primary">Publish</button>
+        </div>
+      </div>
+
+      <div className="brand-grid">
+        <div className="panel">
+          <div className="form-row">
+            <label>Restaurant name</label>
+            <input defaultValue="Filter & Co"/>
+          </div>
+          <div className="form-row">
+            <label>Welcome line</label>
+            <input defaultValue="Welcome to Filter & Co"/>
+          </div>
+          <div className="form-row">
+            <label>Reward promise (the hook)</label>
+            <input defaultValue="Get a free cold brew after 5 visits"/>
+          </div>
+          <div className="form-row">
+            <label>Brand colour</label>
+            <div className="swatch-row">
+              <div className="swatch on" style={{ background: '#0F4C3A' }}/>
+              <div className="swatch" style={{ background: '#C2563B' }}/>
+              <div className="swatch" style={{ background: '#6B1F2F' }}/>
+              <div className="swatch" style={{ background: '#FFD028' }}/>
+              <div className="swatch" style={{ background: '#1F6FB3' }}/>
+              <div className="swatch" style={{ background: '#171413' }}/>
+            </div>
+          </div>
+          <div className="form-row">
+            <label>Logo</label>
+            <div style={{ padding: 14, border: '1.5px dashed var(--line)', borderRadius: 10, textAlign: 'center', fontSize: 13, color: 'var(--ink-3)' }}>
+              Drop a PNG · 1:1, transparent background
+            </div>
+          </div>
+          <div className="form-row" style={{ marginBottom: 0 }}>
+            <label>Voice</label>
+            <select defaultValue="warm">
+              <option value="warm">Warm and precise (cafe)</option>
+              <option value="friendly">Friendly and easy (brunch)</option>
+              <option value="bold">Bold and direct (bar)</option>
+              <option value="quiet">Considered and quiet (fine dining)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <div className="eyebrow" style={{ marginBottom: 12 }}>Customer sees</div>
+          <div className="brand-preview">
+            <div className="pp">
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9.5, letterSpacing: 1.4, color: 'var(--coral)', textTransform: 'uppercase', marginBottom: 12 }}>● Loyalty by Loop</div>
+              <h2>Welcome to Filter & Co</h2>
+              <p>Get a free cold brew after 5 visits</p>
+              <div className="btn-p">Start with phone number →</div>
+              <div style={{ textAlign: 'center', fontSize: 11, color: 'var(--ink-3)', marginTop: 14 }}>
+                Your data stays with Filter & Co. Always.
+              </div>
+            </div>
+          </div>
+          <div style={{ marginTop: 14, padding: 14, background: '#FCFAF4', border: '0.5px solid var(--line)', borderRadius: 10, fontSize: 12.5, color: 'var(--ink-2)', lineHeight: 1.55 }}>
+            <b>QR URL:</b> <span className="mono" style={{ color: 'var(--ink-3)' }}>loop.app/r/filter-and-co</span><br/>
+            Print on table tents, bill folder, entrance. Same URL everywhere.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── REPORTS ─────────────────────────────────────────────
+function Reports() {
+  return (
+    <div className="ax-main">
+      <div className="ax-head">
+        <div>
+          <h2 className="ttl">Monthly report · April</h2>
+          <p className="hi">This is also what lands in your WhatsApp on the 1st of every month.</p>
+        </div>
+        <div className="actions">
+          <button className="btn">Send to my WhatsApp</button>
+          <button className="btn primary">Download PDF</button>
+        </div>
+      </div>
+
+      <div className="report">
+        <div className="left">
+          <div className="lbl">April 2026 · Filter & Co</div>
+          <h2>You earned the loyalty<br/>of <i>147 new diners.</i></h2>
+          <div className="ln"><span>New members</span><span className="v"><b>147</b></span></div>
+          <div className="ln"><span>Repeat visits</span><span className="v"><b>483</b></span></div>
+          <div className="ln"><span>Rewards redeemed</span><span className="v"><b>68</b></span></div>
+          <div className="ln"><span>Avg. visits per active</span><span className="v"><b>4.2</b></span></div>
+          <div className="ln"><span>Estimated revenue from Loop</span><span className="v"><b>₹2,18,400</b></span></div>
+          <div className="ln" style={{ borderTop: '0.5px solid rgba(244,240,232,0.4)', marginTop: 8 }}>
+            <span>Your investment</span><span className="v">₹7,500</span>
+          </div>
+          <div className="ln" style={{ borderTop: 0 }}>
+            <span style={{ color: 'var(--coral)' }}><b>ROI</b></span>
+            <span className="v" style={{ color: 'var(--coral)' }}><b>29×</b></span>
+          </div>
+        </div>
+        <div className="panel">
+          <div className="panel-head">
+            <h3>What worked</h3>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 13.5, color: 'var(--ink-2)', lineHeight: 1.5 }}>
+            <div style={{ padding: 14, background: 'var(--forest-soft)', borderRadius: 10 }}>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: 1.2, color: 'var(--forest)', textTransform: 'uppercase', marginBottom: 4 }}>↑ Highest impact</div>
+              <b>Off-peak visit bonus</b> drove 31% of weekday visits this month — double-progress flag is working.
+            </div>
+            <div style={{ padding: 14, background: 'var(--coral-soft)', borderRadius: 10 }}>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: 1.2, color: 'var(--coral-deep)', textTransform: 'uppercase', marginBottom: 4 }}>↗ Try this</div>
+              23 customers are 1 visit away from their reward. Consider an IG story campaign nudging them.
+            </div>
+            <div style={{ padding: 14, background: 'var(--paper-2)', borderRadius: 10 }}>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: 1.2, color: 'var(--ink-3)', textTransform: 'uppercase', marginBottom: 4 }}>↓ Watch</div>
+              12 customers lapsed past 30 days. Win-back already fired — 4 returned, 8 silent.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── WIZARD ──────────────────────────────────────────────
+function Wizard() {
+  const steps = [
+    { n: 1, t: 'Your restaurant', desc: 'Name, type, outlets. 90 seconds.' },
+    { n: 2, t: 'Brand', desc: 'Logo, colour, voice. We auto-pick if you skip.' },
+    { n: 3, t: 'Your loop', desc: 'Visits to reward, what the reward is, expiry. Pick a template.' },
+    { n: 4, t: 'Activities', desc: 'Choose 3. Recommended set pre-selected.' },
+    { n: 5, t: 'Done', desc: 'QR code printable + your customer URL.' },
+  ];
+  return (
+    <div className="ax-main" style={{ maxWidth: 720, margin: '0 auto' }}>
+      <div className="ax-head" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
+        <div className="eyebrow">Onboarding wizard · 30 minutes · no team contact required</div>
+        <h2 className="ttl" style={{ marginTop: 12 }}>Let's get you live.</h2>
+      </div>
+
+      <div className="panel">
+        <div style={{ display: 'flex', gap: 4, marginBottom: 24 }}>
+          {steps.map((s, i) => (
+            <div key={i} style={{ flex: 1, height: 4, background: i < 2 ? 'var(--coral)' : i === 2 ? 'var(--paper-3)' : 'var(--paper-3)', borderRadius: 2 }}/>
+          ))}
+        </div>
+
+        {steps.map((s, i) => (
+          <div key={i} style={{
+            display: 'flex', gap: 18, padding: '16px 0', borderBottom: i < steps.length - 1 ? '0.5px solid var(--line-soft)' : 0,
+            opacity: i < 2 ? 0.5 : i === 2 ? 1 : 0.4,
+          }}>
+            <div style={{
+              width: 36, height: 36, borderRadius: '50%',
+              background: i < 2 ? 'var(--forest-soft)' : i === 2 ? 'var(--ink)' : 'var(--paper-2)',
+              color: i < 2 ? 'var(--forest)' : i === 2 ? 'var(--paper)' : 'var(--ink-3)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontFamily: 'var(--font-display)', fontSize: 16,
+              flexShrink: 0,
+            }}>{i < 2 ? '✓' : s.n}</div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: 22, marginBottom: 2, letterSpacing: '-0.01em' }}>{s.t}</div>
+              <div style={{ fontSize: 13, color: 'var(--ink-3)' }}>{s.desc}</div>
+            </div>
+            {i === 2 && <button className="btn primary" style={{ alignSelf: 'center' }}>Continue →</button>}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── App shell ───────────────────────────────────────────
+function AdminApp() {
+  const [view, setView] = useState('dashboard');
+
+  const Body = {
+    dashboard: Dashboard,
+    verify: Verify,
+    customers: Customers,
+    loops: Loops,
+    brand: Brand,
+    reports: Reports,
+    wizard: Wizard,
+  }[view] || Dashboard;
+
+  const nav = [
+    { id: 'dashboard', l: 'Overview', ico: '◐' },
+    { id: 'verify',    l: 'Verification', ico: '✓', count: '11' },
+    { id: 'customers', l: 'Customers', ico: '⌖' },
+    { id: 'loops',     l: 'Loops & rewards', ico: '◯' },
+    { id: 'brand',     l: 'Brand & setup', ico: '☆' },
+    { id: 'reports',   l: 'Reports', ico: '◇' },
+    { id: 'wizard',    l: 'Onboarding wizard', ico: '→' },
+  ];
+
+  return (
+    <div className="ax">
+      <aside className="ax-side">
+        <div className="biz">
+          <div className="logo">F</div>
+          <div>
+            <div className="nm">Filter & Co</div>
+            <div className="ty">PRO TIER</div>
+          </div>
+        </div>
+        <div className="lbl">Main</div>
+        {nav.slice(0, 6).map(n => (
+          <a key={n.id} className={view === n.id ? 'on' : ''} onClick={() => setView(n.id)}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <span className="ico">{n.ico}</span>
+              {n.l}
+            </span>
+            {n.count && <span className="count">{n.count}</span>}
+          </a>
+        ))}
+        <div className="lbl">Setup</div>
+        <a className={view === 'wizard' ? 'on' : ''} onClick={() => setView('wizard')}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <span className="ico">→</span>
+            Wizard
+          </span>
+        </a>
+        <div className="foot">v0.1 · 312 customers</div>
+      </aside>
+      <main className="ax-main" style={{ padding: 0 }}>
+        <Body/>
+      </main>
+    </div>
+  );
+}
+
+// Section quick-nav (top of page)
+function SectionNav() {
+  const [view, setView] = useState('dashboard');
+  React.useEffect(() => {
+    window.__setAdminView && window.__setAdminView(view);
+  }, [view]);
+  return (
+    <div className="nav-row">
+      <button className={view === 'dashboard' ? 'on' : ''} onClick={() => setView('dashboard')}>Overview</button>
+      <button className={view === 'verify' ? 'on' : ''} onClick={() => setView('verify')}>Verification</button>
+      <button className={view === 'customers' ? 'on' : ''} onClick={() => setView('customers')}>Customers</button>
+      <button className={view === 'loops' ? 'on' : ''} onClick={() => setView('loops')}>Loops</button>
+      <button className={view === 'brand' ? 'on' : ''} onClick={() => setView('brand')}>Brand</button>
+      <button className={view === 'reports' ? 'on' : ''} onClick={() => setView('reports')}>Report</button>
+      <button className={view === 'wizard' ? 'on' : ''} onClick={() => setView('wizard')}>Wizard</button>
+    </div>
+  );
+}
+
+// Wrap so top nav controls the inner App view
+function MountWrap() {
+  const [view, setView] = useState('dashboard');
+  React.useEffect(() => {
+    window.__setAdminView = setView;
+  }, []);
+
+  const Body = {
+    dashboard: Dashboard,
+    verify: Verify,
+    customers: Customers,
+    loops: Loops,
+    brand: Brand,
+    reports: Reports,
+    wizard: Wizard,
+  }[view] || Dashboard;
+
+  return (
+    <ChromeWindow
+      width={1380} height={860}
+      tabs={[{ title: 'Loop · Admin', active: true }, { title: '+ New' }]}
+      activeIndex={0}
+      url={`loop.app/admin/filter-and-co/${view}`}
+    >
+      <div style={{ height: '100%', background: 'var(--paper)' }}>
+        <div className="ax" style={{ height: '100%' }}>
+          <aside className="ax-side">
+            <div className="biz">
+              <div className="logo">F</div>
+              <div>
+                <div className="nm">Filter & Co</div>
+                <div className="ty">PRO TIER</div>
+              </div>
+            </div>
+            <div className="lbl">Main</div>
+            <a className={view === 'dashboard' ? 'on' : ''} onClick={() => setView('dashboard')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}><span className="ico">◐</span>Overview</span>
+            </a>
+            <a className={view === 'verify' ? 'on' : ''} onClick={() => setView('verify')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}><span className="ico">✓</span>Verification</span>
+              <span className="count">11</span>
+            </a>
+            <a className={view === 'customers' ? 'on' : ''} onClick={() => setView('customers')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}><span className="ico">⌖</span>Customers</span>
+            </a>
+            <a className={view === 'loops' ? 'on' : ''} onClick={() => setView('loops')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}><span className="ico">◯</span>Loops & rewards</span>
+            </a>
+            <a className={view === 'brand' ? 'on' : ''} onClick={() => setView('brand')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}><span className="ico">☆</span>Brand & setup</span>
+            </a>
+            <a className={view === 'reports' ? 'on' : ''} onClick={() => setView('reports')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}><span className="ico">◇</span>Reports</span>
+            </a>
+            <div className="lbl">Setup</div>
+            <a className={view === 'wizard' ? 'on' : ''} onClick={() => setView('wizard')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}><span className="ico">→</span>Wizard</span>
+            </a>
+            <div className="foot">v0.1 · 312 customers</div>
+          </aside>
+          <main style={{ overflow: 'auto', height: '100%' }}>
+            <Body/>
+          </main>
+        </div>
+      </div>
+    </ChromeWindow>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('nav-mount')).render(<SectionNav/>);
+ReactDOM.createRoot(document.getElementById('browser-mount')).render(<MountWrap/>);
+</script>
+
+</body>
+</html>

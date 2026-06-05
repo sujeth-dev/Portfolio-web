@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Loop — Architecture &amp; data model</title>
+<link rel="stylesheet" href="shared/tokens.css" />
+<style>
+  body { background: var(--paper); }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 28px; border-bottom: 0.5px solid var(--line); position: sticky; top: 0; background: rgba(244,240,232,0.92); backdrop-filter: blur(10px); z-index: 30; }
+  .topbar .links { display: flex; gap: 18px; font-size: 13px; }
+  .topbar .links a { color: var(--ink-3); text-decoration: none; }
+  .topbar .links a:hover, .topbar .links a.active { color: var(--ink); }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 36px 28px 96px; }
+
+  .head { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; margin-bottom: 32px; }
+  .title { font-family: var(--font-display); font-size: clamp(40px, 5vw, 60px); line-height: 1; letter-spacing: -0.025em; margin: 6px 0 0; font-weight: 400; }
+  .title em { font-style: italic; color: var(--coral); }
+  .sub { font-size: 15px; color: var(--ink-2); margin-top: 12px; max-width: 580px; }
+
+  .sec-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); margin: 56px 0 16px; display: flex; align-items: center; gap: 14px; }
+  .sec-label::after { content: ""; flex: 1; height: 0.5px; background: var(--line); }
+  .sec-label .n { color: var(--coral); }
+
+  .panel { background: #FCFAF4; border: 0.5px solid var(--line); border-radius: var(--r-lg); padding: 24px; }
+
+  /* Stack table */
+  .stack { display: grid; grid-template-columns: 200px 1fr 220px; gap: 0; }
+  .stack > div { padding: 14px 18px; border-bottom: 0.5px solid var(--line-soft); }
+  .stack > div:nth-child(-n+3) { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); border-bottom: 0.5px solid var(--line); padding-bottom: 8px; padding-top: 8px; }
+  .stack .layer { font-family: var(--font-mono); font-size: 12px; color: var(--ink); font-weight: 500; letter-spacing: 0.02em; }
+  .stack .pick { font-size: 13.5px; color: var(--ink); }
+  .stack .pick code { background: var(--paper-2); padding: 1px 6px; border-radius: 4px; font-size: 12px; font-family: var(--font-mono); }
+  .stack .why { font-size: 12px; color: var(--ink-3); line-height: 1.5; }
+
+  /* Service diagram */
+  .arch-diag {
+    overflow: auto; background: #FCFAF4; border: 0.5px solid var(--line); border-radius: var(--r-lg); padding: 30px;
+  }
+  .arch-diag svg { width: 100%; min-width: 900px; height: auto; display: block; }
+
+  /* Event flows */
+  .flow {
+    background: #FCFAF4; border: 0.5px solid var(--line); border-radius: var(--r-lg);
+    padding: 24px; margin-bottom: 12px;
+  }
+  .flow h3 { font-family: var(--font-display); font-size: 26px; margin: 0 0 6px; font-weight: 400; letter-spacing: -0.015em; }
+  .flow .desc { font-size: 13.5px; color: var(--ink-3); margin: 0 0 18px; }
+  .flow .seq { display: flex; flex-direction: column; gap: 0; }
+  .flow .step { display: grid; grid-template-columns: 90px 1fr; gap: 16px; align-items: start; padding: 12px 0; border-top: 0.5px solid var(--line-soft); }
+  .flow .step:first-of-type { border-top: 0; padding-top: 0; }
+  .flow .step .from {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em;
+    background: var(--paper-2); color: var(--ink-2); padding: 4px 8px; border-radius: var(--r-pill);
+    text-align: center; width: fit-content;
+  }
+  .flow .step .from.client { background: var(--coral-soft); color: var(--coral-deep); }
+  .flow .step .from.worker { background: var(--forest-soft); color: var(--forest); }
+  .flow .step .from.api { background: var(--slate-soft); color: var(--slate); }
+  .flow .step .from.queue { background: var(--amber-soft); color: #6E4E0B; }
+  .flow .step .from.db { background: var(--rose-soft); color: var(--rose); }
+  .flow .step .from.ext { background: #EEEDFE; color: #3C3489; }
+  .flow .step .what { font-size: 13.5px; color: var(--ink-2); line-height: 1.5; }
+  .flow .step .what code { background: var(--paper-2); padding: 1px 6px; border-radius: 4px; font-size: 12px; font-family: var(--font-mono); }
+
+  /* API surface */
+  .api { display: grid; grid-template-columns: 80px 1fr; gap: 14px; padding: 10px 0; border-top: 0.5px solid var(--line-soft); font-family: var(--font-mono); font-size: 12.5px; align-items: center; }
+  .api:first-of-type { border-top: 0; }
+  .api .method { font-weight: 500; text-align: center; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+  .api .method.GET { background: var(--forest-soft); color: var(--forest); }
+  .api .method.POST { background: var(--slate-soft); color: var(--slate); }
+  .api .method.PATCH { background: var(--amber-soft); color: #6E4E0B; }
+  .api .method.DELETE { background: var(--rose-soft); color: var(--rose); }
+  .api .path { color: var(--ink); }
+  .api .desc { color: var(--ink-3); font-family: var(--font-sans); font-size: 13px; }
+  .api .grp { font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); padding: 14px 0 6px; grid-column: 1 / -1; border-top: 0.5px solid var(--line); margin-top: 6px; }
+  .api .grp:first-of-type { border-top: 0; margin-top: 0; }
+
+  /* Multi-tenant */
+  .mt {
+    background: var(--ink); color: var(--paper); border-radius: var(--r-lg); padding: 28px;
+  }
+  .mt h3 { font-family: var(--font-display); font-size: 28px; margin: 0 0 18px; font-weight: 400; letter-spacing: -0.015em; }
+  .mt h3 em { color: var(--coral); font-style: italic; }
+  .mt pre {
+    background: rgba(244,240,232,0.05); border: 0.5px solid rgba(244,240,232,0.15);
+    padding: 18px; border-radius: var(--r); font-family: var(--font-mono); font-size: 12.5px;
+    color: rgba(244,240,232,0.92); line-height: 1.6; overflow: auto; margin: 0 0 18px;
+  }
+  .mt pre .k { color: #E54B1C; }
+  .mt pre .s { color: #9FCBEA; }
+  .mt pre .c { color: rgba(244,240,232,0.45); font-style: italic; }
+  .mt-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 18px; }
+  @media (max-width: 760px) { .mt-list { grid-template-columns: 1fr; } }
+  .mt-list .cell { background: rgba(244,240,232,0.05); border: 0.5px solid rgba(244,240,232,0.15); border-radius: var(--r); padding: 16px; }
+  .mt-list .cell .l { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(244,240,232,0.5); margin-bottom: 6px; }
+  .mt-list .cell .v { font-family: var(--font-display); font-size: 22px; line-height: 1.05; letter-spacing: -0.01em; margin-bottom: 6px; }
+  .mt-list .cell p { font-size: 12.5px; color: rgba(244,240,232,0.7); line-height: 1.5; margin: 0; }
+
+  /* Deployment */
+  .dep { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 760px) { .dep { grid-template-columns: 1fr; } }
+
+  /* Risks table */
+  .risks { display: grid; grid-template-columns: 1fr 1fr 1fr 0.6fr; gap: 0; }
+  .risks > div { padding: 12px 14px; border-bottom: 0.5px solid var(--line-soft); font-size: 13px; color: var(--ink-2); }
+  .risks .h { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); border-bottom: 0.5px solid var(--line); }
+  .risks .sev { font-family: var(--font-mono); font-size: 11px; padding: 2px 8px; border-radius: var(--r-pill); display: inline-block; }
+  .risks .sev.h { background: var(--rose-soft); color: var(--rose); }
+  .risks .sev.m { background: var(--amber-soft); color: #6E4E0B; }
+  .risks .sev.l { background: var(--forest-soft); color: var(--forest); }
+
+  /* Entity list */
+  .entity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 760px) { .entity-grid { grid-template-columns: 1fr; } }
+  .entity {
+    background: #FCFAF4; border: 0.5px solid var(--line); border-radius: var(--r);
+    padding: 16px 18px; position: relative;
+  }
+  .entity h4 { font-family: var(--font-mono); font-size: 13px; font-weight: 500; margin: 0 0 12px; color: var(--ink); }
+  .entity .field { display: flex; justify-content: space-between; padding: 4px 0; font-family: var(--font-mono); font-size: 11.5px; border-top: 0.5px solid var(--line-soft); }
+  .entity .field:first-of-type { border-top: 0; }
+  .entity .field .n { color: var(--ink); }
+  .entity .field .t { color: var(--ink-3); }
+  .entity::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 3px 0 0 3px; background: var(--mute); }
+
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <a href="index.html" class="loop-mark">Loop</a>
+  <div class="links">
+    <a href="index.html">All</a>
+    <a href="2-engines-atlas.html">Engines</a>
+    <a href="6-architecture.html" class="active">Architecture</a>
+    <a href="7-integration-atlas.html">Integrations</a>
+    <a href="8-decisions-registry.html">Decisions</a>
+    <a href="9-roadmap.html">Roadmap</a>
+  </div>
+</nav>
+
+<div class="wrap" data-screen-label="06 Architecture">
+  <div class="head">
+    <div>
+      <div class="eyebrow">06 · Engineering handoff</div>
+      <h1 class="title">The thinnest <em>spine</em><br/>that holds all eight engines.</h1>
+      <p class="sub">A pragmatic stack. Multi-tenant from day one. Async-everything for WhatsApp. Designed to scale from 1 to 100 restaurants without rewriting — and to fall back gracefully when any external dependency cracks.</p>
+    </div>
+  </div>
+
+  <!-- STACK -->
+  <div class="sec-label"><span class="n">A</span>The stack · MVP1 picks &amp; why</div>
+  <div class="panel" style="padding: 0">
+    <div class="stack">
+      <div>Layer</div>
+      <div>Pick</div>
+      <div>Why</div>
+
+      <div class="layer">Customer PWA</div>
+      <div class="pick"><code>Next.js</code> + React, deployed on <code>Vercel</code>. Tailwind for theme tokens.</div>
+      <div class="why">PWA out of the box. Edge-deployed close to Bangalore. Cheap until you scale.</div>
+
+      <div class="layer">Admin panel</div>
+      <div class="pick">Same Next.js app, <code>/admin</code> routes, role-gated.</div>
+      <div class="why">One deployment, one DB connection. Split only when admin traffic justifies it.</div>
+
+      <div class="layer">Counter mode</div>
+      <div class="pick"><code>/counter/[outlet-token]</code> — same app, no login, IndexedDB cache.</div>
+      <div class="why">Same auth as a magic link. Offline-first. Zero new infra.</div>
+
+      <div class="layer">API</div>
+      <div class="pick">Next.js Route Handlers (<code>app/api/*</code>). Versioned: <code>/api/v1/*</code>.</div>
+      <div class="why">No separate backend service in MVP1. Split into a Hono/Express service at &gt;30 restaurants.</div>
+
+      <div class="layer">Database</div>
+      <div class="pick"><code>Postgres</code> on <code>Supabase</code> or <code>Neon</code>. Row-level security on every table.</div>
+      <div class="why">JSONB for brand_config, loop_config, payloads. RLS = tenant isolation without code.</div>
+
+      <div class="layer">Queue</div>
+      <div class="pick"><code>Upstash Redis</code> + <code>BullMQ</code> or Cloudflare Queues.</div>
+      <div class="why">WhatsApp sends, integration events, verification SLA timers all async. Friday night never blocks.</div>
+
+      <div class="layer">Workers</div>
+      <div class="pick">Vercel Cron + Edge Functions, or a small Fly.io worker.</div>
+      <div class="why">Trigger fan-out, win-back scans, monthly report generation, expiry sweeps.</div>
+
+      <div class="layer">WhatsApp</div>
+      <div class="pick"><code>Interakt</code> or <code>AiSensy</code> as BSP. Templates pre-approved.</div>
+      <div class="why">Skip direct Meta API. Compliance, template management, opt-out handling done.</div>
+
+      <div class="layer">Payments</div>
+      <div class="pick"><code>Razorpay</code> redirect, webhook to API.</div>
+      <div class="why">Standard in India. Spend capture without POS.</div>
+
+      <div class="layer">File storage</div>
+      <div class="pick"><code>Supabase Storage</code> or <code>R2</code> for screenshots, logos.</div>
+      <div class="why">Cheap, region-pinned to India.</div>
+
+      <div class="layer">Observability</div>
+      <div class="pick"><code>Axiom</code> or <code>Logtail</code> for logs. <code>Sentry</code> for errors. Public <code>StatusPage</code>.</div>
+      <div class="why">Alerts fire before restaurants notice. Status page = trust signal.</div>
+
+      <div class="layer" style="border-bottom: 0">Auth</div>
+      <div class="pick" style="border-bottom: 0">Customer: phone-OTP via WhatsApp. Admin: magic link email. Counter: per-outlet token.</div>
+      <div class="why" style="border-bottom: 0">No passwords ever. Three different auth needs, three minimal flows.</div>
+    </div>
+  </div>
+
+  <!-- SERVICES DIAGRAM -->
+  <div class="sec-label"><span class="n">B</span>Service diagram · request &amp; event paths</div>
+  <div class="arch-diag">
+    <svg viewBox="0 0 1100 620" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="ar1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#6B645C"/>
+        </marker>
+        <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#E54B1C"/>
+        </marker>
+      </defs>
+
+      <!-- Clients top -->
+      <g>
+        <rect x="40" y="40" width="200" height="80" rx="10" fill="#FBE3D9" stroke="#E54B1C" stroke-width="1"/>
+        <text x="140" y="68" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#B33712" letter-spacing="2">CUSTOMER PWA</text>
+        <text x="140" y="94" text-anchor="middle" font-family="Instrument Serif" font-size="14" fill="#171413">phone · QR scan</text>
+      </g>
+      <g>
+        <rect x="270" y="40" width="200" height="80" rx="10" fill="#DCE2EA" stroke="#2A3340" stroke-width="1"/>
+        <text x="370" y="68" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#2A3340" letter-spacing="2">ADMIN PANEL</text>
+        <text x="370" y="94" text-anchor="middle" font-family="Instrument Serif" font-size="14" fill="#171413">restaurant owner</text>
+      </g>
+      <g>
+        <rect x="500" y="40" width="200" height="80" rx="10" fill="#DDE9E2" stroke="#0F4C3A" stroke-width="1"/>
+        <text x="600" y="68" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#0F4C3A" letter-spacing="2">COUNTER MODE</text>
+        <text x="600" y="94" text-anchor="middle" font-family="Instrument Serif" font-size="14" fill="#171413">staff · tablet</text>
+      </g>
+      <g>
+        <rect x="730" y="40" width="200" height="80" rx="10" fill="#F4E6C1" stroke="#C58B14" stroke-width="1"/>
+        <text x="830" y="68" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#6E4E0B" letter-spacing="2">CRON / WORKERS</text>
+        <text x="830" y="94" text-anchor="middle" font-family="Instrument Serif" font-size="14" fill="#171413">scheduled jobs</text>
+      </g>
+
+      <!-- API -->
+      <g>
+        <rect x="200" y="180" width="700" height="80" rx="10" fill="#171413"/>
+        <text x="550" y="208" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" fill="rgba(244,240,232,0.6)" letter-spacing="2">/api/v1 · NEXT.JS ROUTE HANDLERS</text>
+        <text x="550" y="234" text-anchor="middle" font-family="Instrument Serif" font-size="18" fill="white">API surface · versioned · feature-flagged</text>
+      </g>
+
+      <!-- Arrows down to API -->
+      <line x1="140" y1="120" x2="220" y2="180" stroke="#E54B1C" stroke-width="1.5" marker-end="url(#ar2)"/>
+      <line x1="370" y1="120" x2="430" y2="180" stroke="#6B645C" stroke-width="1" marker-end="url(#ar1)"/>
+      <line x1="600" y1="120" x2="600" y2="180" stroke="#6B645C" stroke-width="1" marker-end="url(#ar1)"/>
+      <line x1="830" y1="120" x2="780" y2="180" stroke="#6B645C" stroke-width="1" marker-end="url(#ar1)"/>
+
+      <!-- Queue + DB row -->
+      <g>
+        <rect x="60" y="320" width="240" height="80" rx="10" fill="#F4E6C1" stroke="#C58B14" stroke-width="1"/>
+        <text x="180" y="350" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#6E4E0B" letter-spacing="2">REDIS · BULLMQ</text>
+        <text x="180" y="376" text-anchor="middle" font-family="Instrument Serif" font-size="15" fill="#171413">queue · sends · timers</text>
+      </g>
+      <g>
+        <rect x="330" y="320" width="240" height="80" rx="10" fill="#F3D9E0" stroke="#B83A5E" stroke-width="1"/>
+        <text x="450" y="350" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#B83A5E" letter-spacing="2">POSTGRES · RLS</text>
+        <text x="450" y="376" text-anchor="middle" font-family="Instrument Serif" font-size="15" fill="#171413">tenant-isolated · JSONB</text>
+      </g>
+      <g>
+        <rect x="600" y="320" width="240" height="80" rx="10" fill="#EEEDFE" stroke="#5B4A8C" stroke-width="1"/>
+        <text x="720" y="350" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#5B4A8C" letter-spacing="2">OBJECT STORAGE</text>
+        <text x="720" y="376" text-anchor="middle" font-family="Instrument Serif" font-size="15" fill="#171413">screenshots · logos</text>
+      </g>
+
+      <!-- API -> queue + DB -->
+      <line x1="380" y1="260" x2="220" y2="320" stroke="#6B645C" stroke-width="1" marker-end="url(#ar1)"/>
+      <line x1="500" y1="260" x2="450" y2="320" stroke="#E54B1C" stroke-width="1.5" marker-end="url(#ar2)"/>
+      <line x1="700" y1="260" x2="720" y2="320" stroke="#6B645C" stroke-width="1" marker-end="url(#ar1)"/>
+
+      <!-- Worker reads queue, talks to externals -->
+      <g>
+        <rect x="60" y="460" width="240" height="80" rx="10" fill="#FCFAF4" stroke="#171413" stroke-width="1"/>
+        <text x="180" y="490" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#171413" letter-spacing="2">WORKER POOL</text>
+        <text x="180" y="516" text-anchor="middle" font-family="Instrument Serif" font-size="15" fill="#171413">edge funcs / fly.io</text>
+      </g>
+      <line x1="180" y1="400" x2="180" y2="460" stroke="#6B645C" stroke-width="1" marker-end="url(#ar1)"/>
+
+      <!-- Externals -->
+      <g>
+        <rect x="370" y="460" width="170" height="80" rx="10" fill="#D5E5F4" stroke="#1F6FB3" stroke-width="1"/>
+        <text x="455" y="490" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#1F6FB3" letter-spacing="2">WHATSAPP BSP</text>
+        <text x="455" y="516" text-anchor="middle" font-family="Instrument Serif" font-size="14" fill="#171413">Interakt / AiSensy</text>
+      </g>
+      <g>
+        <rect x="555" y="460" width="170" height="80" rx="10" fill="#FBE3D9" stroke="#E54B1C" stroke-width="1"/>
+        <text x="640" y="490" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#B33712" letter-spacing="2">RAZORPAY</text>
+        <text x="640" y="516" text-anchor="middle" font-family="Instrument Serif" font-size="14" fill="#171413">webhooks · payments</text>
+      </g>
+      <g>
+        <rect x="740" y="460" width="170" height="80" rx="10" fill="#EEEDFE" stroke="#5B4A8C" stroke-width="1" stroke-dasharray="4 4"/>
+        <text x="825" y="490" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#5B4A8C" letter-spacing="2">PETPOOJA · P2</text>
+        <text x="825" y="516" text-anchor="middle" font-family="Instrument Serif" font-size="14" fill="#171413">webhook adapter</text>
+      </g>
+
+      <!-- Worker -> ext -->
+      <line x1="300" y1="500" x2="370" y2="500" stroke="#6B645C" stroke-width="1" marker-end="url(#ar1)"/>
+
+      <!-- Observability under -->
+      <g opacity="0.85">
+        <rect x="60" y="570" width="980" height="30" rx="6" fill="transparent" stroke="#6B645C" stroke-width="0.5" stroke-dasharray="4 4"/>
+        <text x="550" y="589" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#171413" letter-spacing="2">OBSERVABILITY · AXIOM · SENTRY · STATUSPAGE</text>
+      </g>
+    </svg>
+  </div>
+
+  <!-- MULTI TENANT -->
+  <div class="sec-label"><span class="n">C</span>Multi-tenant isolation</div>
+  <div class="mt">
+    <h3>One database. <em>Many restaurants.</em> Zero leakage.</h3>
+    <p style="font-size: 14px; color: rgba(244,240,232,0.7); margin: 0 0 18px; max-width: 660px; line-height: 1.5;">
+      Tenant isolation is enforced at the database layer, not at the API layer. Every table carries <code style="background: rgba(244,240,232,0.1); padding: 1px 6px; border-radius: 4px;">restaurant_id</code>. Row-level security policies guarantee a query for Restaurant A can never read Restaurant B's data — even if application code makes a mistake.
+    </p>
+    <pre><span class="c">-- Every row carries restaurant_id, indexed for fast filtering</span>
+<span class="k">CREATE TABLE</span> customer (
+  id            <span class="k">uuid</span> <span class="k">PRIMARY KEY DEFAULT</span> gen_random_uuid(),
+  restaurant_id <span class="k">uuid</span> <span class="k">NOT NULL REFERENCES</span> restaurant(id),
+  phone         <span class="k">text</span> <span class="k">NOT NULL</span>,
+  created_at    <span class="k">timestamptz NOT NULL DEFAULT</span> now(),
+  <span class="k">UNIQUE</span> (restaurant_id, phone)
+);
+
+<span class="c">-- RLS policy: only see your own restaurant's customers</span>
+<span class="k">ALTER TABLE</span> customer <span class="k">ENABLE ROW LEVEL SECURITY</span>;
+
+<span class="k">CREATE POLICY</span> tenant_isolation <span class="k">ON</span> customer
+  <span class="k">USING</span> (restaurant_id = current_setting(<span class="s">'app.tenant_id'</span>)::uuid);
+
+<span class="c">-- API sets the tenant context for the connection</span>
+<span class="k">SELECT</span> set_config(<span class="s">'app.tenant_id'</span>, <span class="s">'4f2e...'</span>, <span class="k">true</span>);</pre>
+
+    <div class="mt-list">
+      <div class="cell">
+        <div class="l">Strategy</div>
+        <div class="v">Shared DB, RLS</div>
+        <p>Cheaper than schema-per-tenant. Postgres RLS is battle-tested. Switch to schema-per-tenant only when a single restaurant exceeds 100k customers.</p>
+      </div>
+      <div class="cell">
+        <div class="l">Subdomain</div>
+        <div class="v">loop.app/r/&lt;slug&gt;</div>
+        <p>Path-routed in MVP1, faster to ship. Custom subdomains (<code style="background: rgba(244,240,232,0.1); padding: 1px 5px; border-radius: 4px;">filterandco.loop.app</code>) in Pro tier, P2.</p>
+      </div>
+      <div class="cell">
+        <div class="l">Brand assets</div>
+        <div class="v">Per-tenant CDN path</div>
+        <p>Logo/hero image lives at <code style="background: rgba(244,240,232,0.1); padding: 1px 5px; border-radius: 4px;">/r/&lt;slug&gt;/logo.png</code>. Cached forever, bust on update.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- EVENT FLOWS -->
+  <div class="sec-label"><span class="n">D</span>The five critical event flows</div>
+
+  <div class="flow">
+    <h3>1 · QR scan → first visit</h3>
+    <div class="desc">The most-traversed path. Must work without internet on the restaurant side, on first-load with a cold cache, in &lt;1s perceived latency.</div>
+    <div class="seq">
+      <div class="step"><div class="from client">phone</div><div class="what">Customer scans QR, opens <code>/r/filter-and-co?t=tableA</code></div></div>
+      <div class="step"><div class="from api">API</div><div class="what"><code>GET /api/v1/r/:slug/landing</code> — fetch brand_config + loop_config. ~200ms target.</div></div>
+      <div class="step"><div class="from client">phone</div><div class="what">Customer enters phone. <code>POST /api/v1/auth/start</code></div></div>
+      <div class="step"><div class="from queue">queue</div><div class="what">Enqueue <code>whatsapp.send.otp</code> — does not block. Customer sees "code sent" instantly.</div></div>
+      <div class="step"><div class="from worker">worker</div><div class="what">Picks up job, calls BSP, OTP arrives on WhatsApp in ~5s.</div></div>
+      <div class="step"><div class="from client">phone</div><div class="what">Customer enters OTP. <code>POST /api/v1/auth/verify</code> → JWT issued.</div></div>
+      <div class="step"><div class="from api">API</div><div class="what">Inside transaction: insert customer (idempotent on phone), insert visit, create journey (L1, progress=1), insert pending welcome message.</div></div>
+      <div class="step"><div class="from queue">queue</div><div class="what">Enqueue <code>whatsapp.send.welcome</code>.</div></div>
+      <div class="step"><div class="from client">phone</div><div class="what">Welcome screen renders with 1/5 already counted. Total perceived time: ~30s.</div></div>
+    </div>
+  </div>
+
+  <div class="flow">
+    <h3>2 · Reward redemption at counter</h3>
+    <div class="desc">Must succeed even when the venue's wi-fi is down. Validates against a local cache, syncs when back online.</div>
+    <div class="seq">
+      <div class="step"><div class="from client">customer</div><div class="what">Shows 6-digit code <code>BREW-8K4</code> on phone.</div></div>
+      <div class="step"><div class="from client">counter</div><div class="what">Staff enters code on counter PWA. Validates against local IndexedDB cache (synced every 5 min).</div></div>
+      <div class="step"><div class="from client">counter</div><div class="what">If online: <code>POST /api/v1/redeem</code>. Server marks reward.redeemed_at, redeemed_by_staff, returns confirmation.</div></div>
+      <div class="step"><div class="from client">counter</div><div class="what">If offline: store pending redemption in IndexedDB queue, show green tick anyway. Sync on reconnect.</div></div>
+      <div class="step"><div class="from db">db</div><div class="what">On sync: idempotent merge. If code was already redeemed elsewhere, surface conflict to admin (rare).</div></div>
+      <div class="step"><div class="from queue">queue</div><div class="what">Enqueue <code>reward.next_journey.unlock</code> for customer — keeps loop alive.</div></div>
+    </div>
+  </div>
+
+  <div class="flow">
+    <h3>3 · Activity submission → verification</h3>
+    <div class="desc">Customer expectations are instant. Real verification is async with a 2-hour SLA tracker.</div>
+    <div class="seq">
+      <div class="step"><div class="from client">customer</div><div class="what">Uploads screenshot or pastes URL. <code>POST /api/v1/activities/submit</code></div></div>
+      <div class="step"><div class="from api">API</div><div class="what">Insert activity_submission with status=pending, sla_due_at = now() + (2h or 6h by type).</div></div>
+      <div class="step"><div class="from queue">queue</div><div class="what">Enqueue <code>activity.notify.admin</code> → WhatsApp ping to restaurant owner.</div></div>
+      <div class="step"><div class="from client">customer</div><div class="what">Sees "Received — your reward unlocks within 2 hours of approval."</div></div>
+      <div class="step"><div class="from client">admin</div><div class="what">Reviews in queue, taps Approve. <code>PATCH /api/v1/activities/:id</code></div></div>
+      <div class="step"><div class="from api">API</div><div class="what">If approved → insert reward, enqueue <code>whatsapp.send.reward_unlocked</code>. If rejected → enqueue rejection notice.</div></div>
+      <div class="step"><div class="from worker">cron</div><div class="what">Every 15 min, scan for submissions past sla_due_at — escalate to admin's WhatsApp.</div></div>
+    </div>
+  </div>
+
+  <div class="flow">
+    <h3>4 · Trigger fan-out (60% nudge, win-back, etc.)</h3>
+    <div class="desc">A scheduled scan finds customers in the right state and queues a single message each. Idempotent, opt-out aware.</div>
+    <div class="seq">
+      <div class="step"><div class="from worker">cron</div><div class="what">Hourly: find customers at exactly 60% of an active journey who haven't been nudged yet. Find lapsed customers crossing day 30/60/90.</div></div>
+      <div class="step"><div class="from db">db</div><div class="what">Query is restaurant-scoped, indexed on (journey.progress, journey.target). Returns batches of N.</div></div>
+      <div class="step"><div class="from api">API</div><div class="what">For each: check opted_out, check daily message cap (max 2/day), record nudge_sent_at on journey to prevent duplicates.</div></div>
+      <div class="step"><div class="from queue">queue</div><div class="what">Enqueue <code>whatsapp.send.&lt;trigger&gt;</code> with template_id + variables.</div></div>
+      <div class="step"><div class="from worker">worker</div><div class="what">Sends via BSP. Records message row with cost_paise. Updates status on delivery receipts.</div></div>
+    </div>
+  </div>
+
+  <div class="flow">
+    <h3>5 · POS / payment webhook ingest</h3>
+    <div class="desc">External event arrives. We never trust it blindly — verify signature, normalise, dedupe, then act.</div>
+    <div class="seq">
+      <div class="step"><div class="from ext">ext</div><div class="what">Razorpay or Petpooja POSTs to <code>/api/v1/webhooks/&lt;adapter&gt;</code></div></div>
+      <div class="step"><div class="from api">API</div><div class="what">Verify HMAC signature. Reject 401 on mismatch. Insert integration_event row with raw_payload.</div></div>
+      <div class="step"><div class="from queue">queue</div><div class="what">Enqueue <code>adapter.&lt;name&gt;.process</code>.</div></div>
+      <div class="step"><div class="from worker">worker</div><div class="what">Adapter-specific normaliser: extract customer phone, bill_amount, items. Match or create customer.</div></div>
+      <div class="step"><div class="from db">db</div><div class="what">Insert visit with source=payment or pos. Apply same reward logic as QR-scan visit. Loops progress, triggers fire.</div></div>
+      <div class="step"><div class="from worker">worker</div><div class="what">On adapter error: store error, retry with exponential backoff (max 5). Alert if &gt;5% failure rate over 1h.</div></div>
+    </div>
+  </div>
+
+  <!-- API SURFACE -->
+  <div class="sec-label"><span class="n">E</span>API surface · v1</div>
+  <div class="panel">
+    <div class="api"><span class="grp">Customer · public, JWT-gated after auth</span></div>
+    <div class="api"><span class="method GET">GET</span><div><div class="path">/api/v1/r/:slug/landing</div><div class="desc">Brand + loop config for QR landing</div></div></div>
+    <div class="api"><span class="method POST">POST</span><div><div class="path">/api/v1/auth/start</div><div class="desc">Phone → enqueue OTP send</div></div></div>
+    <div class="api"><span class="method POST">POST</span><div><div class="path">/api/v1/auth/verify</div><div class="desc">OTP verify, issues JWT, fires first visit if new</div></div></div>
+    <div class="api"><span class="method GET">GET</span><div><div class="path">/api/v1/me</div><div class="desc">Customer profile + active journeys + rewards</div></div></div>
+    <div class="api"><span class="method POST">POST</span><div><div class="path">/api/v1/visits</div><div class="desc">Log a scan (optional bill_amount, group_size)</div></div></div>
+    <div class="api"><span class="method POST">POST</span><div><div class="path">/api/v1/activities/submit</div><div class="desc">Screenshot or URL submission</div></div></div>
+    <div class="api"><span class="method GET">GET</span><div><div class="path">/api/v1/rewards/:id</div><div class="desc">Coupon detail for customer</div></div></div>
+
+    <div class="api"><span class="grp">Counter · outlet token gated</span></div>
+    <div class="api"><span class="method GET">GET</span><div><div class="path">/api/v1/counter/sync</div><div class="desc">Pull active reward codes (last N hours) for offline cache</div></div></div>
+    <div class="api"><span class="method POST">POST</span><div><div class="path">/api/v1/counter/redeem</div><div class="desc">Idempotent on code — marks reward redeemed</div></div></div>
+
+    <div class="api"><span class="grp">Admin · email magic-link gated, role-scoped</span></div>
+    <div class="api"><span class="method GET">GET</span><div><div class="path">/api/v1/admin/overview</div><div class="desc">KPIs, pending counts, recent activity</div></div></div>
+    <div class="api"><span class="method GET">GET</span><div><div class="path">/api/v1/admin/customers</div><div class="desc">Paginated list, filterable by segment</div></div></div>
+    <div class="api"><span class="method GET">GET</span><div><div class="path">/api/v1/admin/customers/:id</div><div class="desc">Single customer detail + history</div></div></div>
+    <div class="api"><span class="method GET">GET</span><div><div class="path">/api/v1/admin/customers/export.csv</div><div class="desc">Full CSV. Always available. The promise.</div></div></div>
+    <div class="api"><span class="method GET">GET</span><div><div class="path">/api/v1/admin/verification/queue</div><div class="desc">Pending activity submissions, oldest first</div></div></div>
+    <div class="api"><span class="method PATCH">PATCH</span><div><div class="path">/api/v1/admin/activities/:id</div><div class="desc">Approve or reject — triggers reward flow</div></div></div>
+    <div class="api"><span class="method PATCH">PATCH</span><div><div class="path">/api/v1/admin/brand</div><div class="desc">Logo, colours, voice. Preview-before-publish.</div></div></div>
+    <div class="api"><span class="method PATCH">PATCH</span><div><div class="path">/api/v1/admin/loops</div><div class="desc">Loop config — existing in-progress journeys grandfathered</div></div></div>
+    <div class="api"><span class="method POST">POST</span><div><div class="path">/api/v1/admin/campaigns</div><div class="desc">Manual segment-based send (P2)</div></div></div>
+
+    <div class="api"><span class="grp">Webhooks · external systems in</span></div>
+    <div class="api"><span class="method POST">POST</span><div><div class="path">/api/v1/webhooks/razorpay</div><div class="desc">Payment completion → visit + spend</div></div></div>
+    <div class="api"><span class="method POST">POST</span><div><div class="path">/api/v1/webhooks/whatsapp/status</div><div class="desc">Delivery, read, opt-out receipts</div></div></div>
+    <div class="api"><span class="method POST">POST</span><div><div class="path">/api/v1/webhooks/petpooja</div><div class="desc">Bill closed → visit + items (P2)</div></div></div>
+  </div>
+
+  <!-- ENTITIES (DENSE) -->
+  <div class="sec-label"><span class="n">F</span>Data model · 8 core entities</div>
+  <p style="font-size: 13.5px; color: var(--ink-2); margin: 0 0 18px;">Full per-field detail is in the <a href="2-engines-atlas.html" style="color: var(--coral)">Engines Atlas · Data view</a>. This is the index.</p>
+  <div class="entity-grid">
+    <div class="entity" style="--c: #C58B14">
+      <h4>restaurant</h4>
+      <div class="field"><span class="n">id</span><span class="t">uuid · pk</span></div>
+      <div class="field"><span class="n">brand_config</span><span class="t">jsonb</span></div>
+      <div class="field"><span class="n">loop_config</span><span class="t">jsonb</span></div>
+      <div class="field"><span class="n">activities_active</span><span class="t">array</span></div>
+      <div class="field"><span class="n">plan_tier</span><span class="t">enum</span></div>
+    </div>
+    <div class="entity">
+      <h4>customer</h4>
+      <div class="field"><span class="n">id</span><span class="t">uuid · pk</span></div>
+      <div class="field"><span class="n">restaurant_id</span><span class="t">uuid · fk</span></div>
+      <div class="field"><span class="n">phone</span><span class="t">text · unique</span></div>
+      <div class="field"><span class="n">segment</span><span class="t">enum</span></div>
+      <div class="field"><span class="n">trust_score</span><span class="t">int</span></div>
+    </div>
+    <div class="entity">
+      <h4>visit</h4>
+      <div class="field"><span class="n">customer_id</span><span class="t">uuid · fk</span></div>
+      <div class="field"><span class="n">scanned_at</span><span class="t">timestamptz</span></div>
+      <div class="field"><span class="n">source</span><span class="t">enum</span></div>
+      <div class="field"><span class="n">bill_amount</span><span class="t">decimal · null</span></div>
+      <div class="field"><span class="n">multiplier</span><span class="t">float</span></div>
+    </div>
+    <div class="entity">
+      <h4>journey</h4>
+      <div class="field"><span class="n">customer_id</span><span class="t">uuid · fk</span></div>
+      <div class="field"><span class="n">loop_type</span><span class="t">enum</span></div>
+      <div class="field"><span class="n">config_version</span><span class="t">text</span></div>
+      <div class="field"><span class="n">progress / target</span><span class="t">int</span></div>
+      <div class="field"><span class="n">status</span><span class="t">enum</span></div>
+    </div>
+    <div class="entity">
+      <h4>reward</h4>
+      <div class="field"><span class="n">code</span><span class="t">text · unique</span></div>
+      <div class="field"><span class="n">customer_id</span><span class="t">uuid · fk</span></div>
+      <div class="field"><span class="n">expires_at</span><span class="t">timestamptz</span></div>
+      <div class="field"><span class="n">redeemed_at</span><span class="t">timestamptz · null</span></div>
+    </div>
+    <div class="entity">
+      <h4>activity_submission</h4>
+      <div class="field"><span class="n">customer_id</span><span class="t">uuid · fk</span></div>
+      <div class="field"><span class="n">activity_type</span><span class="t">enum</span></div>
+      <div class="field"><span class="n">payload</span><span class="t">jsonb</span></div>
+      <div class="field"><span class="n">sla_due_at</span><span class="t">timestamptz</span></div>
+    </div>
+    <div class="entity">
+      <h4>message</h4>
+      <div class="field"><span class="n">customer_id</span><span class="t">uuid · fk</span></div>
+      <div class="field"><span class="n">trigger</span><span class="t">enum</span></div>
+      <div class="field"><span class="n">template_id</span><span class="t">text</span></div>
+      <div class="field"><span class="n">cost_paise</span><span class="t">int</span></div>
+    </div>
+    <div class="entity">
+      <h4>integration_event</h4>
+      <div class="field"><span class="n">adapter</span><span class="t">enum</span></div>
+      <div class="field"><span class="n">raw_payload</span><span class="t">jsonb</span></div>
+      <div class="field"><span class="n">processed_at</span><span class="t">timestamptz · null</span></div>
+      <div class="field"><span class="n">retries</span><span class="t">int</span></div>
+    </div>
+  </div>
+
+  <!-- DEPLOYMENT -->
+  <div class="sec-label"><span class="n">G</span>Deployment &amp; operations</div>
+  <div class="dep">
+    <div class="panel">
+      <h3 style="font-family: var(--font-display); font-size: 22px; margin: 0 0 12px; font-weight: 400; letter-spacing: -0.015em;">Release engineering</h3>
+      <ul style="margin: 0; padding-left: 18px; font-size: 13.5px; color: var(--ink-2); line-height: 1.7;">
+        <li><b>Deploy windows</b> · automated block 12–3 PM, 7–11 PM IST every day</li>
+        <li><b>API versioning</b> · /v1, /v2, /v3 — last two always live (60-day deprecation)</li>
+        <li><b>Feature flags</b> · per-restaurant toggles via simple table — pilot on 1 before all</li>
+        <li><b>Staged rollouts</b> · 10% traffic → 50% → 100%, auto-rollback at &gt; 0.5% error rate</li>
+        <li><b>Status page</b> · public, the trust signal</li>
+        <li><b>On-call rota</b> · 2-person team, alternating weeks, Sentry → WhatsApp alert</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3 style="font-family: var(--font-display); font-size: 22px; margin: 0 0 12px; font-weight: 400; letter-spacing: -0.015em;">Security &amp; data</h3>
+      <ul style="margin: 0; padding-left: 18px; font-size: 13.5px; color: var(--ink-2); line-height: 1.7;">
+        <li><b>India residency</b> · DB + storage pinned to ap-south-1, DPDPA-compliant</li>
+        <li><b>PII minimization</b> · phone only at signup; name/birthday opt-in after visit 2</li>
+        <li><b>One-click export</b> · CSV download from admin, no exit fees, no delays</li>
+        <li><b>Opt-out</b> · STOP reply via WhatsApp instantly stops all comms</li>
+        <li><b>Retention</b> · inactive 2y → anonymised; offboarded restaurant → 90-day grace then deleted</li>
+        <li><b>Secrets</b> · BSP keys, Razorpay keys in vault, per-tenant where possible</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ENG RISKS -->
+  <div class="sec-label"><span class="n">H</span>Top engineering risks &amp; mitigations</div>
+  <div class="panel" style="padding: 0">
+    <div class="risks">
+      <div class="h">Risk</div><div class="h">Trigger</div><div class="h">Mitigation</div><div class="h">Severity</div>
+
+      <div>BSP / Meta API change breaks templates</div>
+      <div>Quarterly Meta policy update or BSP outage</div>
+      <div>Primary + backup template per type; daily status monitor; SMS fallback for T3 (reward unlocked) and T4 (expiry)</div>
+      <div><span class="sev h">HIGH</span></div>
+
+      <div>Friday-night load spike crashes API</div>
+      <div>200+ simultaneous scans at peak across 30 restaurants</div>
+      <div>Async-everything via queue; edge-cached landing pages; DB read replicas at scale; load test pre-launch</div>
+      <div><span class="sev h">HIGH</span></div>
+
+      <div>Tenant data leak via app bug</div>
+      <div>Engineer forgets tenant_id in a query</div>
+      <div>Row-level security on every table — leak is physically impossible at DB layer regardless of app code</div>
+      <div><span class="sev h">HIGH</span></div>
+
+      <div>Counter mode fails offline</div>
+      <div>Restaurant wi-fi drops during peak service</div>
+      <div>IndexedDB cache synced every 5min; offline redemption queue; sync conflict resolution; never blocks</div>
+      <div><span class="sev m">MED</span></div>
+
+      <div>Coupon code collision or fraud</div>
+      <div>Code shared via WhatsApp screenshot</div>
+      <div>UUID-derived (300M+ combinations); single-use server flag; phone-bound check; admin alert at &gt;3 mismatches per customer</div>
+      <div><span class="sev m">MED</span></div>
+
+      <div>Petpooja adapter breaks on API update</div>
+      <div>Petpooja ships a backwards-incompatible change</div>
+      <div>Abstraction layer (POSAdapter interface); fallback to QR-based visits if adapter unhealthy; restaurant continues working</div>
+      <div><span class="sev m">MED</span></div>
+
+      <div>Phone-number transfer fraud</div>
+      <div>Customer claims another's history</div>
+      <div>OTP-verified on new number; admin must approve transfer; full audit log per transfer event</div>
+      <div><span class="sev l">LOW</span></div>
+
+      <div>Schema migration during peak hours</div>
+      <div>Engineer pushes a long-running migration mid-day</div>
+      <div>Deploy windows enforced in CI; expand-contract migration pattern; zero-downtime rules in runbook</div>
+      <div><span class="sev l">LOW</span></div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

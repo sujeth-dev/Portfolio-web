@@ -1,0 +1,1377 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Loop — The 8 Engines Atlas</title>
+<link rel="stylesheet" href="shared/tokens.css" />
+<style>
+  body { background: var(--paper); }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 16px 28px; border-bottom: 0.5px solid var(--line); position: sticky; top: 0; background: rgba(244,240,232,0.92); backdrop-filter: blur(10px); z-index: 30; }
+  .topbar .links { display: flex; gap: 18px; font-size: 13px; }
+  .topbar .links a { color: var(--ink-3); text-decoration: none; }
+  .topbar .links a:hover, .topbar .links a.active { color: var(--ink); }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 48px 28px 96px; }
+
+  .header { display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end; margin-bottom: 36px; }
+  .title { font-family: var(--font-display); font-size: clamp(48px, 6vw, 80px); line-height: 0.95; letter-spacing: -0.025em; margin: 8px 0 0; }
+  .title em { font-style: italic; color: var(--coral); }
+  .sub { font-size: 16px; color: var(--ink-2); margin-top: 14px; max-width: 540px; }
+
+  /* View toggle */
+  .views { display: inline-flex; background: var(--paper-2); padding: 4px; border-radius: var(--r-pill); border: 0.5px solid var(--line); gap: 2px; }
+  .views button {
+    background: transparent; border: 0; padding: 8px 16px; border-radius: var(--r-pill);
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-3); cursor: pointer; transition: all 0.18s;
+  }
+  .views button.on { background: var(--ink); color: var(--paper); }
+  .views button:hover:not(.on) { color: var(--ink); }
+
+  /* Engine sidebar */
+  .layout { display: grid; grid-template-columns: 260px 1fr; gap: 32px; }
+  @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+  .sidebar {
+    position: sticky; top: 90px; align-self: start;
+    background: #FCFAF4; border: 0.5px solid var(--line); border-radius: var(--r-lg);
+    padding: 18px; max-height: calc(100vh - 130px); overflow: auto;
+  }
+  .sidebar .label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); margin: 0 0 12px; }
+  .eng-list { display: flex; flex-direction: column; gap: 2px; margin-bottom: 16px; }
+  .eng-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 10px; border-radius: var(--r); cursor: pointer;
+    transition: background 0.15s; font-size: 14px;
+    text-decoration: none; color: var(--ink);
+  }
+  .eng-item:hover { background: var(--paper-2); }
+  .eng-item.active { background: var(--paper-2); font-weight: 500; }
+  .eng-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .eng-item .num { font-family: var(--font-mono); font-size: 10px; color: var(--ink-3); margin-left: auto; }
+
+  /* Pane */
+  .pane { display: none; }
+  .pane.on { display: block; }
+
+  /* === ENGINE VIEW === */
+  .engine-card {
+    background: #FCFAF4; border: 0.5px solid var(--line); border-radius: var(--r-lg);
+    margin-bottom: 18px; overflow: hidden; scroll-margin-top: 90px;
+  }
+  .engine-head {
+    padding: 24px 28px 20px;
+    display: grid; grid-template-columns: auto 1fr auto; gap: 20px; align-items: start;
+    border-bottom: 0.5px solid var(--line-soft);
+    position: relative;
+  }
+  .engine-head::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
+  .engine-num {
+    font-family: var(--font-display); font-size: 56px; line-height: 1; letter-spacing: -0.02em;
+    color: var(--ink-3);
+  }
+  .engine-title { font-family: var(--font-display); font-size: 36px; line-height: 1.05; letter-spacing: -0.02em; margin: 0 0 8px; font-weight: 400; }
+  .engine-oneliner { font-size: 14.5px; color: var(--ink-2); line-height: 1.5; }
+  .engine-meta { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+
+  .engine-body { padding: 20px 28px 28px; }
+  .engine-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+  }
+  @media (max-width: 760px) { .engine-grid { grid-template-columns: 1fr; } }
+  .col h4 { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); margin: 0 0 10px; font-weight: 500; }
+  .col ul { margin: 0; padding: 0 0 0 16px; }
+  .col li { font-size: 13.5px; color: var(--ink-2); padding: 4px 0; line-height: 1.55; }
+  .col p { font-size: 13.5px; color: var(--ink-2); line-height: 1.6; margin: 0; }
+
+  .problem { background: var(--rose-soft); border-radius: var(--r); padding: 14px 16px; margin: 8px 0; }
+  .problem .pl { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--rose); margin-bottom: 6px; }
+  .problem p { font-size: 13px; color: var(--ink-2); margin: 0; line-height: 1.55; }
+
+  .solution { background: var(--forest-soft); border-radius: var(--r); padding: 14px 16px; margin: 8px 0 0; }
+  .solution .sl { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--forest); margin-bottom: 6px; }
+  .solution p { font-size: 13px; color: var(--ink-2); margin: 0; line-height: 1.55; }
+
+  .phase-row { display: flex; gap: 6px; margin-top: 14px; flex-wrap: wrap; }
+
+  .connects {
+    background: var(--paper-2); padding: 14px 18px; border-radius: var(--r);
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    margin-top: 16px; font-size: 13px;
+  }
+  .connects .lbl { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); margin-right: 4px; }
+
+  /* === JOURNEY VIEW === */
+  .journey-tabs {
+    display: flex; gap: 8px; margin-bottom: 28px; flex-wrap: wrap;
+  }
+  .jt {
+    padding: 10px 18px; border-radius: var(--r-pill); background: var(--paper-2);
+    border: 0.5px solid var(--line); cursor: pointer; font-size: 13px;
+    color: var(--ink-3); transition: all 0.15s;
+  }
+  .jt.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  .journey {
+    background: #FCFAF4; border: 0.5px solid var(--line); border-radius: var(--r-lg); padding: 32px;
+  }
+  .journey-row { display: grid; grid-template-columns: 80px 1fr; gap: 24px; padding: 24px 0; border-bottom: 0.5px solid var(--line-soft); }
+  .journey-row:last-child { border-bottom: 0; }
+  .jr-time { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); padding-top: 4px; }
+  .jr-content h4 { font-family: var(--font-display); font-size: 24px; line-height: 1.1; margin: 0 0 8px; font-weight: 400; }
+  .jr-content p { font-size: 14px; color: var(--ink-2); line-height: 1.55; margin: 0 0 12px; }
+  .jr-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  .eng-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 9px; border-radius: var(--r-pill);
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em;
+    background: var(--paper-2); border: 0.5px solid var(--line-soft);
+    color: var(--ink-2);
+  }
+  .eng-chip .d { width: 6px; height: 6px; border-radius: 50%; }
+
+  /* === SCREEN VIEW === */
+  .screen-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 900px) { .screen-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .screen-grid { grid-template-columns: 1fr; } }
+  .screen-card {
+    background: #FCFAF4; border: 0.5px solid var(--line); border-radius: var(--r-lg); padding: 18px;
+  }
+  .screen-thumb {
+    height: 180px; background: var(--paper-2); border-radius: var(--r); margin-bottom: 14px;
+    display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;
+    border: 0.5px solid var(--line-soft);
+  }
+  .screen-card h4 { margin: 0 0 4px; font-size: 14.5px; font-weight: 500; }
+  .screen-card .desc { font-size: 12.5px; color: var(--ink-3); margin: 0 0 12px; line-height: 1.4; }
+  .screen-card .tags { display: flex; gap: 4px; flex-wrap: wrap; }
+  .screen-section { margin-top: 32px; }
+  .screen-section .label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); margin: 0 0 14px; }
+
+  /* === DATA VIEW === */
+  .entity {
+    background: #FCFAF4; border: 0.5px solid var(--line); border-radius: var(--r-lg);
+    padding: 20px 24px; margin-bottom: 12px; position: relative;
+  }
+  .entity::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 3px 0 0 3px; }
+  .ent-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .ent-name { font-family: var(--font-mono); font-size: 14px; font-weight: 500; color: var(--ink); letter-spacing: 0.02em; }
+  .ent-fields { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; font-family: var(--font-mono); font-size: 12px; }
+  @media (max-width: 760px) { .ent-fields { grid-template-columns: 1fr; } }
+  .ent-fields .f { padding: 5px 0; border-top: 0.5px solid var(--line-soft); display: flex; justify-content: space-between; }
+  .ent-fields .f .name { color: var(--ink); }
+  .ent-fields .f .type { color: var(--ink-3); }
+
+  /* === SYSTEM DIAGRAM === */
+  .diagram-wrap {
+    background: #FCFAF4; border: 0.5px solid var(--line); border-radius: var(--r-lg);
+    padding: 40px; overflow: auto;
+  }
+  .diagram { width: 100%; min-width: 700px; }
+
+  /* === MAP VIEW === */
+  .map-wrap {
+    background: var(--ink); color: var(--paper); border-radius: var(--r-lg); padding: 40px;
+    overflow: auto; min-height: 600px;
+  }
+  .map-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; align-items: start; }
+  @media (max-width: 760px) { .map-grid { grid-template-columns: 1fr; } }
+  .map-col { display: flex; flex-direction: column; gap: 12px; }
+  .map-cell { background: rgba(244,240,232,0.06); border: 0.5px solid rgba(244,240,232,0.15); border-radius: var(--r); padding: 14px 16px; }
+  .map-cell h5 { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin: 0 0 8px; }
+  .map-cell ul { margin: 0; padding-left: 16px; }
+  .map-cell li { font-size: 12.5px; color: rgba(244,240,232,0.75); padding: 2px 0; line-height: 1.45; }
+  .map-col h3 { font-family: var(--font-display); font-size: 22px; margin: 0 0 4px; font-weight: 400; color: var(--paper); }
+  .map-col .sub { font-size: 12px; color: rgba(244,240,232,0.55); margin: 0 0 12px; }
+
+  .phase-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em;
+    padding: 2px 6px; border-radius: var(--r-pill); text-transform: uppercase;
+  }
+  .phase-mvp { background: var(--coral-soft); color: var(--coral-deep); }
+  .phase-p2 { background: var(--amber-soft); color: #6E4E0B; }
+  .phase-p3 { background: var(--slate-soft); color: var(--slate); }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <a href="index.html" class="loop-mark">Loop</a>
+  <div class="links">
+    <a href="index.html">All</a>
+    <a href="1-overview.html">Overview</a>
+    <a href="2-engines-atlas.html" class="active">Engines</a>
+    <a href="3-customer-prototype.html">Customer</a>
+    <a href="4-admin-prototype.html">Admin</a>
+    <a href="6-architecture.html">Arch</a>
+  </div>
+</nav>
+
+<div class="wrap" data-screen-label="02 Engines Atlas">
+
+  <div class="header">
+    <div>
+      <div class="eyebrow">02 · Internal thinking tool</div>
+      <h1 class="title">The 8 <em>engines</em><br/>that make Loop run.</h1>
+      <p class="sub">One spine, eight engines. Each one defined, problem-stated, solution-laid-out, phase-tagged. Switch views to see them as a system, as a journey, as screens, or as data.</p>
+    </div>
+    <div class="views" role="tablist">
+      <button class="on" data-view="engines">Engine view</button>
+      <button data-view="diagram">Diagram</button>
+      <button data-view="journey">Journey</button>
+      <button data-view="screen">Screens</button>
+      <button data-view="data">Data</button>
+      <button data-view="map">Verify map</button>
+    </div>
+  </div>
+
+  <!-- ENGINE VIEW -->
+  <div class="pane on" id="pane-engines">
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="label">Engines</div>
+        <div class="eng-list">
+          <a href="#e1" class="eng-item active"><div class="eng-dot" style="background:#2A3340"></div>Identity<span class="num">01</span></a>
+          <a href="#e2" class="eng-item"><div class="eng-dot" style="background:#C58B14"></div>Customisation<span class="num">02</span></a>
+          <a href="#e3" class="eng-item"><div class="eng-dot" style="background:#E54B1C"></div>Reward<span class="num">03</span></a>
+          <a href="#e4" class="eng-item"><div class="eng-dot" style="background:#0F4C3A"></div>Flow<span class="num">04</span></a>
+          <a href="#e5" class="eng-item"><div class="eng-dot" style="background:#B83A5E"></div>Verification<span class="num">05</span></a>
+          <a href="#e6" class="eng-item"><div class="eng-dot" style="background:#1F6FB3"></div>Communication<span class="num">06</span></a>
+          <a href="#e7" class="eng-item"><div class="eng-dot" style="background:#5B4A8C"></div>Integration<span class="num">07</span></a>
+          <a href="#e8" class="eng-item"><div class="eng-dot" style="background:#171413"></div>Analytics<span class="num">08</span></a>
+        </div>
+        <hr class="hairline" style="margin: 14px 0" />
+        <div class="label">Phase legend</div>
+        <div style="display: flex; flex-direction: column; gap: 6px; font-size: 12px;">
+          <div><span class="phase-tag phase-mvp">MVP1</span> &nbsp;Ship first</div>
+          <div><span class="phase-tag phase-p2">P2</span> &nbsp;Month 5–8</div>
+          <div><span class="phase-tag phase-p3">P3</span> &nbsp;Month 9+</div>
+        </div>
+      </aside>
+
+      <div>
+
+        <!-- ENGINE 1 - IDENTITY -->
+        <article class="engine-card" id="e1">
+          <div class="engine-head" style="--c:#2A3340">
+            <div style="position:absolute;left:0;top:0;bottom:0;width:4px;background:#2A3340"></div>
+            <div class="engine-num">01</div>
+            <div>
+              <h2 class="engine-title">Identity</h2>
+              <p class="engine-oneliner">Knows who every customer is, across every touchpoint, with phone number as the universal anchor.</p>
+            </div>
+            <div class="engine-meta"><span class="phase-tag phase-mvp">MVP1 · core</span></div>
+          </div>
+          <div class="engine-body">
+            <div class="engine-grid">
+              <div class="col">
+                <h4>What it does</h4>
+                <ul>
+                  <li>Phone OTP signup via WhatsApp (60s flow)</li>
+                  <li>Single customer record across visits, outlets, rewards</li>
+                  <li>Gradual profile enrichment (name, birthday) collected after 2nd visit</li>
+                  <li>Phone-number transfer flow (SIM change, lost number)</li>
+                  <li>Cross-outlet visit pooling for multi-location brands (P2)</li>
+                </ul>
+              </div>
+              <div class="col">
+                <h4>Why it works</h4>
+                <p>Phone is the only identifier in India that's universal, WhatsApp-bound, and survives churn. No email, no app login, no password. Identity is solved on Day 1 — the rest of the platform sits on this anchor.</p>
+                <div class="problem">
+                  <div class="pl">Edge case</div>
+                  <p>Customer changes phone number. Old record sits, new record starts. Admin needs a one-tap merge flow with OTP-verified ownership of new number.</p>
+                </div>
+              </div>
+            </div>
+            <div class="connects">
+              <span class="lbl">Feeds</span>
+              <span class="eng-chip"><span class="d" style="background:#E54B1C"></span>Reward</span>
+              <span class="eng-chip"><span class="d" style="background:#1F6FB3"></span>Communication</span>
+              <span class="eng-chip"><span class="d" style="background:#171413"></span>Analytics</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- ENGINE 2 - CUSTOMISATION -->
+        <article class="engine-card" id="e2">
+          <div class="engine-head">
+            <div style="position:absolute;left:0;top:0;bottom:0;width:4px;background:#C58B14"></div>
+            <div class="engine-num">02</div>
+            <div>
+              <h2 class="engine-title">Customisation</h2>
+              <p class="engine-oneliner">Controls how each restaurant looks and behaves — fully white-labelled, config-driven, no per-restaurant code.</p>
+            </div>
+            <div class="engine-meta"><span class="phase-tag phase-mvp">MVP1 · differentiator</span></div>
+          </div>
+          <div class="engine-body">
+            <div class="engine-grid">
+              <div class="col">
+                <h4>What it controls</h4>
+                <ul>
+                  <li>Logo, brand colors, hero image, custom font (P2)</li>
+                  <li>Welcome copy + voice tone</li>
+                  <li>Loop config (visits to milestone, reward item, expiry)</li>
+                  <li>Activity set (which 3 active at a time)</li>
+                  <li>WhatsApp template variables (restaurant name, reward name)</li>
+                  <li>Operating hours, off-peak windows, day-of-week bonuses</li>
+                </ul>
+              </div>
+              <div class="col">
+                <h4>Why it's the moat</h4>
+                <p>Reelo looks like Reelo. Petpooja Loyalty looks like Petpooja. Loop looks like <em>your</em> restaurant. This is the single biggest reason premium restaurants switch from generic loyalty tools.</p>
+                <div class="solution">
+                  <div class="sl">Design rule</div>
+                  <p>Everything restaurant-specific lives in a config table. Adding a new restaurant is an insert, not a deployment. Preview-before-publish for all branding changes.</p>
+                </div>
+              </div>
+            </div>
+            <div class="connects">
+              <span class="lbl">Feeds</span>
+              <span class="eng-chip"><span class="d" style="background:#0F4C3A"></span>Flow</span>
+              <span class="eng-chip"><span class="d" style="background:#1F6FB3"></span>Communication</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- ENGINE 3 - REWARD -->
+        <article class="engine-card" id="e3">
+          <div class="engine-head">
+            <div style="position:absolute;left:0;top:0;bottom:0;width:4px;background:#E54B1C"></div>
+            <div class="engine-num">03</div>
+            <div>
+              <h2 class="engine-title">Reward</h2>
+              <p class="engine-oneliner">Decides when and what reward a customer earns. Behavior change system, not a discount system.</p>
+            </div>
+            <div class="engine-meta"><span class="phase-tag phase-mvp">MVP1 · heart</span></div>
+          </div>
+          <div class="engine-body">
+            <div class="engine-grid">
+              <div class="col">
+                <h4>The 4 reward buckets</h4>
+                <ul>
+                  <li><b>Visit + time</b> — every trigger fully automatic (timestamp, off-peak, streak, birthday, group)</li>
+                  <li><b>Spend-based</b> — self-entry (auto, unverified), payment redirect (auto, verified), bill photo (manual, slow), POS webhook (perfect, P2)</li>
+                  <li><b>Activity-based</b> — referral auto, everything else manual until P3 API access</li>
+                  <li><b>Product-based</b> — fully automatic but locked until POS integration (P2+)</li>
+                </ul>
+              </div>
+              <div class="col">
+                <h4>The 4-layer loop system</h4>
+                <ul>
+                  <li><b>L1 entry loop</b> — 5 visits, free item. Starts at 1/5 (endowed progress)</li>
+                  <li><b>L2 engagement</b> — activity rewards unlock after L1</li>
+                  <li><b>L3 habit</b> — evolving category loops (brunch, cocktail, weekend)</li>
+                  <li><b>L4 status</b> — non-transactional access, recognition, regulars board</li>
+                </ul>
+              </div>
+            </div>
+            <div class="solution" style="margin-top: 14px">
+              <div class="sl">The universal rule</div>
+              <p>If you can't name the behavior a reward is changing, remove the reward. Loop is a behavior change system — every reward must drive a visit, increase spend, or amplify marketing.</p>
+            </div>
+            <div class="phase-row">
+              <span class="phase-tag phase-mvp">L1 + 3 activities</span>
+              <span class="phase-tag phase-p2">L2 + L3 + spend tiers</span>
+              <span class="phase-tag phase-p3">L4 + variable surprise rewards</span>
+            </div>
+            <div class="connects">
+              <span class="lbl">Depends on</span>
+              <span class="eng-chip"><span class="d" style="background:#B83A5E"></span>Verification</span>
+              <span class="eng-chip"><span class="d" style="background:#5B4A8C"></span>Integration</span>
+              <span class="lbl" style="margin-left: 14px">Feeds</span>
+              <span class="eng-chip"><span class="d" style="background:#1F6FB3"></span>Communication</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- ENGINE 4 - FLOW -->
+        <article class="engine-card" id="e4">
+          <div class="engine-head">
+            <div style="position:absolute;left:0;top:0;bottom:0;width:4px;background:#0F4C3A"></div>
+            <div class="engine-num">04</div>
+            <div>
+              <h2 class="engine-title">Flow</h2>
+              <p class="engine-oneliner">Manages what the customer sees and feels at every step — the rendered experience.</p>
+            </div>
+            <div class="engine-meta"><span class="phase-tag phase-mvp">MVP1 · UX</span></div>
+          </div>
+          <div class="engine-body">
+            <div class="engine-grid">
+              <div class="col">
+                <h4>The 9 customer-facing states</h4>
+                <ul>
+                  <li>QR landing (pre-signup) — hook + one field</li>
+                  <li>OTP verification — WhatsApp-first</li>
+                  <li>Welcome moment — 1/5 already counted, celebration</li>
+                  <li>Dashboard — progress bar, 3 activities, current rewards</li>
+                  <li>Activity submission — instant ack, async verification</li>
+                  <li>Reward unlocked — full-screen celebration</li>
+                  <li>Coupon screen — code + restaurant + reward name</li>
+                  <li>Loop completed — new journey unlocks</li>
+                  <li>Lapsed / win-back — Day 30/60/90 sequences</li>
+                </ul>
+              </div>
+              <div class="col">
+                <h4>The 8 killers it prevents</h4>
+                <p>Empty progress states. Too many activities. No feedback after submission. Rewards too far away. Discount-only programs. Complicated redemption. Program staleness. Rewarding what customers do anyway.</p>
+                <div class="solution">
+                  <div class="sl">Operating rule</div>
+                  <p>Max 3 active activities. Progress bar always visible. Every action gets immediate acknowledgement, even if real verification is async. Offline-cached PWA so dashboard works without signal.</p>
+                </div>
+              </div>
+            </div>
+            <div class="connects">
+              <span class="lbl">Depends on</span>
+              <span class="eng-chip"><span class="d" style="background:#C58B14"></span>Customisation</span>
+              <span class="eng-chip"><span class="d" style="background:#E54B1C"></span>Reward</span>
+              <span class="eng-chip"><span class="d" style="background:#2A3340"></span>Identity</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- ENGINE 5 - VERIFICATION -->
+        <article class="engine-card" id="e5">
+          <div class="engine-head">
+            <div style="position:absolute;left:0;top:0;bottom:0;width:4px;background:#B83A5E"></div>
+            <div class="engine-num">05</div>
+            <div>
+              <h2 class="engine-title">Verification</h2>
+              <p class="engine-oneliner">Confirms visits, activities, and redemptions are real — the hardest engine, the slowest to fully automate.</p>
+            </div>
+            <div class="engine-meta"><span class="phase-tag phase-p2">Evolves per phase</span></div>
+          </div>
+          <div class="engine-body">
+            <div class="engine-grid">
+              <div class="col">
+                <h4>3 verification problems</h4>
+                <ul>
+                  <li><b>Visit verification</b> — QR → bill entry → staff confirm → POS webhook. Progressive solving.</li>
+                  <li><b>Activity verification</b> — manual MVP1, URL submission P2, third-party API P3 (fragile).</li>
+                  <li><b>Coupon redemption</b> — 6-digit UUID, phone-bound, offline-cacheable, single-use.</li>
+                </ul>
+              </div>
+              <div class="col">
+                <h4>The verification ladder</h4>
+                <ul>
+                  <li><b>Automatic</b> — timestamp, off-peak, streak, birthday, payment, POS, referral</li>
+                  <li><b>Light manual</b> — staff one-tap (event check-in, group seating)</li>
+                  <li><b>Medium manual · 2h SLA</b> — Google review, Zomato, Instagram reel/post</li>
+                  <li><b>High urgency · 6h SLA</b> — Instagram story (24h disappears)</li>
+                </ul>
+              </div>
+            </div>
+            <div class="problem" style="margin-top: 14px">
+              <div class="pl">The honest limit</div>
+              <p>Social content verification will always need a human eye. Authenticity can't be fully automated without invasive API access. The smart move: make activity rewards proportional to the verification effort, and add trusted-customer auto-approve (P2) to reduce admin load over time.</p>
+            </div>
+            <div class="connects">
+              <span class="lbl">Depends on</span>
+              <span class="eng-chip"><span class="d" style="background:#5B4A8C"></span>Integration</span>
+              <span class="lbl" style="margin-left: 14px">Feeds</span>
+              <span class="eng-chip"><span class="d" style="background:#E54B1C"></span>Reward</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- ENGINE 6 - COMMUNICATION -->
+        <article class="engine-card" id="e6">
+          <div class="engine-head">
+            <div style="position:absolute;left:0;top:0;bottom:0;width:4px;background:#1F6FB3"></div>
+            <div class="engine-num">06</div>
+            <div>
+              <h2 class="engine-title">Communication</h2>
+              <p class="engine-oneliner">Sends the right message to the right person at the right time. WhatsApp utility tier as the backbone.</p>
+            </div>
+            <div class="engine-meta"><span class="phase-tag phase-mvp">MVP1 · backbone</span></div>
+          </div>
+          <div class="engine-body">
+            <div class="engine-grid">
+              <div class="col">
+                <h4>The 5 mandatory triggers</h4>
+                <ul>
+                  <li><b>T1 — Welcome</b> · instant on first scan</li>
+                  <li><b>T2 — 60% nudge</b> · "two more visits and..."</li>
+                  <li><b>T3 — Reward unlocked</b> · instant on milestone</li>
+                  <li><b>T4 — Expiry warning</b> · 5 days before</li>
+                  <li><b>T5 — Win-back Day 30</b> · gentle return</li>
+                </ul>
+              </div>
+              <div class="col">
+                <h4>The channel stack</h4>
+                <ul>
+                  <li><b>Browser push</b> — free, always-on layer</li>
+                  <li><b>WhatsApp utility</b> — ₹0.35–0.60 / msg, 5 automated triggers</li>
+                  <li><b>WhatsApp marketing</b> — restaurant-paid via credits</li>
+                  <li><b>SMS</b> — silent fallback when WhatsApp fails</li>
+                  <li><b>Email</b> — admin reports only</li>
+                </ul>
+              </div>
+            </div>
+            <div class="problem" style="margin-top: 14px">
+              <div class="pl">External fragility</div>
+              <p>Meta controls WhatsApp API. Templates need pre-approval (1–7 days each). Submit all 7 MVP templates before launch day. Maintain primary + backup template for every type. Async queue prevents Friday-night load spikes from killing check-ins.</p>
+            </div>
+            <div class="phase-row">
+              <span class="phase-tag phase-mvp">5 triggers + shared WABA number</span>
+              <span class="phase-tag phase-p2">Manual campaigns + segmentation</span>
+              <span class="phase-tag phase-p3">Per-restaurant WABA number</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- ENGINE 7 - INTEGRATION -->
+        <article class="engine-card" id="e7">
+          <div class="engine-head">
+            <div style="position:absolute;left:0;top:0;bottom:0;width:4px;background:#5B4A8C"></div>
+            <div class="engine-num">07</div>
+            <div>
+              <h2 class="engine-title">Integration</h2>
+              <p class="engine-oneliner">Connects to outside systems — POS, payments, social. The engine that unlocks every other engine's ceiling.</p>
+            </div>
+            <div class="engine-meta"><span class="phase-tag phase-p2">Grows over phases</span></div>
+          </div>
+          <div class="engine-body">
+            <div class="engine-grid">
+              <div class="col">
+                <h4>The adapters (over time)</h4>
+                <ul>
+                  <li><b>Razorpay / payment redirect</b> — MVP1 — spend capture</li>
+                  <li><b>WhatsApp BSP</b> (Interakt/AiSensy) — MVP1 — comms</li>
+                  <li><b>Petpooja webhook</b> — P2 — visit + spend</li>
+                  <li><b>UrbanPiper</b> — P3 — multi-channel orders</li>
+                  <li><b>Google Places review</b> — P3 — activity auto-verify</li>
+                  <li><b>Instagram Graph API</b> — P3 — story/post check</li>
+                </ul>
+              </div>
+              <div class="col">
+                <h4>The fragility doctrine</h4>
+                <p>Every adapter is a dependency on someone else's system. Petpooja changes their API, our adapter breaks. Meta changes WhatsApp policy, comms is affected.</p>
+                <div class="solution">
+                  <div class="sl">Design rule</div>
+                  <p>Every adapter goes through an internal abstraction (VerificationService, CommsService). Every external dependency has a manual fallback. Health monitoring with alerts before restaurants notice degradation.</p>
+                </div>
+              </div>
+            </div>
+            <div class="connects">
+              <span class="lbl">Unlocks</span>
+              <span class="eng-chip"><span class="d" style="background:#E54B1C"></span>Reward (product, spend)</span>
+              <span class="eng-chip"><span class="d" style="background:#B83A5E"></span>Verification (auto-verify)</span>
+              <span class="eng-chip"><span class="d" style="background:#1F6FB3"></span>Communication</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- ENGINE 8 - ANALYTICS -->
+        <article class="engine-card" id="e8">
+          <div class="engine-head">
+            <div style="position:absolute;left:0;top:0;bottom:0;width:4px;background:#171413"></div>
+            <div class="engine-num">08</div>
+            <div>
+              <h2 class="engine-title">Analytics</h2>
+              <p class="engine-oneliner">Reads everything. Writes nothing. Tells the restaurant what's working — and tells us what to build next.</p>
+            </div>
+            <div class="engine-meta"><span class="phase-tag phase-mvp">MVP1 · basic</span></div>
+          </div>
+          <div class="engine-body">
+            <div class="engine-grid">
+              <div class="col">
+                <h4>The 3 restaurant numbers</h4>
+                <ul>
+                  <li><b>Loop completion %</b> · target &gt; 40%, below 25 = reward too far</li>
+                  <li><b>Return rate</b> · target &gt; 50%, below 30 = welcome broken</li>
+                  <li><b>Redemption rate</b> · target &gt; 60%, below 40 = rewards not compelling</li>
+                </ul>
+              </div>
+              <div class="col">
+                <h4>The platform-level metrics</h4>
+                <ul>
+                  <li>Restaurant retention (renewal at month 6)</li>
+                  <li>Restaurant ARPU + WhatsApp credit usage</li>
+                  <li>Per-engine error rates + SLA hits</li>
+                  <li>Aggregated benchmarks per restaurant type (Koramangala average return rate, etc.)</li>
+                </ul>
+              </div>
+            </div>
+            <div class="solution" style="margin-top: 14px">
+              <div class="sl">The monthly report</div>
+              <p>Every restaurant gets a WhatsApp+email digest on the 1st: new members, return visits, rewards redeemed, estimated revenue from loyalty customers. This single artifact is what makes month-6 renewal a no-brainer conversation.</p>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- DIAGRAM VIEW -->
+  <div class="pane" id="pane-diagram">
+    <div class="diagram-wrap">
+      <svg class="diagram" viewBox="0 0 1000 720" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#6B645C"/>
+          </marker>
+          <marker id="arrc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#E54B1C"/>
+          </marker>
+        </defs>
+
+        <!-- BG -->
+        <rect width="1000" height="720" fill="transparent"/>
+
+        <!-- Integration top - feeds in -->
+        <g transform="translate(380,30)">
+          <rect width="240" height="70" rx="12" fill="#F1ECF5" stroke="#5B4A8C" stroke-width="1.5"/>
+          <text x="120" y="32" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#5B4A8C" letter-spacing="2">07 · INTEGRATION</text>
+          <text x="120" y="54" text-anchor="middle" font-family="Instrument Serif" font-size="18" fill="#171413">External world in</text>
+        </g>
+        <line x1="500" y1="100" x2="500" y2="140" stroke="#6B645C" stroke-width="1" marker-end="url(#arr)"/>
+
+        <!-- Identity center anchor -->
+        <g transform="translate(380,150)">
+          <rect width="240" height="70" rx="12" fill="#DCE2EA" stroke="#2A3340" stroke-width="1.5"/>
+          <text x="120" y="32" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#2A3340" letter-spacing="2">01 · IDENTITY</text>
+          <text x="120" y="54" text-anchor="middle" font-family="Instrument Serif" font-size="18" fill="#171413">Anchors everything</text>
+        </g>
+
+        <!-- Two columns: Verification + Customisation -->
+        <line x1="430" y1="220" x2="280" y2="280" stroke="#6B645C" stroke-width="1" marker-end="url(#arr)"/>
+        <line x1="570" y1="220" x2="720" y2="280" stroke="#6B645C" stroke-width="1" marker-end="url(#arr)"/>
+
+        <g transform="translate(100,290)">
+          <rect width="220" height="70" rx="12" fill="#F3D9E0" stroke="#B83A5E" stroke-width="1.5"/>
+          <text x="110" y="32" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#B83A5E" letter-spacing="2">05 · VERIFICATION</text>
+          <text x="110" y="54" text-anchor="middle" font-family="Instrument Serif" font-size="18" fill="#171413">Confirms reality</text>
+        </g>
+
+        <g transform="translate(680,290)">
+          <rect width="220" height="70" rx="12" fill="#F4E6C1" stroke="#C58B14" stroke-width="1.5"/>
+          <text x="110" y="32" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#C58B14" letter-spacing="2">02 · CUSTOMISATION</text>
+          <text x="110" y="54" text-anchor="middle" font-family="Instrument Serif" font-size="18" fill="#171413">Per-restaurant config</text>
+        </g>
+
+        <!-- Reward + Flow middle pair -->
+        <line x1="210" y1="360" x2="350" y2="430" stroke="#E54B1C" stroke-width="1.5" marker-end="url(#arrc)"/>
+        <line x1="790" y1="360" x2="650" y2="430" stroke="#6B645C" stroke-width="1" marker-end="url(#arr)"/>
+
+        <g transform="translate(290,440)">
+          <rect width="200" height="70" rx="12" fill="#FBE3D9" stroke="#E54B1C" stroke-width="2"/>
+          <text x="100" y="32" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#B33712" letter-spacing="2">03 · REWARD</text>
+          <text x="100" y="54" text-anchor="middle" font-family="Instrument Serif" font-size="18" fill="#171413">The heart</text>
+        </g>
+
+        <g transform="translate(510,440)">
+          <rect width="200" height="70" rx="12" fill="#DDE9E2" stroke="#0F4C3A" stroke-width="1.5"/>
+          <text x="100" y="32" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#0F4C3A" letter-spacing="2">04 · FLOW</text>
+          <text x="100" y="54" text-anchor="middle" font-family="Instrument Serif" font-size="18" fill="#171413">The experience</text>
+        </g>
+
+        <!-- Reward <-> Flow bidirectional -->
+        <line x1="490" y1="475" x2="510" y2="475" stroke="#6B645C" stroke-width="1" marker-end="url(#arr)" marker-start="url(#arr)"/>
+
+        <!-- Communication below -->
+        <line x1="500" y1="510" x2="500" y2="560" stroke="#E54B1C" stroke-width="1.5" marker-end="url(#arrc)"/>
+
+        <g transform="translate(380,570)">
+          <rect width="240" height="70" rx="12" fill="#D5E5F4" stroke="#1F6FB3" stroke-width="1.5"/>
+          <text x="120" y="32" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#1F6FB3" letter-spacing="2">06 · COMMUNICATION</text>
+          <text x="120" y="54" text-anchor="middle" font-family="Instrument Serif" font-size="18" fill="#171413">WhatsApp out</text>
+        </g>
+
+        <!-- Analytics watching -->
+        <g transform="translate(60,640)" opacity="0.85">
+          <rect width="880" height="60" rx="12" fill="transparent" stroke="#171413" stroke-width="0.5" stroke-dasharray="4 4"/>
+          <text x="440" y="28" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#171413" letter-spacing="2">08 · ANALYTICS — READS ALL, WRITES NOTHING</text>
+          <text x="440" y="48" text-anchor="middle" font-family="Instrument Serif" font-size="13" font-style="italic" fill="#3A332E">Silent observer underneath the whole system</text>
+        </g>
+      </svg>
+    </div>
+    <p style="font-size: 13px; color: var(--ink-3); margin-top: 14px; text-align: center;">
+      Coral arrows = primary data flow. Black = supporting. Analytics observes everything without intervening.
+    </p>
+  </div>
+
+  <!-- JOURNEY VIEW -->
+  <div class="pane" id="pane-journey">
+    <div class="journey-tabs">
+      <button class="jt on" data-jt="customer">Customer journey</button>
+      <button class="jt" data-jt="admin">Restaurant admin</button>
+      <button class="jt" data-jt="staff">Staff</button>
+      <button class="jt" data-jt="platform">Platform (us)</button>
+    </div>
+
+    <div class="journey" id="j-customer">
+      <div class="journey-row">
+        <div class="jr-time">T+0s</div>
+        <div class="jr-content">
+          <h4>Scans the QR at the table</h4>
+          <p>Camera opens, recognises URL, taps to open. Branded mobile page loads — restaurant logo, hero photo, one promise: "Get a free cold brew after 5 visits."</p>
+          <div class="jr-tags">
+            <span class="eng-chip"><span class="d" style="background:#2A3340"></span>Identity</span>
+            <span class="eng-chip"><span class="d" style="background:#C58B14"></span>Customisation</span>
+            <span class="eng-chip"><span class="d" style="background:#0F4C3A"></span>Flow</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="journey-row">
+        <div class="jr-time">T+15s</div>
+        <div class="jr-content">
+          <h4>Phone number + WhatsApp OTP</h4>
+          <p>One input field. Enters phone. OTP arrives on WhatsApp in ~5s. Six-digit code, tap verify, done. No name. No email. No password.</p>
+          <div class="jr-tags">
+            <span class="eng-chip"><span class="d" style="background:#2A3340"></span>Identity</span>
+            <span class="eng-chip"><span class="d" style="background:#1F6FB3"></span>Communication</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="journey-row">
+        <div class="jr-time">T+30s</div>
+        <div class="jr-content">
+          <h4>Welcome moment — 1/5 already counted</h4>
+          <p>Confetti animation. Progress ring shows 1 of 5. Brand-coloured. Welcome WhatsApp lands the same second: "Welcome to Cafe X. You're 1 of 5 toward your free cold brew."</p>
+          <div class="jr-tags">
+            <span class="eng-chip"><span class="d" style="background:#E54B1C"></span>Reward</span>
+            <span class="eng-chip"><span class="d" style="background:#0F4C3A"></span>Flow</span>
+            <span class="eng-chip"><span class="d" style="background:#1F6FB3"></span>Communication</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="journey-row">
+        <div class="jr-time">Visit 3</div>
+        <div class="jr-content">
+          <h4>60% nudge fires (T2 trigger)</h4>
+          <p>WhatsApp at 11am the morning after: "2 more and your cold brew unlocks." Goal gradient activates. Customer plans the Friday visit.</p>
+          <div class="jr-tags">
+            <span class="eng-chip"><span class="d" style="background:#1F6FB3"></span>Communication</span>
+            <span class="eng-chip"><span class="d" style="background:#171413"></span>Analytics</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="journey-row">
+        <div class="jr-time">Visit 5</div>
+        <div class="jr-content">
+          <h4>Reward unlocks — full screen moment</h4>
+          <p>Scan registers visit 5. Page bursts into reward state. 6-digit code (8K4-F7P-2X1) generated. Reward name in big type. WhatsApp lands instantly. Show to staff.</p>
+          <div class="jr-tags">
+            <span class="eng-chip"><span class="d" style="background:#E54B1C"></span>Reward</span>
+            <span class="eng-chip"><span class="d" style="background:#B83A5E"></span>Verification</span>
+            <span class="eng-chip"><span class="d" style="background:#0F4C3A"></span>Flow</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="journey-row">
+        <div class="jr-time">+5s</div>
+        <div class="jr-content">
+          <h4>Staff redeems — green tick</h4>
+          <p>Staff phone or counter tablet. Types 8K4-F7P-2X1. Green confirm. Customer's coupon switches to redeemed. New loop instantly visible: "Loop 2 of 4 unlocked — try a weekend brunch."</p>
+          <div class="jr-tags">
+            <span class="eng-chip"><span class="d" style="background:#B83A5E"></span>Verification</span>
+            <span class="eng-chip"><span class="d" style="background:#E54B1C"></span>Reward</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="journey-row">
+        <div class="jr-time">Day 30 silent</div>
+        <div class="jr-content">
+          <h4>Win-back triggers if lapsed</h4>
+          <p>No visit for 30 days → WhatsApp: "We miss you. Your weekend brunch journey is still waiting." Loss aversion does the work. Day 60: one genuine offer. Day 90: archive. No spam.</p>
+          <div class="jr-tags">
+            <span class="eng-chip"><span class="d" style="background:#1F6FB3"></span>Communication</span>
+            <span class="eng-chip"><span class="d" style="background:#171413"></span>Analytics</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="journey" id="j-admin" style="display:none">
+      <div class="journey-row">
+        <div class="jr-time">Day 0</div>
+        <div class="jr-content">
+          <h4>Onboarding wizard — 30 minutes, no team needed</h4>
+          <p>Logo + brand colors. Pick a template (cafe / casual / bar / fine dining). Set first reward and loop size. QR generated, ready to print.</p>
+          <div class="jr-tags"><span class="eng-chip"><span class="d" style="background:#C58B14"></span>Customisation</span></div>
+        </div>
+      </div>
+      <div class="journey-row">
+        <div class="jr-time">Day 1+</div>
+        <div class="jr-content">
+          <h4>Doesn't log in most days</h4>
+          <p>System runs itself. WhatsApp digest every Monday: new members, redemptions, anything needing attention.</p>
+          <div class="jr-tags"><span class="eng-chip"><span class="d" style="background:#1F6FB3"></span>Communication</span><span class="eng-chip"><span class="d" style="background:#171413"></span>Analytics</span></div>
+        </div>
+      </div>
+      <div class="journey-row">
+        <div class="jr-time">Activity ping</div>
+        <div class="jr-content">
+          <h4>Verification queue alert</h4>
+          <p>"3 submissions waiting." Tap link, see screenshots, approve/reject in one tap each. 2-hour SLA. Customer notified instantly.</p>
+          <div class="jr-tags"><span class="eng-chip"><span class="d" style="background:#B83A5E"></span>Verification</span></div>
+        </div>
+      </div>
+      <div class="journey-row">
+        <div class="jr-time">Day 30</div>
+        <div class="jr-content">
+          <h4>Monthly report lands</h4>
+          <p>WhatsApp + email. Numbers + simple chart + estimated revenue attributed to loyalty. The artifact that makes month-6 renewal a yes.</p>
+          <div class="jr-tags"><span class="eng-chip"><span class="d" style="background:#171413"></span>Analytics</span></div>
+        </div>
+      </div>
+      <div class="journey-row">
+        <div class="jr-time">Anytime</div>
+        <div class="jr-content">
+          <h4>Customer list export</h4>
+          <p>One button. CSV download. All phone numbers, visit counts, redemptions, signup dates. The data is the restaurant's — always exportable.</p>
+          <div class="jr-tags"><span class="eng-chip"><span class="d" style="background:#2A3340"></span>Identity</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="journey" id="j-staff" style="display:none">
+      <div class="journey-row">
+        <div class="jr-time">Day 1 on job</div>
+        <div class="jr-content">
+          <h4>Reads the laminated card</h4>
+          <p>"Customer showing a reward? Ask for their 6-digit code. Enter it here: [URL]." 10 seconds of training. Done.</p>
+        </div>
+      </div>
+      <div class="journey-row">
+        <div class="jr-time">Customer arrives</div>
+        <div class="jr-content">
+          <h4>One screen, one tap</h4>
+          <p>Counter mode open on phone or tablet. Enter 6 digits. Reward name shows in big text. Tap CONFIRM. Green tick. Move on.</p>
+          <div class="jr-tags"><span class="eng-chip"><span class="d" style="background:#B83A5E"></span>Verification</span></div>
+        </div>
+      </div>
+      <div class="journey-row">
+        <div class="jr-time">If offline</div>
+        <div class="jr-content">
+          <h4>Cached codes still work</h4>
+          <p>Last sync timestamp visible. Validates against local cache. Queue redemption for sync when back online. Never blocks the counter.</p>
+        </div>
+      </div>
+      <div class="journey-row">
+        <div class="jr-time">Edge case</div>
+        <div class="jr-content">
+          <h4>Code already used</h4>
+          <p>Red badge. Timestamp + outlet where it was redeemed. Staff can call manager — system stays out of the conversation.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="journey" id="j-platform" style="display:none">
+      <div class="journey-row">
+        <div class="jr-time">Sale</div>
+        <div class="jr-content">
+          <h4>Direct outreach in Bangalore</h4>
+          <p>2-person team. Walk-in pitches at Koramangala / Indiranagar / HSR. Lead with the anti-aggregator narrative. 60-day pilot proposal.</p>
+        </div>
+      </div>
+      <div class="journey-row">
+        <div class="jr-time">Onboarding</div>
+        <div class="jr-content">
+          <h4>30-min self-serve wizard + check-in call</h4>
+          <p>Wizard does it. Founder calls Day 3 to make sure QR is up. Day 14 to share early numbers.</p>
+        </div>
+      </div>
+      <div class="journey-row">
+        <div class="jr-time">Operations</div>
+        <div class="jr-content">
+          <h4>Deploy windows, on-call rota, status page</h4>
+          <p>Deploy only 3–6am weekdays. API versioned. Feature flags per restaurant. Public status page. WhatsApp template alerts before restaurants notice.</p>
+        </div>
+      </div>
+      <div class="journey-row">
+        <div class="jr-time">Growth</div>
+        <div class="jr-content">
+          <h4>Channels open at 15 restaurants</h4>
+          <p>F&amp;B consultants and marketing agencies (10–15% referral). Petpooja webhook (P2). Inbound from restaurant owners seeing the report numbers.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN VIEW -->
+  <div class="pane" id="pane-screen">
+    <div class="screen-section">
+      <div class="label">Customer-side · 9 states</div>
+      <div class="screen-grid">
+        <div class="screen-card">
+          <div class="screen-thumb" style="background: linear-gradient(180deg, #2A1F1A, #0F0908);">
+            <svg viewBox="0 0 100 140" width="80" height="120"><rect x="20" y="20" width="60" height="60" fill="#fff"/><rect x="25" y="25" width="6" height="6" fill="#000"/><rect x="33" y="25" width="6" height="6" fill="#000"/><rect x="41" y="25" width="6" height="6" fill="#000"/><rect x="69" y="25" width="6" height="6" fill="#000"/><rect x="25" y="33" width="6" height="6" fill="#000"/><rect x="41" y="33" width="6" height="6" fill="#000"/><rect x="57" y="33" width="6" height="6" fill="#000"/><rect x="69" y="33" width="6" height="6" fill="#000"/></svg>
+          </div>
+          <h4>QR landing</h4>
+          <p class="desc">Hero shot, reward promise, one CTA</p>
+          <div class="tags"><span class="chip coral">MVP1</span></div>
+        </div>
+        <div class="screen-card">
+          <div class="screen-thumb"><div style="font-family: var(--font-mono); font-size: 28px; color: var(--ink); letter-spacing: 12px;">8 4 7 1</div></div>
+          <h4>OTP verify</h4>
+          <p class="desc">4-6 digit WhatsApp OTP</p>
+          <div class="tags"><span class="chip coral">MVP1</span></div>
+        </div>
+        <div class="screen-card">
+          <div class="screen-thumb">
+            <svg viewBox="0 0 100 100" width="120" height="120">
+              <circle cx="50" cy="50" r="38" fill="none" stroke="#E0D6C0" stroke-width="6"/>
+              <circle cx="50" cy="50" r="38" fill="none" stroke="#E54B1C" stroke-width="6" stroke-linecap="round" stroke-dasharray="48 240" transform="rotate(-90 50 50)"/>
+              <text x="50" y="55" text-anchor="middle" font-family="Instrument Serif" font-size="22" fill="#171413">1/5</text>
+            </svg>
+          </div>
+          <h4>Welcome / progress</h4>
+          <p class="desc">Endowed progress at 1, never 0</p>
+          <div class="tags"><span class="chip coral">MVP1</span></div>
+        </div>
+        <div class="screen-card">
+          <div class="screen-thumb">
+            <svg viewBox="0 0 120 100" width="140" height="100">
+              <rect x="10" y="10" width="100" height="14" rx="7" fill="#EDE7D9"/>
+              <rect x="10" y="10" width="62" height="14" rx="7" fill="#E54B1C"/>
+              <rect x="10" y="34" width="100" height="20" rx="6" fill="#FCFAF4" stroke="#E0D6C0" stroke-width="0.5"/>
+              <rect x="10" y="60" width="100" height="20" rx="6" fill="#FCFAF4" stroke="#E0D6C0" stroke-width="0.5"/>
+              <rect x="10" y="86" width="100" height="8" rx="4" fill="#EDE7D9"/>
+            </svg>
+          </div>
+          <h4>Dashboard</h4>
+          <p class="desc">Progress + 3 activities + rewards</p>
+          <div class="tags"><span class="chip coral">MVP1</span></div>
+        </div>
+        <div class="screen-card">
+          <div class="screen-thumb">
+            <svg viewBox="0 0 120 80" width="140" height="90">
+              <rect x="20" y="15" width="80" height="50" rx="6" fill="#F4F0E8" stroke="#171413" stroke-width="0.5"/>
+              <text x="60" y="36" text-anchor="middle" font-family="Geist Mono, monospace" font-size="6" fill="#6B645C" letter-spacing="2">UPLOAD</text>
+              <line x1="55" y1="46" x2="65" y2="46" stroke="#6B645C" stroke-width="0.6"/>
+              <line x1="60" y1="41" x2="60" y2="51" stroke="#6B645C" stroke-width="0.6"/>
+            </svg>
+          </div>
+          <h4>Activity submit</h4>
+          <p class="desc">Screenshot or link, instant ack</p>
+          <div class="tags"><span class="chip coral">MVP1</span></div>
+        </div>
+        <div class="screen-card">
+          <div class="screen-thumb" style="background: var(--coral);">
+            <svg viewBox="0 0 100 100" width="100" height="100"><circle cx="50" cy="50" r="36" fill="none" stroke="white" stroke-width="3"/><polyline points="35,50 47,62 67,40" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h4>Reward unlocked</h4>
+          <p class="desc">Full-screen celebration moment</p>
+          <div class="tags"><span class="chip coral">MVP1</span></div>
+        </div>
+        <div class="screen-card">
+          <div class="screen-thumb"><div style="font-family: var(--font-display); font-size: 36px; color: var(--coral); letter-spacing: 6px;">8K4-F7P</div></div>
+          <h4>Coupon</h4>
+          <p class="desc">6-digit code, big text, expiry</p>
+          <div class="tags"><span class="chip coral">MVP1</span></div>
+        </div>
+        <div class="screen-card">
+          <div class="screen-thumb">
+            <svg viewBox="0 0 120 80" width="140" height="80">
+              <text x="60" y="30" text-anchor="middle" font-family="Instrument Serif" font-size="14" fill="#171413">Level 2 unlocked</text>
+              <rect x="20" y="42" width="80" height="20" rx="4" fill="#FCFAF4" stroke="#E0D6C0" stroke-width="0.5"/>
+              <text x="60" y="55" text-anchor="middle" font-family="Geist Mono, monospace" font-size="6" fill="#6B645C" letter-spacing="2">WEEKEND BRUNCH</text>
+            </svg>
+          </div>
+          <h4>New journey</h4>
+          <p class="desc">Loop completed, next unlocks</p>
+          <div class="tags"><span class="chip amber">P2 polish</span></div>
+        </div>
+        <div class="screen-card">
+          <div class="screen-thumb">
+            <svg viewBox="0 0 120 80" width="140" height="80">
+              <rect x="20" y="20" width="80" height="40" rx="6" fill="#FCFAF4" stroke="#E0D6C0" stroke-width="0.5"/>
+              <text x="60" y="38" text-anchor="middle" font-family="Instrument Serif" font-size="11" font-style="italic" fill="#171413">we miss you</text>
+              <text x="60" y="52" text-anchor="middle" font-family="Geist Mono, monospace" font-size="5" fill="#6B645C" letter-spacing="2">DAY 30 · WIN-BACK</text>
+            </svg>
+          </div>
+          <h4>Win-back</h4>
+          <p class="desc">Day 30/60/90 sequence</p>
+          <div class="tags"><span class="chip coral">MVP1</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen-section">
+      <div class="label">Admin · restaurant-facing</div>
+      <div class="screen-grid">
+        <div class="screen-card">
+          <div class="screen-thumb">
+            <svg viewBox="0 0 120 80" width="140" height="80">
+              <rect x="10" y="10" width="100" height="14" rx="3" fill="#FCFAF4" stroke="#E0D6C0" stroke-width="0.5"/>
+              <rect x="10" y="28" width="100" height="14" rx="3" fill="#FCFAF4" stroke="#E0D6C0" stroke-width="0.5"/>
+              <rect x="10" y="46" width="100" height="14" rx="3" fill="#FCFAF4" stroke="#E0D6C0" stroke-width="0.5"/>
+              <rect x="60" y="66" width="50" height="10" rx="5" fill="#171413"/>
+            </svg>
+          </div>
+          <h4>Onboarding wizard</h4>
+          <p class="desc">4 steps, 30 min, self-serve</p>
+          <div class="tags"><span class="chip coral">MVP1</span></div>
+        </div>
+        <div class="screen-card">
+          <div class="screen-thumb">
+            <svg viewBox="0 0 120 80" width="140" height="80">
+              <text x="60" y="20" text-anchor="middle" font-family="Instrument Serif" font-size="13" fill="#171413">312</text>
+              <text x="60" y="32" text-anchor="middle" font-family="Geist Mono, monospace" font-size="5" fill="#6B645C">CUSTOMERS</text>
+              <rect x="10" y="42" width="100" height="6" fill="#EDE7D9"/>
+              <rect x="10" y="42" width="68" height="6" fill="#E54B1C"/>
+              <text x="60" y="60" text-anchor="middle" font-family="Geist Mono, monospace" font-size="5" fill="#6B645C">68% RETURN RATE</text>
+            </svg>
+          </div>
+          <h4>Dashboard / overview</h4>
+          <p class="desc">3 numbers, sparklines, alerts</p>
+          <div class="tags"><span class="chip coral">MVP1</span></div>
+        </div>
+        <div class="screen-card">
+          <div class="screen-thumb">
+            <svg viewBox="0 0 120 80" width="140" height="80">
+              <rect x="10" y="14" width="100" height="10" rx="3" fill="#FCFAF4" stroke="#E0D6C0" stroke-width="0.5"/>
+              <rect x="10" y="28" width="100" height="10" rx="3" fill="#FCFAF4" stroke="#E0D6C0" stroke-width="0.5"/>
+              <rect x="10" y="42" width="100" height="10" rx="3" fill="#FCFAF4" stroke="#E0D6C0" stroke-width="0.5"/>
+              <rect x="10" y="56" width="100" height="10" rx="3" fill="#FCFAF4" stroke="#E0D6C0" stroke-width="0.5"/>
+            </svg>
+          </div>
+          <h4>Customer list</h4>
+          <p class="desc">Phone, visits, last seen, segment</p>
+          <div class="tags"><span class="chip coral">MVP1</span></div>
+        </div>
+        <div class="screen-card">
+          <div class="screen-thumb">
+            <svg viewBox="0 0 120 80" width="140" height="80">
+              <rect x="10" y="10" width="100" height="50" rx="3" fill="#FCFAF4" stroke="#E0D6C0" stroke-width="0.5"/>
+              <text x="60" y="32" text-anchor="middle" font-family="Geist Mono, monospace" font-size="6" fill="#6B645C">SCREENSHOT</text>
+              <rect x="20" y="62" width="40" height="12" rx="6" fill="#DDE9E2"/>
+              <rect x="62" y="62" width="40" height="12" rx="6" fill="#F3D9E0"/>
+            </svg>
+          </div>
+          <h4>Verification queue</h4>
+          <p class="desc">Approve / reject in one tap</p>
+          <div class="tags"><span class="chip coral">MVP1</span></div>
+        </div>
+        <div class="screen-card">
+          <div class="screen-thumb">
+            <svg viewBox="0 0 120 80" width="140" height="80">
+              <text x="60" y="22" text-anchor="middle" font-family="Instrument Serif" font-size="11" fill="#171413">Set loop</text>
+              <rect x="20" y="32" width="20" height="20" rx="3" fill="#E54B1C"/>
+              <rect x="44" y="32" width="20" height="20" rx="3" fill="#E54B1C"/>
+              <rect x="68" y="32" width="20" height="20" rx="3" fill="#FCFAF4" stroke="#E0D6C0" stroke-width="0.5"/>
+              <rect x="92" y="32" width="20" height="20" rx="3" fill="#FCFAF4" stroke="#E0D6C0" stroke-width="0.5"/>
+              <text x="60" y="68" text-anchor="middle" font-family="Geist Mono, monospace" font-size="5" fill="#6B645C">VISITS TO REWARD</text>
+            </svg>
+          </div>
+          <h4>Loop builder</h4>
+          <p class="desc">Drag/select milestone shape</p>
+          <div class="tags"><span class="chip amber">P2</span></div>
+        </div>
+        <div class="screen-card">
+          <div class="screen-thumb">
+            <svg viewBox="0 0 120 80" width="140" height="80">
+              <rect x="10" y="14" width="100" height="50" rx="3" fill="#FCFAF4" stroke="#E0D6C0" stroke-width="0.5"/>
+              <polyline points="14,55 30,42 46,48 62,30 78,38 94,24 106,28" fill="none" stroke="#E54B1C" stroke-width="1.4"/>
+            </svg>
+          </div>
+          <h4>Reports / analytics</h4>
+          <p class="desc">Monthly digest, breakdowns</p>
+          <div class="tags"><span class="chip coral">MVP1</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen-section">
+      <div class="label">Staff · counter mode</div>
+      <div class="screen-grid">
+        <div class="screen-card">
+          <div class="screen-thumb"><div style="font-family: var(--font-mono); font-size: 28px; letter-spacing: 8px; color: var(--ink);">- - -<br/>- - -</div></div>
+          <h4>Code entry</h4>
+          <p class="desc">Numeric keypad, big touch targets</p>
+          <div class="tags"><span class="chip coral">MVP1</span></div>
+        </div>
+        <div class="screen-card">
+          <div class="screen-thumb" style="background: var(--forest);"><div style="color: white; font-family: var(--font-display); font-size: 28px;">✓ Valid</div></div>
+          <h4>Confirm</h4>
+          <p class="desc">Reward name, big confirm button</p>
+          <div class="tags"><span class="chip coral">MVP1</span></div>
+        </div>
+        <div class="screen-card">
+          <div class="screen-thumb" style="background: var(--rose-soft);"><div style="color: var(--rose); font-family: var(--font-display); font-size: 22px;">⊘ Already used</div></div>
+          <h4>Edge state</h4>
+          <p class="desc">Used / expired / wrong phone</p>
+          <div class="tags"><span class="chip coral">MVP1</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATA VIEW -->
+  <div class="pane" id="pane-data">
+    <p style="font-size: 14px; color: var(--ink-3); margin: 0 0 18px;">Eight core entities. Each one owned by an engine. Multi-tenant by <code class="mono" style="background: var(--paper-2); padding: 1px 5px; border-radius: 4px;">restaurant_id</code> on every table.</p>
+
+    <div class="entity">
+      <div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:#2A3340"></div>
+      <div class="ent-head"><div class="ent-name">restaurant</div><span class="eng-chip"><span class="d" style="background:#C58B14"></span>Customisation</span></div>
+      <div class="ent-fields">
+        <div class="f"><span class="name">id</span><span class="type">uuid · pk</span></div>
+        <div class="f"><span class="name">name</span><span class="type">string</span></div>
+        <div class="f"><span class="name">slug</span><span class="type">string · unique</span></div>
+        <div class="f"><span class="name">brand_config</span><span class="type">jsonb (logo, colors, font)</span></div>
+        <div class="f"><span class="name">loop_config</span><span class="type">jsonb (visits, reward, expiry)</span></div>
+        <div class="f"><span class="name">activities_active</span><span class="type">array · max 3</span></div>
+        <div class="f"><span class="name">operating_hours</span><span class="type">jsonb · weekday + off-peak</span></div>
+        <div class="f"><span class="name">whatsapp_config</span><span class="type">jsonb · template overrides</span></div>
+        <div class="f"><span class="name">plan_tier</span><span class="type">enum: starter/pro/premium</span></div>
+        <div class="f"><span class="name">status</span><span class="type">enum: active/winding/archived</span></div>
+      </div>
+    </div>
+
+    <div class="entity">
+      <div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:#2A3340"></div>
+      <div class="ent-head"><div class="ent-name">customer</div><span class="eng-chip"><span class="d" style="background:#2A3340"></span>Identity</span></div>
+      <div class="ent-fields">
+        <div class="f"><span class="name">id</span><span class="type">uuid · pk</span></div>
+        <div class="f"><span class="name">restaurant_id</span><span class="type">uuid · fk</span></div>
+        <div class="f"><span class="name">phone</span><span class="type">string · E.164</span></div>
+        <div class="f"><span class="name">name</span><span class="type">string · nullable</span></div>
+        <div class="f"><span class="name">birthday</span><span class="type">date · nullable</span></div>
+        <div class="f"><span class="name">created_at</span><span class="type">timestamp</span></div>
+        <div class="f"><span class="name">last_visit_at</span><span class="type">timestamp · nullable</span></div>
+        <div class="f"><span class="name">opted_out</span><span class="type">boolean · default false</span></div>
+        <div class="f"><span class="name">trust_score</span><span class="type">int · auto-approve gate</span></div>
+        <div class="f"><span class="name">segment</span><span class="type">enum: new/active/regular/lapsed</span></div>
+      </div>
+    </div>
+
+    <div class="entity">
+      <div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:#E54B1C"></div>
+      <div class="ent-head"><div class="ent-name">visit</div><span class="eng-chip"><span class="d" style="background:#E54B1C"></span>Reward</span></div>
+      <div class="ent-fields">
+        <div class="f"><span class="name">id</span><span class="type">uuid · pk</span></div>
+        <div class="f"><span class="name">customer_id</span><span class="type">uuid · fk</span></div>
+        <div class="f"><span class="name">restaurant_id</span><span class="type">uuid · fk</span></div>
+        <div class="f"><span class="name">outlet_id</span><span class="type">uuid · nullable</span></div>
+        <div class="f"><span class="name">scanned_at</span><span class="type">timestamp</span></div>
+        <div class="f"><span class="name">source</span><span class="type">enum: qr/payment/pos/staff</span></div>
+        <div class="f"><span class="name">bill_amount</span><span class="type">decimal · nullable</span></div>
+        <div class="f"><span class="name">group_size</span><span class="type">int · nullable · self-decl</span></div>
+        <div class="f"><span class="name">is_off_peak</span><span class="type">bool · derived</span></div>
+        <div class="f"><span class="name">multiplier</span><span class="type">float · default 1.0</span></div>
+      </div>
+    </div>
+
+    <div class="entity">
+      <div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:#E54B1C"></div>
+      <div class="ent-head"><div class="ent-name">journey</div><span class="eng-chip"><span class="d" style="background:#E54B1C"></span>Reward</span></div>
+      <div class="ent-fields">
+        <div class="f"><span class="name">id</span><span class="type">uuid · pk</span></div>
+        <div class="f"><span class="name">customer_id</span><span class="type">uuid · fk</span></div>
+        <div class="f"><span class="name">loop_type</span><span class="type">enum: L1/L2/L3/L4</span></div>
+        <div class="f"><span class="name">config_version</span><span class="type">string · grandfathered</span></div>
+        <div class="f"><span class="name">progress</span><span class="type">int · current step</span></div>
+        <div class="f"><span class="name">target</span><span class="type">int · loop size</span></div>
+        <div class="f"><span class="name">status</span><span class="type">enum: active/done/paused</span></div>
+        <div class="f"><span class="name">started_at</span><span class="type">timestamp</span></div>
+        <div class="f"><span class="name">completed_at</span><span class="type">timestamp · nullable</span></div>
+      </div>
+    </div>
+
+    <div class="entity">
+      <div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:#E54B1C"></div>
+      <div class="ent-head"><div class="ent-name">reward</div><span class="eng-chip"><span class="d" style="background:#E54B1C"></span>Reward</span></div>
+      <div class="ent-fields">
+        <div class="f"><span class="name">id</span><span class="type">uuid · pk</span></div>
+        <div class="f"><span class="name">customer_id</span><span class="type">uuid · fk</span></div>
+        <div class="f"><span class="name">journey_id</span><span class="type">uuid · nullable · fk</span></div>
+        <div class="f"><span class="name">code</span><span class="type">string · UUID-derived 6-9 char</span></div>
+        <div class="f"><span class="name">name</span><span class="type">string · "Free cold brew"</span></div>
+        <div class="f"><span class="name">unlocked_at</span><span class="type">timestamp</span></div>
+        <div class="f"><span class="name">expires_at</span><span class="type">timestamp</span></div>
+        <div class="f"><span class="name">redeemed_at</span><span class="type">timestamp · nullable</span></div>
+        <div class="f"><span class="name">redeemed_by_staff</span><span class="type">uuid · nullable</span></div>
+        <div class="f"><span class="name">redemption_outlet</span><span class="type">uuid · nullable</span></div>
+      </div>
+    </div>
+
+    <div class="entity">
+      <div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:#B83A5E"></div>
+      <div class="ent-head"><div class="ent-name">activity_submission</div><span class="eng-chip"><span class="d" style="background:#B83A5E"></span>Verification</span></div>
+      <div class="ent-fields">
+        <div class="f"><span class="name">id</span><span class="type">uuid · pk</span></div>
+        <div class="f"><span class="name">customer_id</span><span class="type">uuid · fk</span></div>
+        <div class="f"><span class="name">activity_type</span><span class="type">enum: review_google/instagram_story/...</span></div>
+        <div class="f"><span class="name">payload</span><span class="type">jsonb · screenshot url or link</span></div>
+        <div class="f"><span class="name">submitted_at</span><span class="type">timestamp</span></div>
+        <div class="f"><span class="name">status</span><span class="type">enum: pending/approved/rejected/auto</span></div>
+        <div class="f"><span class="name">reviewed_by</span><span class="type">uuid · admin · nullable</span></div>
+        <div class="f"><span class="name">sla_due_at</span><span class="type">timestamp · 2h or 6h</span></div>
+      </div>
+    </div>
+
+    <div class="entity">
+      <div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:#1F6FB3"></div>
+      <div class="ent-head"><div class="ent-name">message</div><span class="eng-chip"><span class="d" style="background:#1F6FB3"></span>Communication</span></div>
+      <div class="ent-fields">
+        <div class="f"><span class="name">id</span><span class="type">uuid · pk</span></div>
+        <div class="f"><span class="name">customer_id</span><span class="type">uuid · fk</span></div>
+        <div class="f"><span class="name">trigger</span><span class="type">enum: T1..T5 / campaign / digest</span></div>
+        <div class="f"><span class="name">channel</span><span class="type">enum: whatsapp/sms/push/email</span></div>
+        <div class="f"><span class="name">template_id</span><span class="type">string · WABA template</span></div>
+        <div class="f"><span class="name">status</span><span class="type">enum: queued/sent/delivered/read/failed</span></div>
+        <div class="f"><span class="name">queued_at</span><span class="type">timestamp</span></div>
+        <div class="f"><span class="name">cost_paise</span><span class="type">int · BSP cost in paise</span></div>
+      </div>
+    </div>
+
+    <div class="entity">
+      <div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:#5B4A8C"></div>
+      <div class="ent-head"><div class="ent-name">integration_event</div><span class="eng-chip"><span class="d" style="background:#5B4A8C"></span>Integration</span></div>
+      <div class="ent-fields">
+        <div class="f"><span class="name">id</span><span class="type">uuid · pk</span></div>
+        <div class="f"><span class="name">restaurant_id</span><span class="type">uuid · fk</span></div>
+        <div class="f"><span class="name">adapter</span><span class="type">enum: razorpay/petpooja/...</span></div>
+        <div class="f"><span class="name">event_type</span><span class="type">string · adapter-specific</span></div>
+        <div class="f"><span class="name">raw_payload</span><span class="type">jsonb · original</span></div>
+        <div class="f"><span class="name">processed_at</span><span class="type">timestamp · nullable</span></div>
+        <div class="f"><span class="name">error</span><span class="type">text · nullable</span></div>
+        <div class="f"><span class="name">retries</span><span class="type">int · default 0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VERIFICATION MAP VIEW -->
+  <div class="pane" id="pane-map">
+    <div class="map-wrap">
+      <p style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(244,240,232,0.6); margin: 0 0 28px;">The verification atlas · every trigger → its verification method · sorted by human effort</p>
+      <div class="map-grid">
+        <div class="map-col">
+          <h3>Fully automatic</h3>
+          <p class="sub">System handles. Zero human involvement.</p>
+          <div class="map-cell">
+            <h5 style="color:#E54B1C">Visit + time</h5>
+            <ul>
+              <li>Simple QR scan</li>
+              <li>Off-peak detection</li>
+              <li>Day-of-week match</li>
+              <li>Visit streak (consecutive weeks)</li>
+              <li>Birthday (8am fire)</li>
+              <li>Group size (self-declared)</li>
+            </ul>
+          </div>
+          <div class="map-cell">
+            <h5 style="color:#E54B1C">Spend (when integrated)</h5>
+            <ul>
+              <li>Payment redirect (Razorpay)</li>
+              <li>POS webhook (Petpooja, P2)</li>
+            </ul>
+          </div>
+          <div class="map-cell">
+            <h5 style="color:#E54B1C">Activity (automatable)</h5>
+            <ul>
+              <li>Friend referral (link/code match)</li>
+            </ul>
+          </div>
+          <div class="map-cell">
+            <h5 style="color:#E54B1C">Product (P2+)</h5>
+            <ul>
+              <li>Specific item ordered</li>
+              <li>Category-level spend</li>
+              <li>New menu item</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="map-col">
+          <h3>Manual · 2-hour SLA</h3>
+          <p class="sub">Admin reviews submissions. Human verification.</p>
+          <div class="map-cell">
+            <h5 style="color:#C58B14">Social activities</h5>
+            <ul>
+              <li>Google review screenshot/URL</li>
+              <li>Zomato review screenshot</li>
+              <li>Swiggy review screenshot</li>
+              <li>Instagram reel link</li>
+              <li>Instagram post link</li>
+            </ul>
+          </div>
+          <div class="map-cell">
+            <h5 style="color:#C58B14">High-value spend</h5>
+            <ul>
+              <li>Bill photo upload (₹500+ rewards only)</li>
+            </ul>
+          </div>
+          <div class="map-cell">
+            <h5 style="color:#C58B14">Light manual</h5>
+            <ul>
+              <li>Event participation (staff tap)</li>
+              <li>Group seating confirmation</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="map-col">
+          <h3>Manual · 6-hour SLA</h3>
+          <p class="sub">Time-sensitive. The fragile one.</p>
+          <div class="map-cell">
+            <h5 style="color:#B83A5E">Time-bound social</h5>
+            <ul>
+              <li>Instagram story (disappears in 24h)</li>
+            </ul>
+          </div>
+          <div class="map-cell" style="background: rgba(184,58,94,0.12); border-color: rgba(184,58,94,0.3)">
+            <h5 style="color:#B83A5E">Operational rule</h5>
+            <ul>
+              <li>Story reward should be smaller than reel reward — reflects fragility</li>
+              <li>Or: customer saves story as highlight before submitting</li>
+            </ul>
+          </div>
+          <h3 style="margin-top: 28px">Future: API-verified</h3>
+          <p class="sub">Phase 3 once external APIs are stable.</p>
+          <div class="map-cell">
+            <h5 style="color:#5B4A8C">P3 only</h5>
+            <ul>
+              <li>Google Places review check</li>
+              <li>Instagram Graph (story/post)</li>
+              <li>Trusted-customer auto-approve</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // View switcher
+  document.querySelectorAll('.views button').forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll('.views button').forEach(x => x.classList.remove('on'));
+      document.querySelectorAll('.pane').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      document.getElementById('pane-' + b.dataset.view).classList.add('on');
+    };
+  });
+
+  // Sidebar active state on scroll
+  const items = document.querySelectorAll('.eng-item');
+  items.forEach(a => a.addEventListener('click', () => {
+    items.forEach(x => x.classList.remove('active'));
+    a.classList.add('active');
+  }));
+
+  // Journey tab switcher
+  document.querySelectorAll('.jt').forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll('.jt').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      document.querySelectorAll('[id^="j-"]').forEach(j => j.style.display = 'none');
+      document.getElementById('j-' + b.dataset.jt).style.display = 'block';
+    };
+  });
+</script>
+
+</body>
+</html>

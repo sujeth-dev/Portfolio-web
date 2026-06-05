@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sujeth — Software Engineer / Product Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ─────────────────────────────────────────── */
+:root{
+  --paper:#FAFAF7; --ink:#16150F; --muted:#6B6A60; --faint:#9A998E;
+  --line:#E4E3DA; --card:#FFFFFF; --accent:#E8430B;
+  --live:#1F8A4C; --build:#C7860A; --maxw:1080px;
+}
+
+/* ── RESET ──────────────────────────────────────────── */
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:'Hanken Grotesk',sans-serif;font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;cursor:none;
+}
+::selection{background:var(--accent);color:#fff}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px}
+
+/* ── GRAIN TEXTURE ──────────────────────────────────── */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;
+  opacity:.032;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:200px 200px;
+}
+
+/* ── CURSOR ─────────────────────────────────────────── */
+#cur-dot{
+  position:fixed;width:7px;height:7px;border-radius:50%;
+  background:var(--accent);pointer-events:none;z-index:10000;
+  transform:translate(-50%,-50%);mix-blend-mode:multiply;
+}
+#cur-ring{
+  position:fixed;width:34px;height:34px;border-radius:50%;
+  border:1.5px solid var(--accent);pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);opacity:.35;
+  transition:width .2s ease,height .2s ease;
+}
+#cur-dot.big + #cur-ring,
+#cur-ring.big{width:52px;height:52px;}
+
+/* ── SCROLL PROGRESS ────────────────────────────────── */
+#progress{
+  position:fixed;top:0;left:0;height:2px;
+  background:var(--accent);z-index:101;width:0%;
+  transition:width .08s linear;
+}
+
+/* ── STATUS BAR ─────────────────────────────────────── */
+.strip{
+  position:sticky;top:2px;z-index:40;
+  background:var(--ink);color:var(--paper);
+  font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.04em;
+}
+.strip .wrap{
+  display:flex;justify-content:space-between;align-items:center;
+  height:36px;gap:16px;overflow:hidden;
+}
+.blink{
+  display:inline-block;width:7px;height:7px;border-radius:50%;
+  background:var(--live);margin-right:7px;animation:pulse 1.6s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+.nav-links{display:flex;gap:22px}
+.nav-links a{
+  color:rgba(250,250,247,.45);transition:color .2s;
+  text-transform:uppercase;font-size:11px;letter-spacing:.06em;
+}
+.nav-links a:hover,.nav-links a.active{color:var(--paper)}
+
+/* ── LOAD ANIMATIONS ────────────────────────────────── */
+.fade{opacity:0;transform:translateY(16px);animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+
+/* scroll-triggered reveals */
+.rv{opacity:0;transform:translateY(28px);
+  transition:opacity .75s cubic-bezier(.2,.7,.2,1),transform .75s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+.rv-l{opacity:0;transform:translateX(-20px);
+  transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.rv-l.in{opacity:1;transform:none}
+
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}
+.d4{transition-delay:.32s}.d5{transition-delay:.40s}.d6{transition-delay:.48s}
+
+/* ── HEADER ─────────────────────────────────────────── */
+header{padding:100px 0 60px;position:relative}
+.kick{
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:28px;
+}
+h1{
+  font-weight:800;font-size:clamp(40px,6.6vw,82px);
+  line-height:1;letter-spacing:-.03em;max-width:17ch;
+}
+h1 em{
+  font-family:'Instrument Serif',serif;font-style:italic;
+  font-weight:400;color:var(--accent);
+}
+.sub{
+  margin-top:28px;font-size:clamp(17px,2vw,20px);
+  color:var(--muted);max-width:58ch;line-height:1.7;
+}
+
+/* ── BUTTONS ────────────────────────────────────────── */
+.cta{display:flex;gap:12px;margin-top:36px;flex-wrap:wrap}
+.btn{
+  font-family:'JetBrains Mono',monospace;font-size:13px;
+  padding:12px 20px;border:1px solid var(--ink);border-radius:2px;
+  transition:background .18s,color .18s,border-color .18s;
+  display:inline-flex;gap:8px;align-items:center;will-change:transform;
+  cursor:none;
+}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn.solid{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.solid:hover{background:#c5380a;border-color:#c5380a}
+
+/* ── METRICS ────────────────────────────────────────── */
+.metrics{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  margin-top:64px;border:1px solid var(--line);background:var(--card);
+}
+.metric{padding:24px 26px;border-right:1px solid var(--line)}
+.metric:last-child{border-right:none}
+.metric .mn{
+  font-size:clamp(28px,4vw,38px);font-weight:800;
+  letter-spacing:-.04em;line-height:1;
+}
+.metric .ml{
+  font-family:'JetBrains Mono',monospace;font-size:10.5px;
+  color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:9px;
+}
+.building{
+  margin-top:24px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);
+}
+.building b{color:var(--build)}
+
+/* ── SECTIONS ───────────────────────────────────────── */
+section{padding:76px 0;border-top:1px solid var(--line)}
+.shead{display:flex;align-items:baseline;gap:14px;margin-bottom:40px}
+.shead .num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent)}
+.shead h2{
+  font-family:'JetBrains Mono',monospace;font-size:13px;
+  text-transform:uppercase;letter-spacing:.12em;font-weight:700;
+}
+
+/* ── FEATURED CARDS ─────────────────────────────────── */
+.feat{
+  border:1px solid var(--line);background:var(--card);
+  margin-bottom:20px;overflow:hidden;
+  transition:border-color .22s,box-shadow .22s;
+}
+.feat:hover{border-color:rgba(22,21,15,.35);box-shadow:8px 8px 0 rgba(22,21,15,.05)}
+
+/* cover band */
+.fcover{
+  height:150px;display:flex;align-items:flex-end;
+  padding:22px 30px;position:relative;overflow:hidden;
+}
+.fcover::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(
+    45deg,rgba(255,255,255,.04) 0,rgba(255,255,255,.04) 1px,
+    transparent 1px,transparent 14px
+  );
+}
+.fcover-bg{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom,transparent 30%,rgba(0,0,0,.25));
+}
+.fcover-giant{
+  position:absolute;right:-10px;bottom:-18px;
+  font-size:clamp(72px,11vw,130px);font-weight:800;letter-spacing:-.04em;
+  line-height:.85;color:rgba(255,255,255,.1);user-select:none;
+  font-family:'Hanken Grotesk',sans-serif;
+}
+.fcover-label{
+  position:relative;z-index:1;
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.7);
+}
+
+.fhead{padding:28px 30px 26px}
+.findex{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint)}
+.ftop{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:8px}
+.fname{font-size:clamp(26px,3.4vw,34px);font-weight:800;letter-spacing:-.025em}
+.pill{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  text-transform:uppercase;letter-spacing:.06em;padding:4px 9px;
+  border-radius:100px;font-weight:700;
+}
+.pill.live{background:rgba(31,138,76,.12);color:var(--live)}
+.pill.client{background:rgba(232,67,11,.11);color:var(--accent)}
+.ftype{
+  font-family:'Instrument Serif',serif;font-style:italic;
+  font-size:20px;color:var(--muted);margin-top:10px;
+}
+.fbody{margin-top:16px;max-width:66ch;color:#2c2b22}
+.flist{margin:12px 0 0;padding-left:18px;color:#3a392f;max-width:60ch}
+.flist li{margin-bottom:4px}
+.why{
+  margin-top:18px;padding:15px 18px;
+  background:#FCFBF6;border-left:2px solid var(--accent);max-width:66ch;
+}
+.why .wl{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  text-transform:uppercase;letter-spacing:.07em;color:var(--accent);margin-bottom:5px;
+}
+.stack{display:flex;gap:7px;flex-wrap:wrap;margin-top:20px}
+.tag{
+  font-family:'JetBrains Mono',monospace;font-size:10.5px;
+  padding:4px 9px;background:#F1F0E8;border-radius:2px;color:#54534a;
+}
+.flinks{display:flex;gap:16px;margin-top:18px;flex-wrap:wrap;align-items:center}
+.flink{
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  border-bottom:1px solid var(--line);padding-bottom:2px;transition:.15s;cursor:none;
+}
+.flink:hover{border-color:var(--accent);color:var(--accent)}
+.flink.ext::after{content:" ↗";opacity:.5}
+.csbtn{
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  color:var(--accent);cursor:none;border:none;background:none;
+  padding:0 0 2px;border-bottom:1px solid var(--accent);
+}
+
+/* drawers */
+.drawer{max-height:0;overflow:hidden;transition:max-height .45s ease}
+.drawer.open{max-height:1200px;border-top:1px solid var(--line)}
+.dinner{padding:26px 30px;background:#FCFBF6}
+.dgrid{display:grid;grid-template-columns:150px 1fr;gap:14px 22px}
+.dk{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  text-transform:uppercase;letter-spacing:.06em;color:var(--faint);padding-top:3px;
+}
+.dv{color:#2c2b22}
+.dv ul{margin:0;padding-left:18px}.dv li{margin-bottom:5px}
+
+/* demo embed */
+.demo{margin-top:20px;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.demobar{
+  display:flex;align-items:center;gap:8px;padding:10px 14px;
+  background:#F1F0E8;border-bottom:1px solid var(--line);
+}
+.tl{width:11px;height:11px;border-radius:50%}
+.demobar .url{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--muted);margin-left:8px;
+}
+.demoframe{width:100%;height:460px;border:none;display:block}
+.demonote{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--faint);padding:10px 14px;border-top:1px solid var(--line);
+}
+
+/* ── OTHER PROJECTS ─────────────────────────────────── */
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.mini{
+  border:1px solid var(--line);background:var(--card);padding:26px;
+  transition:border-color .18s,transform .2s,box-shadow .18s;cursor:none;
+}
+.mini:hover{
+  border-color:rgba(22,21,15,.4);
+  transform:translateY(-5px);
+  box-shadow:6px 10px 0 rgba(22,21,15,.05);
+}
+.mini .mname{font-size:20px;font-weight:700;letter-spacing:-.015em}
+.mini .mdesc{color:#3a392f;margin-top:8px;font-size:15px;line-height:1.55}
+.mini .mstack{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--muted);margin-top:14px;
+}
+.mini .mlink{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--accent);margin-top:12px;display:inline-block;
+}
+
+/* ── DARK PHILOSOPHY SECTION ────────────────────────── */
+.phi-wrap{
+  background:var(--ink);margin:0 -32px;padding:100px 32px;
+  border-top:1px solid #2a2920;
+}
+.phi-inner{max-width:var(--maxw);margin:0 auto}
+.phi-wrap .shead .num{color:var(--accent)}
+.phi-wrap .shead h2{color:rgba(250,250,247,.35)}
+.pullquote{
+  font-family:'Instrument Serif',serif;font-style:italic;
+  font-size:clamp(34px,5.2vw,64px);line-height:1.12;letter-spacing:-.02em;
+  color:#E8E7DE;max-width:22ch;margin-bottom:48px;
+}
+.pullquote em{color:var(--accent);font-style:normal}
+.prose-dark p{
+  max-width:62ch;font-size:18px;margin-bottom:20px;
+  color:rgba(232,231,222,.58);line-height:1.75;
+}
+.prose-dark strong{color:#E8E7DE;font-weight:600}
+
+/* ── ABOUT ──────────────────────────────────────────── */
+.about-grid{display:grid;grid-template-columns:220px 1fr;gap:52px;align-items:start}
+.about-photo{
+  width:220px;aspect-ratio:3/4;background:var(--line);border:1px solid var(--line);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  border-radius:2px;flex-shrink:0;overflow:hidden;
+}
+.about-photo span{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:var(--faint);letter-spacing:.06em;text-transform:uppercase;
+}
+.prose p{max-width:64ch;font-size:18px;margin-bottom:18px;color:#2c2b22;line-height:1.72}
+.prose strong{font-weight:700}
+.prose em{
+  font-family:'Instrument Serif',serif;font-style:italic;
+  color:var(--accent);font-size:20px;
+}
+
+/* ── CONTACT ────────────────────────────────────────── */
+.contact-head{
+  font-size:clamp(34px,5.8vw,60px);font-weight:800;
+  letter-spacing:-.03em;line-height:1.02;max-width:16ch;margin-top:12px;
+}
+.contact-head em{
+  font-family:'Instrument Serif',serif;font-style:italic;
+  font-weight:400;color:var(--accent);
+}
+
+/* ── FOOTER ─────────────────────────────────────────── */
+footer{border-top:1px solid var(--line);padding:28px 0}
+.foot{
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────── */
+@media(max-width:800px){
+  .about-grid{grid-template-columns:1fr}
+  .about-photo{width:100%;aspect-ratio:unset;height:180px;flex-direction:row}
+  .metrics{grid-template-columns:1fr 1fr}
+  .metric:nth-child(2){border-right:none}
+  .metric:nth-child(3){grid-column:1/-1;border-top:1px solid var(--line);border-right:none}
+}
+@media(max-width:640px){
+  .metrics{grid-template-columns:1fr}
+  .metric{border-right:none;border-bottom:1px solid var(--line)}
+  .metric:last-child{border-bottom:none}
+  .grid{grid-template-columns:1fr}
+  .dgrid{grid-template-columns:1fr}
+  header{padding:68px 0 40px}
+  .fcover{height:100px}
+  .fcover-giant{font-size:60px}
+}
+</style>
+</head>
+<body>
+
+<div id="cur-dot"></div>
+<div id="cur-ring"></div>
+<div id="progress"></div>
+
+<!-- STATUS BAR -->
+<div class="strip">
+  <div class="wrap">
+    <span><span class="blink"></span>SUJETH — SOFTWARE ENGINEER / PRODUCT BUILDER</span>
+    <nav class="nav-links" aria-label="Page sections">
+      <a href="#work">Work</a>
+      <a href="#philosophy">Thinking</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ── HERO ── -->
+  <header>
+    <div class="kick fade">// software · products · users</div>
+    <h1 class="fade" style="animation-delay:.06s">
+      I build software that solves real problems and <em>gets used.</em>
+    </h1>
+    <p class="sub fade" style="animation-delay:.13s">
+      Final-year AIML student at UVCE, Bangalore. I've built adaptive learning systems,
+      production commerce platforms, paid client websites, and software used by real
+      businesses and customers.
+    </p>
+    <div class="cta fade" style="animation-delay:.20s">
+      <a class="btn solid" href="mailto:a.s.sujeth17@gmail.com">Email me</a>
+      <a class="btn" href="https://github.com/sujeth-dev" target="_blank">GitHub</a>
+      <a class="btn" href="#" target="_blank">Résumé</a>
+      <a class="btn" href="https://www.linkedin.com/in/sujeth-a-s" target="_blank">LinkedIn</a>
+    </div>
+    <div class="metrics fade" style="animation-delay:.28s">
+      <div class="metric">
+        <div class="mn" data-count="11">0</div>
+        <div class="ml">Projects shipped</div>
+      </div>
+      <div class="metric">
+        <div class="mn" data-float="8.9">0.0</div>
+        <div class="ml">CGPA / 10</div>
+      </div>
+      <div class="metric">
+        <div class="mn" data-count="2">0</div>
+        <div class="ml">Paid clients</div>
+      </div>
+    </div>
+    <div class="building fade" style="animation-delay:.34s">
+      <span>CURRENTLY BUILDING:</span>
+      <b>Loyalty Platform</b> for independent restaurants &nbsp;/&nbsp;
+      <b>AirDraw</b> (computer-vision drawing)
+    </div>
+  </header>
+
+  <!-- ── 01 FEATURED WORK ── -->
+  <section id="work">
+    <div class="shead rv"><span class="num">01</span><h2>Featured Work</h2></div>
+
+    <!-- Synthesis -->
+    <div class="feat rv d1">
+      <div class="fcover" style="background:linear-gradient(135deg,#16124e 0%,#2b2080 100%)">
+        <div class="fcover-bg"></div>
+        <span class="fcover-giant">Synthesis</span>
+        <span class="fcover-label">01 — Adaptive Learning System</span>
+      </div>
+      <div class="fhead">
+        <div class="ftop">
+          <span class="fname">Synthesis</span>
+          <span class="pill live">Live / Solo</span>
+        </div>
+        <div class="ftype">Most platforms move every student through the same fixed curriculum.</div>
+        <div class="fbody">
+          Synthesis adapts learning paths based on what a learner actually knows.
+          As learners answer questions, mastery estimates continuously update and
+          future concepts unlock dynamically.
+        </div>
+        <ul class="flist">
+          <li>Knowledge graphs to model prerequisite relationships</li>
+          <li>Bayesian Knowledge Tracing to estimate mastery in real time</li>
+          <li>SM-2 spaced repetition for long-term retention</li>
+        </ul>
+        <div class="why">
+          <div class="wl">Why it matters</div>
+          Students spend less time on concepts they've mastered, and more time where learning is actually needed.
+        </div>
+        <div class="demo">
+          <div class="demobar">
+            <span class="tl" style="background:#ff5f57"></span>
+            <span class="tl" style="background:#febc2e"></span>
+            <span class="tl" style="background:#28c840"></span>
+            <span class="url">synthesis-adaptive-learning.vercel.app/demo</span>
+          </div>
+          <iframe class="demoframe" src="https://synthesis-adaptive-learning.vercel.app/demo"
+            title="Synthesis live demo" loading="lazy"></iframe>
+          <div class="demonote">↑ Live embed —
+            <a class="flink ext" href="https://synthesis-adaptive-learning.vercel.app/demo" target="_blank">open directly</a>
+            if your browser blocks framing
+          </div>
+        </div>
+        <div class="stack">
+          <span class="tag">Next.js</span><span class="tag">TypeScript</span>
+          <span class="tag">React Flow</span><span class="tag">Dagre</span>
+          <span class="tag">SQLite</span><span class="tag">JWT</span>
+        </div>
+        <div class="flinks">
+          <a class="flink ext" href="https://synthesis-adaptive-learning.vercel.app/demo" target="_blank">Live demo</a>
+          <a class="flink ext" href="https://github.com/Sujeth-17" target="_blank">Code</a>
+          <button class="csbtn" data-cs="synth">Case study ↓</button>
+        </div>
+      </div>
+      <div class="drawer" id="cs-synth">
+        <div class="dinner"><div class="dgrid">
+          <div class="dk">The idea</div>
+          <div class="dv">Treat a curriculum like a dependency graph, not a playlist.
+            You can't learn X before its prerequisites — so model that explicitly and
+            route each learner through what they actually need.</div>
+          <div class="dk">How it works</div>
+          <div class="dv"><ul>
+            <li>Prerequisite DAG — concepts as nodes, dependencies as edges, laid out with Dagre + React Flow.</li>
+            <li>BKT — probabilistic per-concept mastery that updates with every answer.</li>
+            <li>SM-2 — schedules reviews so retention compounds instead of cramming.</li>
+          </ul></div>
+          <div class="dk">Why it's hard</div>
+          <div class="dv">The three systems have to agree: mastery feeds what unlocks next,
+            which feeds what gets scheduled. Making the loop coherent —
+            not three features bolted together — was the real work.</div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- Possah -->
+    <div class="feat rv d2">
+      <div class="fcover" style="background:linear-gradient(135deg,#0b3020 0%,#154a32 100%)">
+        <div class="fcover-bg"></div>
+        <span class="fcover-giant">Possah</span>
+        <span class="fcover-label">02 — Production Commerce Platform</span>
+      </div>
+      <div class="fhead">
+        <div class="ftop">
+          <span class="fname">Possah</span>
+          <span class="pill live">Shipping / thepossah.com</span>
+        </div>
+        <div class="ftype">Commerce systems are more than storefronts.</div>
+        <div class="fbody">
+          A full-stack commerce platform for a boutique apparel retailer, built with
+          production-grade tooling. It handles product management, inventory, orders,
+          checkout, payments, content management, error monitoring, and automated testing.
+        </div>
+        <div class="why">
+          <div class="wl">Why it matters</div>
+          Reliability, operations, and customer experience all have to work together —
+          Razorpay payments, Sentry monitoring, and Playwright tests, not just an "add to cart" button.
+        </div>
+        <div class="stack">
+          <span class="tag">Next.js</span><span class="tag">TypeScript</span>
+          <span class="tag">PostgreSQL</span><span class="tag">Supabase</span>
+          <span class="tag">Razorpay</span><span class="tag">Sentry</span>
+          <span class="tag">Playwright</span><span class="tag">Vitest</span>
+        </div>
+        <div class="flinks">
+          <a class="flink ext" href="https://thepossah.com" target="_blank">Live</a>
+          <a class="flink ext" href="https://github.com/Sujeth-17" target="_blank">Code</a>
+          <button class="csbtn" data-cs="possah">Case study ↓</button>
+        </div>
+      </div>
+      <div class="drawer" id="cs-possah">
+        <div class="dinner"><div class="dgrid">
+          <div class="dk">The point</div>
+          <div class="dv">Most student e-commerce stops at the cart. This runs the full lifecycle —
+            real money in (Razorpay, server-side), real errors caught (Sentry), real flows
+            verified (Playwright E2E + Vitest). That combination is rare in a student project.</div>
+          <div class="dk">Scope</div>
+          <div class="dv">Public storefront + internal admin for catalog, inventory, orders,
+            and content. DB migrations and seed scripts so it's reproducible, not a one-off.</div>
+          <div class="dk">What I'd defend</div>
+          <div class="dv">Every line — payment handling, the test suite, the monitoring wiring.</div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- Zingara -->
+    <div class="feat rv d3">
+      <div class="fcover" style="background:linear-gradient(135deg,#540e00 0%,#7a1a00 100%)">
+        <div class="fcover-bg"></div>
+        <span class="fcover-giant">Zingara</span>
+        <span class="fcover-label">03 — Restaurant Website / Paid Client</span>
+      </div>
+      <div class="fhead">
+        <div class="ftop">
+          <span class="fname">Zingara</span>
+          <span class="pill client">Paid client / Live</span>
+        </div>
+        <div class="ftype">Restaurants should own part of their customer acquisition.</div>
+        <div class="fbody">
+          A paid client project for a Bangalore restaurant — built as their digital home
+          and optimised to drive customers toward WhatsApp, Swiggy, and Zomato ordering.
+          I handled client communication, design, development, deployment, and ongoing maintenance.
+        </div>
+        <div class="why">
+          <div class="wl">Why it matters</div>
+          Independent restaurants shouldn't rely entirely on aggregators for every customer.
+        </div>
+        <div class="stack">
+          <span class="tag">HTML</span><span class="tag">CSS</span>
+          <span class="tag">JavaScript</span><span class="tag">Vercel</span><span class="tag">SEO</span>
+        </div>
+        <div class="flinks">
+          <a class="flink ext" href="https://www.zingararestaurant.co.in/" target="_blank">Live</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fitness Garage -->
+    <div class="feat rv d4">
+      <div class="fcover" style="background:linear-gradient(135deg,#0f0f0a 0%,#252410 100%)">
+        <div class="fcover-bg"></div>
+        <span class="fcover-giant">Fitness</span>
+        <span class="fcover-label">04 — Gym Website / Paid Client</span>
+      </div>
+      <div class="fhead">
+        <div class="ftop">
+          <span class="fname">Fitness Garage</span>
+          <span class="pill client">Paid client / Live</span>
+        </div>
+        <div class="ftype">Every page designed around one job: convert visitors into members.</div>
+        <div class="fbody">
+          A paid client project for a Bangalore fitness centre — showcasing memberships,
+          facilities, programs, and reviews while driving trial bookings and WhatsApp enquiries.
+          Found, built, and deployed independently.
+        </div>
+        <div class="why">
+          <div class="wl">Why it matters</div>
+          A marketing site only earns its keep if it turns walk-ins into bookings —
+          so it's built around conversion, not decoration.
+        </div>
+        <div class="stack">
+          <span class="tag">HTML</span><span class="tag">CSS</span>
+          <span class="tag">JavaScript</span><span class="tag">WebP</span>
+        </div>
+        <div class="flinks">
+          <a class="flink ext" href="https://www.fitness-garage.in/" target="_blank">Live</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 02 OTHER PROJECTS ── -->
+  <section id="other">
+    <div class="shead rv"><span class="num">02</span><h2>Other Projects</h2></div>
+    <div class="grid">
+      <div class="mini rv d1">
+        <div class="mname">Blueprint Builder</div>
+        <div class="mdesc">Turns project requirements into structured development blueprints and implementation-ready prompts.</div>
+        <div class="mstack">Next.js / Supabase</div>
+        <a class="mlink" href="https://web-builder-1-six.vercel.app/" target="_blank">Live ↗</a>
+      </div>
+      <div class="mini rv d2">
+        <div class="mname">Gadget Store</div>
+        <div class="mdesc">Full-stack commerce: a Flutter mobile app, React admin dashboard, and Express backend off one API.</div>
+        <div class="mstack">Flutter / React / Express</div>
+        <a class="mlink" href="https://github.com/Sujeth-17" target="_blank">Code ↗</a>
+      </div>
+      <div class="mini rv d3">
+        <div class="mname">ReviewBoost</div>
+        <div class="mdesc">QR-based platform helping businesses convert happy customers into public reviews.</div>
+        <div class="mstack">Next.js / Supabase</div>
+        <a class="mlink" href="https://github.com/Sujeth-17" target="_blank">Code ↗</a>
+      </div>
+      <div class="mini rv d4">
+        <div class="mname">Restaurant Ordering App</div>
+        <div class="mdesc">Native Android app for menu browsing, ordering, and real-time order management.</div>
+        <div class="mstack">Kotlin / Jetpack Compose / MVVM</div>
+        <a class="mlink" href="https://github.com/Sujeth-17" target="_blank">Code ↗</a>
+      </div>
+      <div class="mini rv d5">
+        <div class="mname">AirDraw</div>
+        <div class="mdesc">Browser tool to draw shapes in mid-air — webcam tracks your fingertip and snaps the path to a clean preset.</div>
+        <div class="mstack">React / MediaPipe / Canvas</div>
+        <a class="mlink" href="#" target="_blank">Demo ↗</a>
+      </div>
+      <div class="mini rv d6">
+        <div class="mname">Space Shooter</div>
+        <div class="mdesc">Cross-platform arcade game with procedural spawning, progression, collision, and persistent scoring.</div>
+        <div class="mstack">Flutter / Flame Engine</div>
+        <a class="mlink" href="https://github.com/Sujeth-17" target="_blank">Code ↗</a>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /wrap -->
+
+<!-- ── 03 PHILOSOPHY (FULL-WIDTH DARK) ── -->
+<div class="phi-wrap" id="philosophy">
+  <div class="phi-inner">
+    <div class="shead rv"><span class="num">03</span><h2>Engineering Philosophy</h2></div>
+    <div class="pullquote rv d1">
+      The most rewarding projects aren't the ones<br>with the most code. They're the ones that<br>
+      <em>keep creating value after launch.</em>
+    </div>
+    <div class="prose-dark">
+      <p class="rv d2">
+        I enjoy building systems with multiple moving parts — an adaptive learning engine,
+        a commerce platform handling payments, software helping local businesses grow. I'm
+        interested in the <strong>intersection of technology, users, and business outcomes.</strong>
+      </p>
+      <p class="rv d3">
+        Engineering is only half the job. The other half is understanding what the software
+        needs to accomplish in the world — and building toward that outcome,
+        not just toward a passing test suite.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ── 04 ABOUT ── -->
+  <section id="about">
+    <div class="shead rv"><span class="num">04</span><h2>About</h2></div>
+    <div class="about-grid">
+      <div class="about-photo rv">
+        <span>Photo</span>
+        <span>coming soon</span>
+      </div>
+      <div class="prose">
+        <p class="rv d1">
+          I'm a final-year AIML student at UVCE, Bangalore. Over the last few years
+          I've built across web, mobile, AI, commerce, computer vision, games, and paid client work.
+        </p>
+        <p class="rv d2">
+          Alongside engineering, I've worked directly with businesses, led events, and
+          learned how products succeed <em>outside</em> the code editor. I'm drawn to product
+          engineering, full-stack systems, AI-powered applications, and software that
+          directly impacts users.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 05 CONTACT ── -->
+  <section id="contact">
+    <div class="shead rv"><span class="num">05</span><h2>Contact</h2></div>
+    <div class="contact-head rv d1">Let's build something <em>useful.</em></div>
+    <div class="cta rv d2" style="margin-top:34px">
+      <a class="btn solid" href="mailto:a.s.sujeth17@gmail.com">a.s.sujeth17@gmail.com</a>
+      <a class="btn" href="https://github.com/sujeth-dev" target="_blank">GitHub</a>
+      <a class="btn" href="https://www.linkedin.com/in/sujeth-a-s" target="_blank">LinkedIn</a>
+      <a class="btn" href="#" target="_blank">Résumé</a>
+    </div>
+  </section>
+
+</div><!-- /wrap -->
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 Sujeth / Bangalore</span>
+    <span>Built with HTML / CSS / JavaScript / Vercel</span>
+  </div>
+</footer>
+
+<script>
+/* ── CURSOR ─────────────────────────────────────────── */
+const dot = document.getElementById('cur-dot');
+const ring = document.getElementById('cur-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  dot.style.left = mx + 'px';
+  dot.style.top = my + 'px';
+});
+(function lerp() {
+  rx += (mx - rx) * .13;
+  ry += (my - ry) * .13;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(lerp);
+})();
+
+const interactive = 'a, button, .mini, .feat, .btn';
+document.querySelectorAll(interactive).forEach(el => {
+  el.addEventListener('mouseenter', () => { ring.style.width='52px'; ring.style.height='52px'; ring.style.opacity='.6'; });
+  el.addEventListener('mouseleave', () => { ring.style.width='34px'; ring.style.height='34px'; ring.style.opacity='.35'; });
+});
+
+/* ── SCROLL PROGRESS ────────────────────────────────── */
+const bar = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+  bar.style.width = (scrollY / (document.body.scrollHeight - innerHeight) * 100) + '%';
+}, { passive: true });
+
+/* ── SCROLL REVEALS ─────────────────────────────────── */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.rv, .rv-l').forEach(el => obs.observe(el));
+
+/* ── MAGNETIC BUTTONS ────────────────────────────────── */
+document.querySelectorAll('.btn').forEach(btn => {
+  btn.addEventListener('mousemove', e => {
+    const r = btn.getBoundingClientRect();
+    const x = (e.clientX - r.left - r.width / 2) * .22;
+    const y = (e.clientY - r.top - r.height / 2) * .22;
+    btn.style.transform = `translate(${x}px,${y}px)`;
+  });
+  btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+});
+
+/* ── COUNTER ANIMATION ───────────────────────────────── */
+function runCounter(el) {
+  const isFloat = 'float' in el.dataset;
+  const target = parseFloat(el.dataset.count ?? el.dataset.float);
+  const dur = 1400;
+  const t0 = performance.now();
+  (function tick(now) {
+    const p = Math.min((now - t0) / dur, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    el.textContent = isFloat ? (ease * target).toFixed(1) : Math.floor(ease * target) + (p >= 1 ? '+' : '');
+    if (p < 1) requestAnimationFrame(tick);
+    else el.textContent = isFloat ? target.toFixed(1) : target + '+';
+  })(t0);
+}
+const cntObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !e.target.dataset.ran) {
+      e.target.dataset.ran = '1'; runCounter(e.target);
+    }
+  });
+}, { threshold: 0.6 });
+document.querySelectorAll('[data-count],[data-float]').forEach(el => cntObs.observe(el));
+
+/* ── ACTIVE NAV ──────────────────────────────────────── */
+const navLinks = document.querySelectorAll('.nav-links a');
+const secIds = ['work','other','philosophy','about','contact'];
+const secObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(a => a.classList.remove('active'));
+      const a = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+      if (a) a.classList.add('active');
+    }
+  });
+}, { threshold: 0.35 });
+secIds.forEach(id => { const el = document.getElementById(id); if (el) secObs.observe(el); });
+
+/* ── CASE STUDY DRAWERS ──────────────────────────────── */
+document.querySelectorAll('.csbtn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const d = document.getElementById('cs-' + btn.dataset.cs);
+    const open = d.classList.toggle('open');
+    btn.textContent = open ? 'Case study ↑' : 'Case study ↓';
+  });
+});
+</script>
+</body>
+</html>

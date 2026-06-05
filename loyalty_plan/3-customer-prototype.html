@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Loop — Customer prototype</title>
+<link rel="stylesheet" href="shared/tokens.css" />
+<style>
+  body { background: var(--paper); overflow-x: hidden; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 28px; border-bottom: 0.5px solid var(--line); position: sticky; top: 0; background: rgba(244,240,232,0.92); backdrop-filter: blur(10px); z-index: 30; }
+  .topbar .links { display: flex; gap: 18px; font-size: 13px; }
+  .topbar .links a { color: var(--ink-3); text-decoration: none; }
+  .topbar .links a:hover, .topbar .links a.active { color: var(--ink); }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 36px 28px 24px; }
+
+  .head { display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end; margin-bottom: 28px; }
+  .title { font-family: var(--font-display); font-size: clamp(40px, 5vw, 64px); line-height: 1; letter-spacing: -0.025em; margin: 6px 0 0; font-weight: 400; }
+  .title em { font-style: italic; color: var(--coral); }
+  .sub { font-size: 15px; color: var(--ink-2); margin-top: 12px; max-width: 540px; }
+
+  /* Brand switcher */
+  .brand-row {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px;
+    background: #FCFAF4; border: 0.5px solid var(--line); border-radius: var(--r-lg);
+    padding: 14px;
+  }
+  .brand-btn {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px; border-radius: var(--r);
+    background: transparent; border: 0.5px solid transparent;
+    cursor: pointer; text-align: left; transition: all 0.15s;
+    font-family: var(--font-sans); color: var(--ink);
+  }
+  .brand-btn:hover { background: var(--paper-2); }
+  .brand-btn.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .brand-swatch {
+    width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+    border: 1.5px solid rgba(255,255,255,0.1); position: relative;
+  }
+  .brand-btn .meta { line-height: 1.15; }
+  .brand-btn .n { font-size: 14px; font-weight: 500; }
+  .brand-btn .t { font-size: 11px; font-family: var(--font-mono); letter-spacing: 0.06em; color: var(--ink-3); }
+  .brand-btn.on .t { color: rgba(244,240,232,0.6); }
+
+  /* View toggle */
+  .view-toggle {
+    display: inline-flex; background: var(--paper-2); padding: 4px;
+    border-radius: var(--r-pill); border: 0.5px solid var(--line); gap: 2px;
+  }
+  .view-toggle button {
+    background: transparent; border: 0; padding: 8px 14px; border-radius: var(--r-pill);
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-3); cursor: pointer;
+  }
+  .view-toggle button.on { background: var(--ink); color: var(--paper); }
+
+  /* Flow strip: horizontal scroll of phones */
+  .flow-wrap { overflow-x: auto; padding: 28px 0 36px; margin: 0 -28px; padding-left: 28px; padding-right: 28px; }
+  .flow {
+    display: flex; gap: 32px; align-items: flex-start;
+    width: max-content; padding-bottom: 28px; padding-top: 32px;
+  }
+  .phone-card {
+    position: relative;
+  }
+  .phone-label {
+    display: flex; gap: 10px; align-items: baseline; margin-bottom: 14px;
+    padding-left: 4px;
+  }
+  .phone-label .id {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em;
+    background: var(--ink); color: var(--paper); padding: 2px 7px; border-radius: var(--r-pill);
+  }
+  .phone-label .ttl {
+    font-family: var(--font-display); font-size: 18px; letter-spacing: -0.01em; color: var(--ink);
+  }
+  .phone-card .note {
+    margin-top: 14px; max-width: 300px; font-size: 12px; color: var(--ink-3); line-height: 1.45;
+    padding-left: 4px;
+  }
+
+  /* Focus view: 1 phone + sidebar */
+  .focus { display: grid; grid-template-columns: 1fr 360px; gap: 36px; align-items: start; padding-top: 12px; }
+  @media (max-width: 900px) { .focus { grid-template-columns: 1fr; } }
+  .focus-stage {
+    background: linear-gradient(180deg, transparent 0%, var(--paper-2) 100%);
+    border-radius: var(--r-lg); padding: 32px;
+    display: flex; justify-content: center; min-height: 920px;
+    border: 0.5px solid var(--line);
+  }
+  .focus-side { padding-top: 8px; }
+  .focus-side .screen-list { display: flex; flex-direction: column; gap: 2px; margin-top: 14px; }
+  .focus-side .screen-list button {
+    background: transparent; border: 0; padding: 10px 14px; border-radius: var(--r);
+    text-align: left; cursor: pointer; display: flex; gap: 12px; align-items: baseline;
+    font-family: var(--font-sans); color: var(--ink); font-size: 14px;
+  }
+  .focus-side .screen-list button:hover { background: var(--paper-2); }
+  .focus-side .screen-list button.on { background: var(--paper-2); font-weight: 500; }
+  .focus-side .screen-list button .id {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; color: var(--ink-3);
+  }
+  .focus-side .desc {
+    margin-top: 24px; padding: 18px 20px; background: #FCFAF4; border: 0.5px solid var(--line); border-radius: var(--r);
+    font-size: 13.5px; color: var(--ink-2); line-height: 1.55;
+  }
+  .focus-side .desc .lbl {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-3); margin-bottom: 6px;
+  }
+
+  .legend {
+    margin-top: 24px; font-size: 13px; color: var(--ink-3); line-height: 1.55;
+    display: flex; gap: 24px; flex-wrap: wrap; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; font-size: 10px;
+  }
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<nav class="topbar">
+  <a href="index.html" class="loop-mark">Loop</a>
+  <div class="links">
+    <a href="index.html">All</a>
+    <a href="1-overview.html">Overview</a>
+    <a href="2-engines-atlas.html">Engines</a>
+    <a href="3-customer-prototype.html" class="active">Customer</a>
+    <a href="4-admin-prototype.html">Admin</a>
+    <a href="5-counter-mode.html">Counter</a>
+  </div>
+</nav>
+
+<div class="wrap" data-screen-label="03 Customer Prototype">
+  <div class="head">
+    <div>
+      <div class="eyebrow">03 · Customer-side hi-fi prototype</div>
+      <h1 class="title">The <em>customer</em> never sees Loop.<br/>They see <em>your</em> restaurant.</h1>
+      <p class="sub">Same engine, fully white-labelled per restaurant. Switch brand to see how voice, colour, and reward shape change — the underlying flow stays identical.</p>
+    </div>
+    <div id="view-toggle-mount"></div>
+  </div>
+
+  <div id="brand-mount"></div>
+  <div id="app-mount"></div>
+
+  <div class="legend">
+    <span>10 customer states · MVP1</span>
+    <span>·</span>
+    <span>1 web flow · no app download</span>
+    <span>·</span>
+    <span>WhatsApp = sender + receiver</span>
+  </div>
+</div>
+
+<script src="shared/brand-data.js"></script>
+<script type="text/babel" src="shared/ios-frame.jsx"></script>
+<script type="text/babel" src="customer-screens.jsx"></script>
+<script type="text/babel">
+const { useState } = React;
+
+function BrandRow({ active, onPick }) {
+  const ids = Object.keys(window.BRANDS);
+  return (
+    <div className="brand-row">
+      {ids.map(id => {
+        const b = window.BRANDS[id];
+        const on = active === id;
+        return (
+          <button key={id} onClick={() => onPick(id)} className={"brand-btn" + (on ? ' on' : '')}>
+            <div className="brand-swatch" style={{
+              background: `conic-gradient(${b.accent} 0% 60%, ${b.contrast} 60% 100%)`,
+            }}/>
+            <div className="meta">
+              <div className="n">{b.name}</div>
+              <div className="t">{b.type}</div>
+            </div>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function ViewToggle({ view, onChange }) {
+  return (
+    <div className="view-toggle">
+      <button className={view === 'flow' ? 'on' : ''} onClick={() => onChange('flow')}>Flow view</button>
+      <button className={view === 'focus' ? 'on' : ''} onClick={() => onChange('focus')}>Focus view</button>
+    </div>
+  );
+}
+
+function FlowView({ brand }) {
+  const b = window.BRANDS[brand];
+  return (
+    <div className="flow-wrap">
+      <div className="flow">
+        {window.CUSTOMER_SCREENS.map((s) => {
+          const Comp = s.Comp;
+          return (
+            <div key={s.id} className="phone-card" data-screen-label={`Customer ${s.id} ${s.title}`}>
+              <div className="phone-label">
+                <span className="id">{s.id}</span>
+                <span className="ttl">{s.title}</span>
+              </div>
+              <IOSDevice width={340} height={736} dark={b.dark}>
+                <Comp b={b}/>
+              </IOSDevice>
+              <div className="note">{s.desc}</div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function FocusView({ brand }) {
+  const [sid, setSid] = useState('05');
+  const b = window.BRANDS[brand];
+  const screen = window.CUSTOMER_SCREENS.find(s => s.id === sid);
+  const Comp = screen.Comp;
+  return (
+    <div className="focus">
+      <div className="focus-stage" data-screen-label={`Customer focus ${screen.id} ${screen.title}`}>
+        <IOSDevice width={402} height={870} dark={b.dark}>
+          <Comp b={b}/>
+        </IOSDevice>
+      </div>
+      <div className="focus-side">
+        <div className="eyebrow">10 screens</div>
+        <div className="screen-list">
+          {window.CUSTOMER_SCREENS.map(s => (
+            <button key={s.id} className={s.id === sid ? 'on' : ''} onClick={() => setSid(s.id)}>
+              <span className="id">{s.id}</span>
+              <span>{s.title}</span>
+            </button>
+          ))}
+        </div>
+        <div className="desc">
+          <div className="lbl">{screen.id} · {screen.title}</div>
+          {screen.desc}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [brand, setBrand] = useState('filter');
+  const [view, setView] = useState('flow');
+
+  React.useEffect(() => {
+    ReactDOM.createRoot(document.getElementById('view-toggle-mount')).render(
+      <ViewToggle view={view} onChange={setView}/>
+    );
+  }, [view]);
+
+  return (
+    <>
+      <BrandRow active={brand} onPick={setBrand}/>
+      {view === 'flow' ? <FlowView brand={brand}/> : <FocusView brand={brand}/>}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('app-mount')).render(<App/>);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,528 @@
+
+<style>
+*{box-sizing:border-box}
+.nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.nb{font-size:12px;padding:5px 13px;border-radius:16px;border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);cursor:pointer;transition:all .15s}
+.nb.on{background:var(--color-text-primary);color:var(--color-background-primary);border-color:transparent}
+.nb:hover:not(.on){background:var(--color-background-secondary);color:var(--color-text-primary)}
+.pane{display:none}.pane.on{display:block}
+.sl{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--color-text-tertiary);margin:22px 0 10px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:15px 17px;margin-bottom:10px}
+.ch{display:flex;gap:10px;align-items:flex-start;margin-bottom:7px}
+.bdg{font-size:11px;font-weight:500;padding:3px 8px;border-radius:9px;white-space:nowrap;flex-shrink:0;margin-top:1px}
+.r{background:var(--color-background-danger);color:var(--color-text-danger)}
+.a{background:var(--color-background-warning);color:var(--color-text-warning)}
+.g{background:var(--color-background-success);color:var(--color-text-success)}
+.b{background:var(--color-background-info);color:var(--color-text-info)}
+.p{background:#EEEDFE;color:#3C3489}
+.ct{font-size:14px;font-weight:500;color:var(--color-text-primary);line-height:1.4}
+.cb{font-size:13px;color:var(--color-text-secondary);line-height:1.6}
+.fix{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 13px;margin-top:9px;font-size:13px;color:var(--color-text-primary);line-height:1.6}
+.fl{font-size:11px;font-weight:500;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.sm{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:13px 15px}
+.sn{font-size:20px;font-weight:500;color:var(--color-text-primary);line-height:1.2}
+.sl2{font-size:12px;color:var(--color-text-secondary);margin-top:3px}
+.loop-step{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
+.lnum{width:26px;height:26px;border-radius:50%;background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:var(--color-text-primary);flex-shrink:0}
+.lc{flex:1}
+.lt{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px}
+.lb{font-size:12px;color:var(--color-text-secondary);line-height:1.5}
+.lcon{width:1px;height:10px;background:var(--color-border-secondary);margin:0 0 2px 12px}
+.tag{display:inline-block;font-size:11px;padding:2px 7px;border-radius:7px;margin:2px}
+.tg{background:#EAF3DE;color:#3B6D11}
+.tr{background:#FCEBEB;color:#A32D2D}
+.ta{background:#FAEEDA;color:#854F0B}
+.tp{background:#EEEDFE;color:#3C3489}
+.tb{background:#E6F1FB;color:#0C447C}
+.div{border:none;border-top:0.5px solid var(--color-border-tertiary);margin:18px 0}
+.lvl-hdr{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.lvl-circle{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0}
+.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mini{font-size:12px;color:var(--color-text-secondary);line-height:1.5}
+.bold{font-weight:500;color:var(--color-text-primary)}
+</style>
+
+<div style="padding:4px 0 16px">
+  <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 4px">Reward logic deep framework</p>
+  <p style="font-size:13px;color:var(--color-text-secondary);margin:0">Psychology → loop structure → what/when/how to reward → blueprint per restaurant type</p>
+</div>
+
+<div class="nav">
+  <button class="nb on" onclick="sw('psych')">The science</button>
+  <button class="nb" onclick="sw('loops')">Loop architecture</button>
+  <button class="nb" onclick="sw('levels')">Level logic</button>
+  <button class="nb" onclick="sw('what')">What to reward</button>
+  <button class="nb" onclick="sw('when')">When to reward</button>
+  <button class="nb" onclick="sw('mistakes')">What kills it</button>
+  <button class="nb" onclick="sw('blueprint')">Master blueprint</button>
+</div>
+
+<!-- SCIENCE -->
+<div id="pane-psych" class="pane on">
+  <p class="sl">The 5 psychological forces you must design around</p>
+
+  <div class="card">
+    <div class="ch"><span class="bdg p">Force 1</span><div class="ct">Variable reward schedule — the dopamine engine</div></div>
+    <div class="cb">B.F. Skinner's 1950s research proved that unpredictable rewards create more persistent behavior than fixed rewards. A rat pressing a lever for random food portions pressed far more than one getting the same amount every time. The brain's dopamine system responds more powerfully to <em>anticipation</em> of a reward than the reward itself — this is why slot machines are addictive and why Zomato's scratch cards work. Fixed rewards (5 visits = free coffee) are predictable — useful for habit formation but they plateau. Variable rewards (spin to win, surprise bonus, mystery reward at random milestones) create compulsion.</div>
+    <div class="fix"><div class="fl">How to use this</div>Layer both: fixed loops for habit formation + variable surprises layered on top. Example: the 5-visit coffee loop is fixed (safety, predictable value). But on visit 3, a surprise "bonus reward unlocked" fires. Customer didn't expect it. Dopamine spike. They tell their friend. They come back faster.</div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="bdg p">Force 2</span><div class="ct">Endowed progress effect — the head start trick</div></div>
+    <div class="cb">Nunes &amp; Drèze (2006) gave 300 car wash customers two different loyalty cards. Group A: 10 stamps needed, 2 already filled in. Group B: 8 stamps needed, none filled in. Both required 8 actual stamps. Result: Group A completed at 34% vs Group B at 19%. The only difference was the illusion of a head start. Humans are more motivated to complete something that's already begun than to start something new. This is why LinkedIn shows "your profile is 40% complete" — you feel obligated to finish.</div>
+    <div class="fix"><div class="fl">How to use this</div>Never show a customer an empty progress bar. On first scan, their milestone is already at 1/5 — "Your first visit counted!" The loop started the moment they walked in. This single tweak can increase loop completion by 50–80% based on research.</div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="bdg p">Force 3</span><div class="ct">Goal gradient effect — acceleration near the finish</div></div>
+    <div class="cb">Kivetz, Urminsky &amp; Zheng (2006) showed that people accelerate their behavior as they get closer to a goal. Coffee shop customers visited more frequently as they approached their free drink milestone. The closer to the goal, the faster they moved. This is why progress bars are so powerful — they make the gap feel closeable. When a customer is at 4/5 visits, they will actively think "I should go this week" in a way they never did at 1/5.</div>
+    <div class="fix"><div class="fl">How to use this</div>Send a WhatsApp trigger at 60% and 80% of every loop: "You're 2 visits away from your free dessert." This is the highest-ROI message you will ever send. It activates goal gradient acceleration at exactly the right moment.</div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="bdg p">Force 4</span><div class="ct">Loss aversion — status you don't want to lose</div></div>
+    <div class="cb">Kahneman showed losses feel 2× more painful than equivalent gains feel good. Once a customer has earned status or progress, they will work harder to keep it than to get it in the first place. Starbucks Gold status works not because of what it gives you — but because losing it feels worse than the perks feel good. This is also why expiring points create urgency: "Your reward expires in 3 days" outperforms "You have a reward available" every single time.</div>
+    <div class="fix"><div class="fl">How to use this</div>Set reward expiry dates (30–60 days is ideal). Send expiry warning 5 days before. Use language of loss: "Your free dessert expires Friday" not "Don't forget your reward." Also: once a customer completes a journey and unlocks Level 2, remind them what they'd lose if they stop — their unlocked journey, their status, their streak.</div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="bdg p">Force 5</span><div class="ct">Reciprocity &amp; social identity — "I'm a regular here"</div></div>
+    <div class="cb">When a restaurant gives someone a reward, the customer feels a subconscious obligation to return — not because they're calculating value, but because being recognized as a regular is a part of their self-identity. "This is my place" is more powerful than any discount. Starbucks nails this by knowing your name and order. The goal is to make the customer feel the restaurant knows them — and that loyalty is about belonging, not just getting free stuff.</div>
+    <div class="fix"><div class="fl">How to use this</div>Personalize every touchpoint with the customer's name. "Hey Priya, you're 1 away from your free cocktail" feels completely different from "Dear customer." Also, reward non-transactional milestones: birthday, restaurant anniversary ("You've been with us for 6 months!"). These create identity attachment, not just transactional loyalty.</div>
+  </div>
+</div>
+
+<!-- LOOP ARCHITECTURE -->
+<div id="pane-loops" class="pane">
+  <p class="sl">The 4-layer loop system — how to stack engagement</p>
+
+  <div class="card" style="border-color:#7F77DD">
+    <div class="lvl-hdr">
+      <div class="lvl-circle" style="background:#EEEDFE;color:#3C3489">L1</div>
+      <div>
+        <div style="font-size:14px;font-weight:500;color:var(--color-text-primary)">The entry loop — hook fast</div>
+        <div style="font-size:12px;color:var(--color-text-secondary)">First scan → first reward. Must complete within 2–3 visits.</div>
+      </div>
+    </div>
+    <div class="cb">This is the only loop most restaurants think about. It's the shortest, cheapest, and most important. Its only job is to prove value quickly enough that the customer bothers coming back. The reward here is low-cost but immediate. The psychology is endowed progress + reciprocity — "they already gave me something, and I'm almost done."</div>
+    <div class="fix">
+      <div class="fl">Structure</div>
+      <strong>5 visits → free item of restaurant's choice</strong> (coffee, dessert, side dish — high perceived value, low actual cost).<br>
+      Start customer at visit 1/5 on first scan (endowed progress).<br>
+      Reward fires automatically on visit 5 — no staff involvement needed.<br>
+      Total cost to restaurant: ₹80–₹150. Value to build habit: enormous.
+    </div>
+  </div>
+
+  <div class="card" style="border-color:#1D9E75">
+    <div class="lvl-hdr">
+      <div class="lvl-circle" style="background:#E1F5EE;color:#0F6E56">L2</div>
+      <div>
+        <div style="font-size:14px;font-weight:500;color:var(--color-text-primary)">The engagement loop — earn through action</div>
+        <div style="font-size:12px;color:var(--color-text-secondary)">Behavior-based rewards. Unlocks after L1 completes.</div>
+      </div>
+    </div>
+    <div class="cb">Once a customer has proven they come back, the engagement loop activates. This is where your activity system lives — reviewing, sharing, referring. These behaviors have direct value to the restaurant (social proof, new customers) so the reward can and should be higher. Critically: this loop runs in parallel with L3, not instead of it. Completing activities doesn't replace visits — it supplements them.</div>
+    <div class="fix">
+      <div class="fl">Structure</div>
+      Each activity unlocks a specific reward — not a generic "points." The reward should match the behavior's value to the restaurant.<br><br>
+      <span class="tag tg">Leave a Google review → free drink</span>
+      <span class="tag tg">Share an Instagram story → 20% off next visit</span>
+      <span class="tag tg">Refer a friend who visits → free starter</span>
+      <span class="tag ta">Post a reel → exclusive invite to a private tasting</span>
+      <span class="tag tb">Birthday visit → complimentary dessert</span>
+    </div>
+  </div>
+
+  <div class="card" style="border-color:#D85A30">
+    <div class="lvl-hdr">
+      <div class="lvl-circle" style="background:#FAECE7;color:#993C1D">L3</div>
+      <div>
+        <div style="font-size:14px;font-weight:500;color:var(--color-text-primary)">The habit loop — build a ritual</div>
+        <div style="font-size:12px;color:var(--color-text-secondary)">Category-specific repeat behavior. This is where true retention lives.</div>
+      </div>
+    </div>
+    <div class="cb">This is the deepest retention layer — building category-specific rituals. Not just "visit 5 times" but "drink 5 cold brews" or "order brunch 3 Sundays." This loop targets the specific behavior the restaurant wants to reinforce — and it evolves. Once a brunch loop completes, a cocktail evening loop unlocks. The customer never runs out of progress to make. This is the Duolingo streak mechanic applied to dining.</div>
+    <div class="fix">
+      <div class="fl">Structure — evolving loops</div>
+      <strong>Loop 1 (entry habit):</strong> Any 5 visits → free item. Simple, accessible.<br>
+      <strong>Loop 2 (category habit):</strong> 3 weekend brunches → signature dish free. Builds specific day-of-week habit.<br>
+      <strong>Loop 3 (product habit):</strong> 5 cocktails ordered → cocktail masterclass invite. Deepens product engagement.<br>
+      <strong>Loop 4 (ambassador):</strong> Bring 3 new people who join loyalty → exclusive member dinner invite.<br>
+      Each loop unlocks the next. Customer always has a journey active.
+    </div>
+  </div>
+
+  <div class="card" style="border-color:#BA7517">
+    <div class="lvl-hdr">
+      <div class="lvl-circle" style="background:#FAEEDA;color:#633806">L4</div>
+      <div>
+        <div style="font-size:14px;font-weight:500;color:var(--color-text-primary)">The status loop — identity and belonging</div>
+        <div style="font-size:12px;color:var(--color-text-secondary)">Long-term recognition. Makes loyalty a social identity.</div>
+      </div>
+    </div>
+    <div class="cb">The rarest customers become brand ambassadors because the restaurant has become part of who they are. Status isn't about more discounts — it's about recognition, exclusivity, and access that money can't buy. A "Regular" tag means nothing. Being personally invited to the new menu tasting before it opens to the public — that means everything. This is the layer that creates the customers who bring their friends, post about the restaurant unprompted, and never churn.</div>
+    <div class="fix">
+      <div class="fl">Structure — what status feels like</div>
+      Reserved table during peak hours without booking.<br>
+      Name on the "regulars board" (physical or digital).<br>
+      First access to new menu items before public launch.<br>
+      Invited to private events, tastings, chef's table nights.<br>
+      Personal WhatsApp from the manager/owner on birthday.<br>
+      <em>Cost to restaurant: near zero. Value to customer: infinite.</em>
+    </div>
+  </div>
+
+  <div class="div"></div>
+  <p class="sl">The hook model — applied to your platform</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div class="card">
+      <div style="font-size:12px;font-weight:500;color:var(--color-text-info);margin-bottom:6px">1. Trigger</div>
+      <div class="cb">External: QR code at table, WhatsApp "you're 1 away" message, Instagram story mention by friend.<br>Internal (built over time): "I feel like visiting Smoor today" — the brand becomes the trigger itself.</div>
+    </div>
+    <div class="card">
+      <div style="font-size:12px;font-weight:500;color:var(--color-text-warning);margin-bottom:6px">2. Action</div>
+      <div class="cb">Visit, scan QR, complete activity. The action must be simpler than the reward feels. Friction kills this step — one tap to check in, no login, no form.</div>
+    </div>
+    <div class="card">
+      <div style="font-size:12px;font-weight:500;color:var(--color-text-danger);margin-bottom:6px">3. Variable reward</div>
+      <div class="cb">Sometimes it's a milestone completion. Sometimes it's a surprise bonus on an unexpected visit. Sometimes it's a personal message. The variability keeps anticipation alive.</div>
+    </div>
+    <div class="card">
+      <div style="font-size:12px;font-weight:500;color:var(--color-text-success);margin-bottom:6px">4. Investment</div>
+      <div class="cb">The customer builds progress they don't want to abandon. Their journey history, their unlocked loops, their status tier. The more they invest, the more costly it is to leave. This is the moat.</div>
+    </div>
+  </div>
+</div>
+
+<!-- LEVEL LOGIC -->
+<div id="pane-levels" class="pane">
+  <p class="sl">Reward logic by customer level — not all customers are equal</p>
+
+  <div class="card">
+    <div class="ch"><span class="bdg b">Level 0</span><div class="ct">First-time visitor (never been before)</div></div>
+    <div class="cb">They have zero emotional investment. They don't know if they'll return. The loyalty system must do two things: surprise them with something they didn't expect, and make the next visit feel inevitable — like they'd be leaving something on the table if they didn't come back.</div>
+    <div class="fix">
+      <div class="fl">What to give</div>
+      Instant welcome reward on scan: "Welcome! Your first visit already counts — you're 1/5 toward a free [item]."<br>
+      Low-cost, high-perceived-value item suggestion: free drink upgrade, complimentary dessert sample.<br>
+      Never ask them to "complete your profile" on first visit. Just give them the win.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="bdg g">Level 1</span><div class="ct">Early returner (2–4 visits)</div></div>
+    <div class="cb">They've come back once or twice but the habit isn't formed yet. They're in the "testing" phase — deciding if this place is worth returning to. The loyalty system must increase visit frequency here. Goal gradient is most powerful at this stage — show them they're close.</div>
+    <div class="fix">
+      <div class="fl">What to give + when</div>
+      Keep the milestone loop front and center — progress bar is the hero element.<br>
+      Introduce one engagement activity: "Leave a Google review and unlock a free coffee today."<br>
+      At 60% completion: WhatsApp trigger fires ("2 more visits and your free [item] unlocks").<br>
+      Don't offer too many activities yet — one clear path is better than five.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="bdg a">Level 2</span><div class="ct">Habitual visitor (5–15 visits, completed first loop)</div></div>
+    <div class="cb">The habit is forming. They've completed at least one loop. They're starting to feel like regulars. This is where you must evolve the experience — if the program feels the same as when they started, engagement decays. New journey must unlock with fanfare.</div>
+    <div class="fix">
+      <div class="fl">What to give + how to escalate</div>
+      Celebrate loop completion: full-screen moment, animated unlock, "You've been coming here for 2 months — you're officially a regular."<br>
+      Unlock engagement activities: social sharing, referral, event participation.<br>
+      Introduce category-specific Loop 2 (brunch visits, cocktail orders, etc.)<br>
+      Add variable element: occasional surprise "mystery reward" to maintain dopamine loop.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="bdg r">Level 3</span><div class="ct">Loyal regular (15+ visits, multiple loops)</div></div>
+    <div class="cb">These are your most valuable customers — they drive 65–80% of restaurant revenue despite being a minority of visitors. The risk here is program fatigue — if there's nothing new to earn, they disengage. Rewards at this level must shift from transactional to experiential and status-based.</div>
+    <div class="fix">
+      <div class="fl">What to give — shift from discounts to access</div>
+      Stop giving discounts. They don't need them — they already come here.<br>
+      Give access: early menu previews, private events, chef interaction.<br>
+      Give recognition: "You've been with us for 6 months" milestone, personal manager message.<br>
+      Give exclusivity: a reward tier only they can see. Make it feel earned and rare.<br>
+      Trigger referral activity strongly here — loyal regulars have the most credible word-of-mouth.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="bdg p">Level 4</span><div class="ct">Lapsed customer (no visit in 30+ days)</div></div>
+    <div class="cb">They didn't leave because they hate you — they just forgot, or life got in the way. Research shows 60% of lapsed customers will return with the right trigger at the right time. The cost of winning them back is a fraction of acquiring a new customer. Loss aversion works in your favor here — remind them what they'd be missing.</div>
+    <div class="fix">
+      <div class="fl">Win-back sequence</div>
+      Day 30: "We haven't seen you in a while — your [X] journey is still waiting for you."<br>
+      Day 45: "Your progress is still saved — come back this week and pick up where you left off."<br>
+      Day 60: Final offer — a genuine "comeback reward." A specific, time-limited, high-value item.<br>
+      If no response after 60 days: archive. Don't keep messaging — it becomes spam.
+    </div>
+  </div>
+</div>
+
+<!-- WHAT TO REWARD -->
+<div id="pane-what" class="pane">
+  <p class="sl">What to reward — and what not to</p>
+
+  <div class="card">
+    <div class="ch"><span class="bdg g">Reward this</span><div class="ct">Behaviors that directly benefit the restaurant</div></div>
+    <div class="cb">Every reward you give should either drive a visit, increase spend, or amplify marketing. If a behavior does none of those things, the reward is charity — not strategy.</div>
+    <div class="fix">
+      <div class="fl">High-value behaviors to reward</div>
+      <span class="tag tg">Visit frequency</span> — core of every loyalty program. Reward the repeat.<br>
+      <span class="tag tg">Off-peak visits</span> — double reward on Mon/Tue/Wed. Smooths revenue curve.<br>
+      <span class="tag tg">Google/Zomato review</span> — direct SEO and discovery value. High reward justified.<br>
+      <span class="tag tg">Instagram story with location tag</span> — free marketing to their followers.<br>
+      <span class="tag tg">Friend referral who actually visits</span> — highest-value acquisition you can get.<br>
+      <span class="tag tg">Birthday visit</span> — creates a ritual and brings a group.<br>
+      <span class="tag tg">Event participation</span> — drives covers on otherwise slow event nights.<br>
+      <span class="tag ta">Higher spend visit</span> — "upgrade your order to unlock a bonus reward."
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="bdg r">Never reward this</span><div class="ct">Behaviors that cost you without compounding value</div></div>
+    <div class="cb">These seem generous but train customers to behave in ways that hurt your business — or reward behaviors they'd do anyway, wasting your reward budget.</div>
+    <div class="fix">
+      <div class="fl">Behaviors to avoid rewarding</div>
+      <span class="tag tr">Signing up alone (no visit)</span> — rewards people for doing nothing. Inflate database with ghosts.<br>
+      <span class="tag tr">Negative reviews</span> — obvious but make sure your system can't be gamed this way.<br>
+      <span class="tag tr">Delivery orders (if you want dine-in)</span> — unless your goal IS delivery. Reward the channel you want.<br>
+      <span class="tag tr">Just following on Instagram</span> — no visit intent, no behavior change.<br>
+      <span class="tag tr">Complaints/feedback forms alone</span> — gameable and breeds complaint behavior.<br>
+      <span class="tag tr">Sharing another restaurant's post</span> — always check activity rules for gaming potential.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="bdg b">Reward type ladder — what to give at each stage</span><div class="ct">Match reward type to customer maturity</div></div>
+    <div class="cb">The type of reward matters as much as the trigger. Early customers need tangible value. Mature customers need status and experience. Getting this wrong is the most common loyalty mistake — giving discounts to regulars who'd visit anyway.</div>
+    <div class="fix">
+      <div class="fl">The reward type ladder</div>
+      <strong>Visits 1–5 (trust building):</strong> Free item on the menu. Tangible, immediate, clear value. Perceived value high, actual cost low (₹80–₹150).<br><br>
+      <strong>Visits 6–15 (habit phase):</strong> % discounts, free upgrades, combo deals. Encourage higher spend alongside the reward.<br><br>
+      <strong>Visits 15–30 (regular phase):</strong> Exclusive early access. First to know about new menu items. Skip-the-queue on busy nights. Priority reservation.<br><br>
+      <strong>Visits 30+ (ambassador phase):</strong> Experiences — private tastings, chef's table, name on the wall, special anniversary recognition. Never discount these customers — they'll pay full price anyway.<br><br>
+      <strong>Social activities (any phase):</strong> Match reward to the marketing value. Google review (massive SEO value) = free drink. Reel with 1000+ views = exclusive invite. Scale reward to ROI.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="bdg a">Cost vs perceived value — the math</span><div class="ct">Rewards that feel big but cost little</div></div>
+    <div class="cb">The best rewards are those where the gap between actual cost and perceived value is widest. A 50% discount feels enormous but costs you margin on every item. A "reserved table at the best seat in the house" costs you nothing but feels extremely special.</div>
+    <div class="fix">
+      <div class="fl">High perceived value / low actual cost rewards</div>
+      Chef's table experience (10-person monthly) → costs 1 evening, creates 10 ambassador stories.<br>
+      Birthday message from the chef/owner personally → costs 2 minutes, creates lifelong loyalty.<br>
+      "First look" at the new menu before launch → costs nothing, makes them feel VIP.<br>
+      Early reservation access before public booking → costs nothing operationally.<br>
+      Complimentary amuse-bouche on arrival (if you're premium) → ₹50 cost, feels like ₹500 gesture.<br>
+      Name on the "regulars board" → ₹0 cost, identity-level attachment.
+    </div>
+  </div>
+</div>
+
+<!-- WHEN TO REWARD -->
+<div id="pane-when" class="pane">
+  <p class="sl">When to reward — timing is everything</p>
+
+  <div class="card">
+    <div class="ch"><span class="bdg g">Immediately</span><div class="ct">Rewards that must fire within seconds</div></div>
+    <div class="cb">Any delay between behavior and reward weakens the psychological connection. Skinner's research showed that immediate reinforcement creates the strongest habit loops. If a customer checks in and gets a WhatsApp message 3 days later, it's meaningless. If they get it while still at the restaurant, it's magic.</div>
+    <div class="fix">
+      <div class="fl">Must be instant (within 60 seconds)</div>
+      First scan / sign-up → welcome message + progress shown.<br>
+      Milestone completion (5th visit) → reward unlocks with notification while still in restaurant.<br>
+      Activity submission (review/story) → "Received! Your reward is being processed" confirmation.<br>
+      Referral friend visits → referrer notified same day.<br>
+      Birthday date → message fires at 9am on their birthday, not a week later.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="bdg a">Anticipatory</span><div class="ct">Messages sent before the reward moment to build anticipation</div></div>
+    <div class="cb">Dopamine spikes on anticipation, not just receipt. Sending a message before a reward unlocks creates a "looking forward to it" emotion that makes the actual visit more enjoyable. This is why Swiggy shows your delivery driver on a map — the anticipation is part of the experience.</div>
+    <div class="fix">
+      <div class="fl">Anticipatory trigger windows</div>
+      At 60% loop progress: "You're getting close — 2 more [coffees/visits/cocktails] to go."<br>
+      3 days before birthday: "Your birthday's coming up — we have something special for you."<br>
+      Week before a recurring event: "Our Sunday jazz brunch is back — your loyalty discount is waiting."<br>
+      When a new journey unlocks: "A new challenge just opened for you — explore it."
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="bdg b">Urgency-based</span><div class="ct">Time-limited rewards that activate loss aversion</div></div>
+    <div class="cb">"Your reward is available" gets ignored. "Your reward expires in 72 hours" gets action. Loss aversion means the fear of losing something is twice as motivating as the excitement of gaining the same thing. Every reward should have an expiry — not punishingly short (3 days is too aggressive for monthly diners), but real enough to feel urgent.</div>
+    <div class="fix">
+      <div class="fl">Optimal expiry windows by restaurant type</div>
+      Coffee shop (daily habit): 7–14 days. Customers come frequently anyway.<br>
+      Casual dining (weekly habit): 21–30 days. Enough time to plan a visit.<br>
+      Fine dining/resto-bar (monthly habit): 45–60 days. Respect that they may only visit monthly.<br>
+      One-time event rewards (e.g. "bring a friend this weekend"): 5–7 days. Short urgency is fine for specific campaigns.<br><br>
+      Always: send an expiry reminder 5 days before. "Your [reward] expires on [date]."
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="bdg r">Never send at these moments</span><div class="ct">Timing mistakes that kill trust</div></div>
+    <div class="fix">
+      <div class="fl">Timing to avoid</div>
+      During meal service hours (1–3pm, 8–10pm) — nobody checks loyalty messages when eating.<br>
+      Monday morning — lowest dining intent day of the week.<br>
+      Multiple messages in one day — more than 2 WhatsApp messages in a day = muted or blocked.<br>
+      Generic campaigns on festival days everyone is messaging on (Diwali, New Year) — gets lost in noise.<br><br>
+      <strong>Best send windows (India specific):</strong><br>
+      Weekday campaigns: Tuesday–Thursday, 11am or 6pm.<br>
+      Weekend nudges: Friday 4pm ("plans for tonight?").<br>
+      Birthday messages: 8–9am on the day itself.
+    </div>
+  </div>
+</div>
+
+<!-- WHAT KILLS IT -->
+<div id="pane-mistakes" class="pane">
+  <p class="sl">The 8 things that kill loyalty programs — avoid all of them</p>
+
+  <div class="card">
+    <div class="ch"><span class="bdg r">Killer 1</span><div class="ct">Rewards that feel too far away</div></div>
+    <div class="cb">If the first reward requires 10+ visits, casual diners quit after 3. Research shows the reward must feel achievable within the customer's natural visit cycle. For a restaurant visited monthly, a 10-visit milestone is a 10-month journey — that's not loyalty, that's a test of patience.</div>
+    <div class="fix"><div class="fl">Rule</div>First reward must be achievable within the customer's natural visit frequency × 2. Monthly diners: first reward in 3 visits. Weekly cafe visitors: first reward in 5 visits. Daily coffee: first reward in 7 days.</div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="bdg r">Killer 2</span><div class="ct">Only rewarding with discounts</div></div>
+    <div class="cb">Discount-only programs train customers to expect deals and feel cheated when they pay full price. They attract deal-hunters — the least loyal customer segment — and devalue your brand. If every visit ends in a discount, your "normal price" starts to feel like a ripoff.</div>
+    <div class="fix"><div class="fl">Rule</div>Maximum 30% of your rewards should be discounts. The rest: free items, access, experiences, recognition. Discounts are acceptable in early loops and win-back campaigns only.</div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="bdg r">Killer 3</span><div class="ct">Showing an empty state after sign-up</div></div>
+    <div class="cb">The first screen after joining the loyalty program must never be blank or say "0 points." This is a morale killer. Research on endowed progress is definitive: showing a 0% progress bar is worse than not showing progress at all. The customer immediately feels they've achieved nothing.</div>
+    <div class="fix"><div class="fl">Rule</div>First scan = Visit 1 already counted. Progress bar shows 1/5 (or whatever the loop is). The program started the moment they walked in. Make this visually celebrated — not neutral.</div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="bdg r">Killer 4</span><div class="ct">Too many activities shown at once</div></div>
+    <div class="cb">The paradox of choice: when customers see 8 activities they can complete, they feel overwhelmed and do nothing. This is well-documented in behavioral economics (Iyengar & Lepper's jam study). Three options creates urgency and focus. Eight creates paralysis.</div>
+    <div class="fix"><div class="fl">Rule</div>Maximum 3 active activities visible to a customer at any time. Rotate them as they complete or expire. Give each one a "deadline" to create urgency. "Share a story this week to unlock your reward" beats "share a story anytime."</div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="bdg r">Killer 5</span><div class="ct">No feedback between action and reward</div></div>
+    <div class="cb">Customer posts a story, submits it, sees... nothing. No confirmation, no timeline, no next step. They assume it didn't work, give up, and never do it again. Silence after an action is the fastest way to kill engagement.</div>
+    <div class="fix"><div class="fl">Rule</div>Every submission must get an immediate "we got it" response. Even if verification takes 24 hours: "Your story has been submitted — your reward will unlock within 2 hours once verified." Progress state keeps them engaged even when nothing has happened yet.</div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="bdg a">Killer 6</span><div class="ct">Program goes stale after first few months</div></div>
+    <div class="cb">47% of loyalty members engage less after 3 months because the program never changes. If the same 5 activities and same milestone loop are available 6 months later, the program signals "we stopped caring." Regulars need novelty to stay engaged.</div>
+    <div class="fix"><div class="fl">Rule</div>Rotate at least one activity or campaign per month. Seasonal events (Monsoon special, Diwali offer) keep it feeling fresh. Surprise "double reward weekend" once a quarter. New journey unlocking for long-term members. The program must feel alive.</div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="bdg a">Killer 7</span><div class="ct">Complicated redemption at the counter</div></div>
+    <div class="cb">The research is brutal here: if redemption takes more than 15 seconds at the counter, staff start avoiding it. Customer shows their phone, staff look confused, manager gets called, queue builds. Program dies from embarrassment within weeks. This has killed more loyalty programs than any digital issue.</div>
+    <div class="fix"><div class="fl">Rule</div>Staff-side UI: one screen, one tap. Counter staff need to see the coupon code, hit confirm, done. Train staff for 10 minutes, not 2 hours. The redemption flow must be designed for a busy Friday night, not a calm Tuesday afternoon.</div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="bdg a">Killer 8</span><div class="ct">Rewarding what customers would do anyway</div></div>
+    <div class="cb">Giving a reward for a behavior the customer already does is wasteful — it trains them to expect payment for something that was free. If a customer already posts on Instagram regularly, giving them a reward for it doesn't change their behavior. Your reward budget should only target behavior change.</div>
+    <div class="fix"><div class="fl">Rule</div>Before adding any reward, ask: "Would this customer do this even without the reward?" If yes — either remove it, make the reward much smaller, or redesign it to target a higher-effort version of the same behavior (e.g. not "post a photo" but "post a reel with our location tag and at least 10 story views").</div>
+  </div>
+</div>
+
+<!-- MASTER BLUEPRINT -->
+<div id="pane-blueprint" class="pane">
+  <p class="sl">Master blueprint — works for most Indian restaurants</p>
+
+  <div class="card" style="border-width:1px;border-color:var(--color-border-secondary)">
+    <div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:10px">Step 1 — Define your restaurant type first</div>
+    <div class="row3" style="margin-bottom:0">
+      <div class="sm"><div class="bold" style="font-size:12px;margin-bottom:4px">High-frequency</div><div class="mini">Coffee, QSR, fast casual. Visit weekly or daily. Goal: increase frequency + spend.</div></div>
+      <div class="sm"><div class="bold" style="font-size:12px;margin-bottom:4px">Mid-frequency</div><div class="mini">Casual dining, cafe, brunch spots. Visit 2–4× month. Goal: occasion ownership.</div></div>
+      <div class="sm"><div class="bold" style="font-size:12px;margin-bottom:4px">Low-frequency</div><div class="mini">Fine dining, resto-bar. Visit monthly or less. Goal: maximize each visit value + social amplification.</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:10px">Step 2 — Set your loop structure by type</div>
+    <div class="cb">
+      <strong>High-frequency (cafe, coffee, QSR):</strong><br>
+      Loop 1: Every 7 visits → free item of choice. Start at 1/7 on first scan.<br>
+      Loop 2 (unlocks after L1): 3 weekend visits in a row → free size upgrade every Sunday for 1 month.<br>
+      Activity: Leave a review = free pastry today. Refer a friend = free coffee for both.<br>
+      Expiry: 14 days on all rewards.<br><br>
+
+      <strong>Mid-frequency (casual dining, brunch, bar):</strong><br>
+      Loop 1: Every 5 visits → free starter or dessert. Start at 1/5.<br>
+      Loop 2: 3 Saturday brunches → complimentary brunch for 2 (once).<br>
+      Loop 3: Spend ₹2000+ on 3 visits → sommelier/cocktail pairing experience.<br>
+      Activity: Instagram story = 20% off next visit. Refer group of 4+ = free round of drinks.<br>
+      Expiry: 30 days on all rewards.<br><br>
+
+      <strong>Low-frequency (fine dining, premium resto-bar):</strong><br>
+      Loop 1: Every 3 visits → complimentary amuse-bouche course on next visit.<br>
+      Loop 2: 5 visits within 6 months → Chef's table invitation (exclusive).<br>
+      Activity: Write a detailed review (100+ words) = exclusive early access to seasonal menu.<br>
+      Status: After 10 visits → reserved regular status, personal server assigned, name known.<br>
+      Expiry: 60 days. No urgency spam — this audience hates it.<br>
+      <em>Note: Never offer discounts at this level. Access and recognition only.</em>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:10px">Step 3 — The 5 mandatory WhatsApp triggers (every restaurant)</div>
+    <div class="cb">
+      <span class="tag tg">T1 — Welcome</span> Fires on first scan. "Welcome to [Restaurant]! Your first visit is already counted — 4 more and your [reward] is yours."<br><br>
+      <span class="tag tg">T2 — 60% nudge</span> At 60% loop completion. "You're getting close! [X] more [visits/orders] and [reward] unlocks."<br><br>
+      <span class="tag tg">T3 — Reward unlocked</span> Fires the moment milestone completes. "[Customer name], your [reward] is ready! Show this message at the counter anytime in the next [X] days."<br><br>
+      <span class="tag tg">T4 — Expiry warning</span> 5 days before reward expires. "Your [reward] expires [date]. Come in before then so you don't miss it."<br><br>
+      <span class="tag ta">T5 — Win-back (day 30)</span> "Haven't seen you in a while! Your [journey] is still waiting — come back this week and pick up where you left off."
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:10px">Step 4 — The activity set (choose 3 to start with)</div>
+    <div class="cb">
+      <strong>Tier A (highest ROI — always include):</strong><br>
+      <span class="tag tg">Google review</span> — reward: free item worth ₹150–250. ROI: massive SEO impact, review lasts forever.<br>
+      <span class="tag tg">Friend referral (friend must actually visit)</span> — reward: free item for both. ROI: lowest-cost acquisition channel.<br><br>
+
+      <strong>Tier B (high marketing value):</strong><br>
+      <span class="tag tb">Instagram story with location tag</span> — reward: 20% off same/next visit. ROI: immediate social reach.<br>
+      <span class="tag tb">Birthday visit (advance notice)</span> — reward: free dessert + personal message. ROI: group visit (4+ covers typical).<br><br>
+
+      <strong>Tier C (engagement + frequency):</strong><br>
+      <span class="tag ta">Off-peak visit (weekday lunch/dinner)</span> — double progress on milestone. ROI: smooths revenue curve.<br>
+      <span class="tag ta">Event participation</span> — reward: exclusive invite to next event. ROI: fills event nights, creates regulars.
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:10px">Step 5 — The 3 numbers every restaurant must track</div>
+    <div class="grid3">
+      <div class="sm"><div class="sn">Loop completion %</div><div class="sl2">What % of customers complete their first milestone loop. Target: >40%. Below 25% = reward too far or no reminders.</div></div>
+      <div class="sm"><div class="sn">Return rate</div><div class="sl2">Of customers who scan, what % return within 30 days. Target: >50%. Below 30% = welcome experience needs fixing.</div></div>
+      <div class="sm"><div class="sn">Redemption rate</div><div class="sl2">Of rewards generated, what % get redeemed. Target: >60%. Below 40% = rewards aren't compelling or expiry is too long.</div></div>
+    </div>
+  </div>
+
+  <div class="card" style="border-color:var(--color-border-success)">
+    <div style="font-size:13px;font-weight:500;color:var(--color-text-success);margin-bottom:8px">The universal rule that overrides everything</div>
+    <div class="cb">A loyalty program is not a discount system. It is a behavior change system. Every element — every reward, every trigger, every loop — must be designed to change one specific behavior. More visits. Higher spend. Social sharing. Friend referral. If you can't name the behavior a reward is changing, remove the reward. The best programs feel generous to customers and profitable to restaurants — because they only give rewards that generate more than they cost.</div>
+  </div>
+</div>
+
+<script>
+function sw(id){
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('pane-'+id).classList.add('on');
+  event.target.classList.add('on');
+}
+</script>

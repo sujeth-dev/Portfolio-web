@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unfold Interaction — Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,900&family=Newsreader:ital,opsz@0,6..72;1,6..72&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#15120d;
+    --bg2:#1d1810;
+    --paper:#f4ecda;
+    --paper-shade:#e7dcc4;
+    --ink:#221c14;
+    --ink-soft:#5a4f3d;
+    --accent:#c0431f;
+    --accent-2:#1f6f5c;
+    --line:rgba(34,28,20,.14);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(192,67,31,.10), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(31,111,92,.10), transparent 55%),
+      var(--bg);
+    color:var(--paper);
+    font-family:"Newsreader",Georgia,serif;
+    min-height:100vh;
+    padding:clamp(20px,5vw,64px) clamp(16px,5vw,48px) 120px;
+    overflow-x:hidden;
+  }
+  body::before{ /* film grain */
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.04;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .wrap{max-width:1080px;margin:0 auto;position:relative;z-index:2}
+
+  /* ---- header ---- */
+  .kicker{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);opacity:.9}
+  h1{font-family:"Fraunces",serif;font-weight:500;font-size:clamp(28px,5vw,46px);line-height:1.05;margin:14px 0 10px;letter-spacing:-.01em}
+  h1 em{font-style:italic;color:var(--accent)}
+  .sub{max-width:60ch;color:#cdc3ad;font-size:clamp(15px,2.2vw,17px);line-height:1.55}
+  .hint{margin-top:18px;font-family:"JetBrains Mono",monospace;font-size:11.5px;color:#8c8268;letter-spacing:.04em}
+  .hint b{color:var(--paper);font-weight:500}
+
+  /* ---- grid of folded cards ---- */
+  .grid{margin-top:clamp(34px,6vw,60px);display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:clamp(20px,3vw,34px);perspective:1600px}
+
+  .card{
+    position:relative;
+    transform-style:preserve-3d;
+    cursor:pointer;
+    outline:none;
+  }
+
+  /* The paper sheet */
+  .sheet{
+    position:relative;
+    background:
+      linear-gradient(135deg,var(--paper) 0%, var(--paper-shade) 100%);
+    color:var(--ink);
+    border-radius:4px;
+    transform-origin:top center;
+    transition:
+      transform .8s cubic-bezier(.16,1,.3,1),
+      box-shadow .8s cubic-bezier(.16,1,.3,1),
+      border-radius .6s ease;
+    will-change:transform;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.5) inset,
+      0 18px 30px -20px rgba(0,0,0,.55);
+  }
+  .sheet::after{ /* paper texture */
+    content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:.5;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
+  }
+
+  /* FOLDED STATE */
+  .card:not(.open) .sheet{
+    transform:rotateX(2deg) rotate(-1.4deg) scale(.995);
+  }
+  .card:not(.open):nth-child(even) .sheet{transform:rotateX(2deg) rotate(1.2deg) scale(.995)}
+
+  /* crease lines — visible folded, fade on open */
+  .creases{position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:3;transition:opacity .55s ease}
+  .creases::before,.creases::after{content:"";position:absolute;background:linear-gradient(90deg,transparent,rgba(34,28,20,.16),transparent)}
+  .creases::before{left:0;right:0;top:33.33%;height:1px;box-shadow:0 1px 2px rgba(0,0,0,.10)}
+  .creases::after{left:0;right:0;top:66.66%;height:1px;box-shadow:0 1px 2px rgba(0,0,0,.10)}
+  .crease-v{position:absolute;top:0;bottom:0;left:50%;width:1px;background:linear-gradient(180deg,transparent,rgba(34,28,20,.13),transparent);z-index:3;pointer-events:none;transition:opacity .55s ease}
+  .card.open .creases,.card.open .crease-v{opacity:0}
+
+  /* folded face (always visible) */
+  .face{position:relative;z-index:4;padding:22px 22px 20px;display:flex;flex-direction:column;gap:10px;min-height:172px}
+  .idx{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;color:var(--accent)}
+  .meta{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+  .ptitle{font-family:"Fraunces",serif;font-weight:600;font-size:23px;line-height:1.08;letter-spacing:-.01em;margin-top:2px}
+  .tease{font-size:15px;color:#4a4030;line-height:1.45;max-width:34ch}
+  .face .spacer{flex:1}
+  .arrow{
+    align-self:flex-start;display:inline-flex;align-items:center;gap:8px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:999px;
+    padding:7px 13px;cursor:pointer;transition:.25s;
+  }
+  .arrow svg{width:13px;height:13px;transition:transform .35s ease}
+  .arrow:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .arrow:hover svg{transform:translate(2px,-2px)}
+  .card.open .arrow{display:none}
+  .dogear{position:absolute;top:0;right:0;width:30px;height:30px;z-index:4;
+    background:linear-gradient(225deg,var(--bg2) 0 50%,transparent 50%);
+    border-bottom-left-radius:6px;opacity:.0;transition:opacity .4s}
+  .card:not(.open):hover .dogear{opacity:.18}
+
+  /* EXPANDED CONTENT */
+  .panel{
+    overflow:hidden;max-height:0;opacity:0;
+    transition:max-height .8s cubic-bezier(.16,1,.3,1), opacity .5s ease .15s;
+  }
+  .card.open .panel{max-height:760px;opacity:1}
+  .card.open .sheet{
+    transform:rotateX(0) rotate(0) scale(1);
+    box-shadow:0 1px 0 rgba(255,255,255,.6) inset, 0 40px 80px -30px rgba(0,0,0,.7);
+  }
+  .card.open{grid-column:1/-1}
+
+  .panel-inner{padding:0 24px 26px;border-top:1px solid var(--line);margin:4px 22px 0;padding-top:18px}
+  .card.open .panel-inner{animation:rise .6s .2s both}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+  .close{position:absolute;top:16px;right:16px;z-index:6;width:34px;height:34px;border-radius:50%;
+    border:1px solid var(--line);background:rgba(255,255,255,.4);color:var(--ink);cursor:pointer;
+    display:none;align-items:center;justify-content:center;font-size:16px;transition:.2s}
+  .close:hover{background:var(--ink);color:var(--paper);transform:rotate(90deg)}
+  .card.open .close{display:flex}
+
+  /* tabs */
+  .tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+  .tab{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    background:transparent;border:1px solid var(--line);color:var(--ink-soft);padding:7px 14px;border-radius:999px;cursor:pointer;transition:.2s}
+  .tab.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .tab:not(.active):hover{border-color:var(--ink-soft);color:var(--ink)}
+
+  .tabpanel{display:none;animation:fade .35s both}
+  .tabpanel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+
+  .lead{font-family:"Fraunces",serif;font-size:19px;line-height:1.45;color:var(--ink);max-width:60ch;font-weight:500}
+  .body{font-size:15.5px;line-height:1.6;color:#41382a;max-width:64ch;margin-top:10px}
+  .body strong{color:var(--ink)}
+  ul.clean{list-style:none;margin-top:14px;display:grid;gap:10px;max-width:64ch}
+  ul.clean li{font-size:15px;line-height:1.5;color:#41382a;padding-left:20px;position:relative}
+  ul.clean li::before{content:"";position:absolute;left:0;top:9px;width:8px;height:8px;background:var(--accent);border-radius:1px;transform:rotate(45deg)}
+  ul.clean li b{color:var(--ink);font-weight:600}
+
+  /* demo frame */
+  .demo{border:1px solid var(--line);border-radius:8px;background:repeating-linear-gradient(45deg,#eee4cf,#eee4cf 12px,#e9ddc4 12px,#e9ddc4 24px);
+    aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:20px}
+  .demo .label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+  .launch{display:inline-flex;align-items:center;gap:9px;background:var(--ink);color:var(--paper);text-decoration:none;
+    font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.06em;padding:11px 18px;border-radius:999px;transition:.25s}
+  .launch:hover{background:var(--accent);transform:translateY(-2px)}
+
+  /* architecture mini diagram */
+  .arch{margin-top:6px;background:#efe6d2;border:1px solid var(--line);border-radius:8px;padding:18px}
+  .arch svg{width:100%;height:auto;display:block}
+  .node{fill:#fff;stroke:var(--ink);stroke-width:1.4}
+  .node.lit{fill:var(--accent);stroke:var(--accent)}
+  .nlabel{font-family:"JetBrains Mono",monospace;font-size:9px;fill:var(--ink)}
+  .nlabel.w{fill:#fff}
+  .edge{stroke:var(--ink-soft);stroke-width:1.3;fill:none;marker-end:url(#a)}
+  .flowcap{font-family:"JetBrains Mono",monospace;font-size:10px;fill:var(--ink-soft)}
+
+  /* stack chips */
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .chip{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.04em;background:#ece2cd;border:1px solid var(--line);color:var(--ink);padding:7px 12px;border-radius:6px}
+
+  .links{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+  .lnk{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.04em;text-decoration:none;color:var(--ink);
+    border:1px solid var(--ink);padding:9px 16px;border-radius:999px;transition:.2s}
+  .lnk:hover{background:var(--ink);color:var(--paper)}
+  .lnk.solid{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .lnk.solid:hover{background:var(--ink);border-color:var(--ink)}
+
+  .note{margin-top:60px;font-family:"JetBrains Mono",monospace;font-size:11.5px;line-height:1.8;color:#8c8268;border-top:1px solid rgba(255,255,255,.08);padding-top:22px}
+  .note b{color:var(--paper);font-weight:500}
+
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none!important;animation:none!important}
+  }
+  @media(max-width:560px){
+    .face{min-height:150px}
+    .panel-inner{margin:4px 16px 0;padding-left:0;padding-right:0}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">// interaction prototype</div>
+  <h1>Project cards that <em>unfold</em>.</h1>
+  <p class="sub">Each project sits folded like a note. Reveal the full case study — demo, architecture, the why — then fold it back shut. The motion is the hook; the content stays calm and yours to control.</p>
+  <p class="hint">Desktop: <b>hover</b> a card to unfold. Mobile: tap the <b>open ↗</b> button. Close with the <b>✕</b>.</p>
+
+  <div class="grid" id="grid">
+
+    <!-- CARD 1 : Synthesis (full content) -->
+    <article class="card" tabindex="0" data-card>
+      <div class="sheet">
+        <span class="dogear"></span>
+        <div class="creases"></div><div class="crease-v"></div>
+        <button class="close" aria-label="Fold card" data-close>✕</button>
+
+        <div class="face">
+          <span class="idx">01 — featured</span>
+          <span class="meta">Synthesis · Solo · Live</span>
+          <h2 class="ptitle">Adaptive Learning System</h2>
+          <p class="tease">Curricula as dependency graphs, not playlists — learners only see what they're ready for.</p>
+          <div class="spacer"></div>
+          <button class="arrow" data-open>
+            Open the case study
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+          </button>
+        </div>
+
+        <div class="panel">
+          <div class="panel-inner">
+            <div class="tabs" role="tablist">
+              <button class="tab active" data-tab="demo">Demo</button>
+              <button class="tab" data-tab="arch">Architecture</button>
+              <button class="tab" data-tab="how">How it works</button>
+              <button class="tab" data-tab="why">Why</button>
+              <button class="tab" data-tab="stack">Stack</button>
+            </div>
+
+            <div class="tabpanel active" data-panel="demo">
+              <div class="demo">
+                <span class="label">Live embed slot</span>
+                <a class="launch" href="https://synthesis-adaptive-learning.vercel.app/demo" target="_blank" rel="noopener">
+                  ▶ Launch live demo
+                </a>
+                <span class="label" style="opacity:.6">your real iframe drops in here</span>
+              </div>
+            </div>
+
+            <div class="tabpanel" data-panel="arch">
+              <div class="arch">
+                <svg viewBox="0 0 520 220" role="img" aria-label="Architecture diagram">
+                  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a4f3d"/></marker></defs>
+                  <!-- prereq DAG -->
+                  <text x="10" y="18" class="flowcap">PREREQUISITE DAG</text>
+                  <circle class="node lit" cx="40" cy="60" r="16"/><text x="40" y="63" text-anchor="middle" class="nlabel w">A</text>
+                  <circle class="node lit" cx="120" cy="45" r="16"/><text x="120" y="48" text-anchor="middle" class="nlabel w">B</text>
+                  <circle class="node" cx="120" cy="95" r="16"/><text x="120" y="98" text-anchor="middle" class="nlabel">C</text>
+                  <circle class="node" cx="200" cy="70" r="16"/><text x="200" y="73" text-anchor="middle" class="nlabel">D</text>
+                  <path class="edge" d="M56,56 L104,49"/><path class="edge" d="M56,66 L104,90"/>
+                  <path class="edge" d="M136,52 L184,65"/><path class="edge" d="M136,90 L184,75"/>
+                  <!-- pipeline -->
+                  <text x="300" y="18" class="flowcap">UPDATE LOOP</text>
+                  <rect x="300" y="34" width="200" height="26" rx="13" fill="#fff" stroke="#221c14" stroke-width="1.3"/><text x="400" y="51" text-anchor="middle" class="nlabel">learner answers</text>
+                  <path class="edge" d="M400,60 L400,78"/>
+                  <rect x="300" y="80" width="200" height="26" rx="13" fill="#fff" stroke="#221c14" stroke-width="1.3"/><text x="400" y="97" text-anchor="middle" class="nlabel">BKT mastery update</text>
+                  <path class="edge" d="M400,106 L400,124"/>
+                  <rect x="300" y="126" width="200" height="26" rx="13" fill="#fff" stroke="#221c14" stroke-width="1.3"/><text x="400" y="143" text-anchor="middle" class="nlabel">unlock next concept</text>
+                  <path class="edge" d="M400,152 L400,170"/>
+                  <rect x="300" y="172" width="200" height="26" rx="13" fill="#fff" stroke="#221c14" stroke-width="1.3"/><text x="400" y="189" text-anchor="middle" class="nlabel">SM-2 schedules review</text>
+                  <path class="edge" d="M300,185 C170,200 150,150 136,104" />
+                </svg>
+              </div>
+              <p class="body">Three systems that have to agree: the <strong>graph</strong> decides what's reachable, <strong>BKT</strong> decides what's mastered, and <strong>SM-2</strong> decides when it comes back.</p>
+            </div>
+
+            <div class="tabpanel" data-panel="how">
+              <p class="lead">Treat a curriculum like a dependency graph, then route each learner through only what they actually need.</p>
+              <ul class="clean">
+                <li><b>Prerequisite DAG</b> — concepts as nodes, dependencies as edges, laid out with dagre + React Flow.</li>
+                <li><b>Bayesian Knowledge Tracing</b> — probabilistic per-concept mastery that updates with every answer.</li>
+                <li><b>SM-2 spaced repetition</b> — schedules reviews so retention compounds instead of cramming.</li>
+              </ul>
+            </div>
+
+            <div class="tabpanel" data-panel="why">
+              <p class="lead">Most platforms move every student through the same fixed curriculum.</p>
+              <p class="body">Synthesis adapts the path to what a learner already knows, so they spend less time repeating mastered concepts and more time where learning is actually needed. The hard part wasn't any one algorithm — it was making the loop <strong>coherent</strong>, not three features bolted together.</p>
+            </div>
+
+            <div class="tabpanel" data-panel="stack">
+              <div class="chips">
+                <span class="chip">Next.js</span><span class="chip">TypeScript</span><span class="chip">React Flow</span>
+                <span class="chip">dagre</span><span class="chip">SQLite</span><span class="chip">JWT</span>
+              </div>
+              <div class="links">
+                <a class="lnk solid" href="https://synthesis-adaptive-learning.vercel.app/demo" target="_blank" rel="noopener">Live demo ↗</a>
+                <a class="lnk" href="https://github.com/sujeth-dev" target="_blank" rel="noopener">Code ↗</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- CARD 2 : folded only, to show the grid rhythm -->
+    <article class="card" tabindex="0" data-card>
+      <div class="sheet">
+        <span class="dogear"></span>
+        <div class="creases"></div><div class="crease-v"></div>
+        <button class="close" aria-label="Fold card" data-close>✕</button>
+        <div class="face">
+          <span class="idx">02 — featured</span>
+          <span class="meta">Possah · thepossah.com</span>
+          <h2 class="ptitle">Production Commerce Platform</h2>
+          <p class="tease">Real money in, real errors caught, real flows verified — the full lifecycle, not just a cart.</p>
+          <div class="spacer"></div>
+          <button class="arrow" data-open>
+            Open the case study
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+          </button>
+        </div>
+        <div class="panel"><div class="panel-inner">
+          <p class="lead">Sample card — same mechanic, your Possah content slots in here.</p>
+          <p class="body">Storefront + admin, Razorpay (server-side), Sentry monitoring, Playwright E2E + Vitest. The combination is what's rare in a student project.</p>
+          <div class="chips" style="margin-top:16px">
+            <span class="chip">Next.js</span><span class="chip">PostgreSQL</span><span class="chip">Razorpay</span><span class="chip">Sentry</span><span class="chip">Playwright</span>
+          </div>
+        </div></div>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="note">
+    <b>Notes on the build →</b><br>
+    • Hover opens on desktop; it stays open so you can read & switch tabs (no annoying refold on mouse-leave). ✕ folds it.<br>
+    • Content tabs are <b>manual</b>, not auto-advancing — recruiters skim, so they steer.<br>
+    • Pure CSS + tiny JS here. On your real site this maps cleanly to Framer Motion (layout + variants) for an even smoother unfold.<br>
+    • Honors <b>prefers-reduced-motion</b> — folds become instant for accessibility.
+  </div>
+</div>
+
+<script>
+  const cards = document.querySelectorAll('[data-card]');
+  cards.forEach(card=>{
+    const open  = ()=>card.classList.add('open');
+    const close = ()=>card.classList.remove('open');
+
+    // desktop: hover opens
+    card.addEventListener('mouseenter', ()=>{ if(window.matchMedia('(hover:hover)').matches) open(); });
+    // explicit open button (mobile + keyboard)
+    card.querySelector('[data-open]')?.addEventListener('click', e=>{ e.stopPropagation(); open(); });
+    // close
+    card.querySelector('[data-close]')?.addEventListener('click', e=>{ e.stopPropagation(); close(); });
+    // keyboard
+    card.addEventListener('keydown', e=>{
+      if(e.key==='Enter'||e.key===' '){ e.preventDefault(); card.classList.toggle('open'); }
+      if(e.key==='Escape') close();
+    });
+
+    // tabs
+    card.querySelectorAll('.tab').forEach(tab=>{
+      tab.addEventListener('click', e=>{
+        e.stopPropagation();
+        const id = tab.dataset.tab;
+        card.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t===tab));
+        card.querySelectorAll('.tabpanel').forEach(p=>p.classList.toggle('active', p.dataset.panel===id));
+      });
+    });
+  });
+  // click outside folds any open card
+  document.addEventListener('click', e=>{
+    if(!e.target.closest('[data-card]')) cards.forEach(c=>c.classList.remove('open'));
+  });
+</script>
+</body>
+</html>
