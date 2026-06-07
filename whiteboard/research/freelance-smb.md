@@ -1,62 +1,83 @@
 # Freelance Research — Tier 1 SMB Prospects
-> Generated: 2026-06-07 | Week 2 focus industries: Field Service + Equipment Rental
-> Why these two: fastest close via cold call / WhatsApp alone — no walk-in required; owner decides; daily operational pain; public contact info available
+> Updated: 2026-06-07 | Week 2 focus industries: Gyms + Big Coaching Centres (+ Boutiques as bonus)
+>
+> Why these: established brands with real identity, recurring revenue, daily operational chaos, owner is accessible, already pay for things. They understand subscriptions.
 
 ---
 
-## Industry 1: Field Service Businesses (AC Repair, Pest Control, Plumbers)
+## Industry 1: Gyms / Fitness Centres (independent, not Cult / Gold's / Anytime)
 
-**Why they close fast:** Owner answers the phone. Daily pain (scheduling chaos on WhatsApp). No existing software. Decision is "yes/no in one call."
+**Their problem:** Memberships tracked in Excel or WhatsApp, renewal reminders are manual calls, attendance is a register, class/batch scheduling is a group chat, trainer assignment is informal. They're losing members because no one follows up before a membership lapses.
 
-**What you sell:** Job management + invoicing + technician tracking + follow-up automation (₹2,500–6,000/month)
+**What you sell:** Membership management — sign-up, renewal reminders (WhatsApp/SMS), attendance tracking, class scheduling, payment log. One system.
+**Monthly price:** ₹3,500–7,000/month depending on member count
+**Who decides:** Owner / Head Trainer (usually on the floor between 7–9am or 6–8pm)
+**Contact method:** Walk-in (best) or Instagram DM → phone call
+**How to find:** Google Maps "gym [locality] Bangalore" — filter 4.0+, 100+ reviews, not a chain brand. Check if they have their own Instagram.
 
-**How to find them:** JustDial / Sulekha / Google "AC service [locality] Bangalore" — call the ones with 10+ reviews (big enough to have the problem, small enough for owner to pick up)
+| # | Business | Area | Contact | Notes |
+|---|----------|------|---------|-------|
+| 1 | **Chakra Athletica** (boutique cycling studio) | Indiranagar + Infantry Rd | Instagram @chakraathletica → call | Premium brand, loyal repeat crowd, scheduling = their biggest pain |
+| 2 | **Vriddhi Fitness** | Bangalore (search exact location) | Website / Instagram | Clinical wellness + gym combo — membership + session tracking = complex problem |
+| 3 | **The 1% Circle** | Bangalore | Instagram → DM | Luxury fitness brand, high ticket, willing to pay for premium software |
+| 4 | **[JustDial search]** "gym Kalyan Nagar Bangalore" | Kalyan Nagar / HRBR | JustDial call | Filter: 4.0+, 50+ reviews, independent name |
+| 5 | **[JustDial search]** "fitness centre Kammanahalli" | Kammanahalli | JustDial call | Same filter — local name means local owner = faster decision |
+| 6 | **[Google Maps]** "gym Marathahalli" | Marathahalli | Google listing → call | Large residential area, many independent gyms |
+| 7 | **[Google Maps]** "gym Whitefield independent" | Whitefield | Google listing → call | Tech employee-heavy area = members who expect good software |
+| 8 | **[Instagram]** Search #bangaloregym + filter local gyms | Any | Instagram DM | DM with "I noticed you track memberships manually — I built a system for this. 15-min demo?" |
+| 9 | **Gympik-listed gyms** | Pan-Bangalore | gympik.com → find contact | Gympik lists gyms with owner contacts — filter independent ones |
+| 10 | **[Sulekha]** "gym membership Bangalore" | Any | Sulekha listing → call | Independent operators who list on Sulekha are accessible |
 
-| # | Business | Area | Owner/Contact | Contact Method | Notes |
-|---|----------|------|--------------|----------------|-------|
-| 1 | **TechSquad Team** | Pan-Bangalore | Direct website | Call / WhatsApp | Multi-service (AC + pest control), growing team, operational pain likely high |
-| 2 | **Kiran Enterprises Pest Control** | Byrasandra, Bangalore | Listed on Sulekha | Call (Sulekha listing) | Independent operator, direct owner listing — ideal target |
-| 3 | **SureKill Services** | Bangalore | Direct contact via website | Call / WhatsApp | Pest control focused, 24/7 ops = scheduling chaos = strong pain |
-| 4 | **[Find via JustDial]** "AC service Kalyan Nagar" | North Bangalore | JustDial search | Call | Filter: 10–50 reviews, independent (not Urban Company) |
-| 5 | **[Find via JustDial]** "pest control Kammanahalli" | North Bangalore | JustDial search | Call | Same filter |
-| 6 | **[Find via Sulekha]** "electrician HRBR Layout" | HRBR Layout | Sulekha listing | Call / WhatsApp | Small operators with public numbers |
-| 7 | **[Find via Google]** "plumber Kalyan Nagar Bangalore" | Kalyan Nagar | Google Business | WhatsApp (listed number) | Filter: 4.0+ stars, 10+ reviews |
-| 8 | **[Find via Google]** "AC repair Kammanahalli" | Kammanahalli | Google Business | Call | Same filter |
-| 9 | **[Find via Sulekha]** "pest control Bangalore independent" | Any | Sulekha listing | Call | Avoid aggregator-listed only; look for own business profile |
-| 10 | **[Find via IndiaMART]** "home services Bangalore small operator" | Any | IndiaMART listing | WhatsApp | IndiaMART listings usually have direct WhatsApp |
-
-**Action this week:** Search JustDial + Sulekha + Google for 5 independent field service operators near you. Call each. Opening: *"Hi, do you currently manage your jobs and scheduling on WhatsApp or paper? I've built a tool that handles that for ₹[X]/month — happy to show you a quick demo."*
+**What to say (call/DM):**
+> "Hi, I'm Sujeth — I build software for gyms. Quick question: how do you currently track memberships and send renewal reminders? I've built a system that handles that automatically — ₹4,000/month. Can I show you a 15-minute demo this week?"
 
 ---
 
-## Industry 2: Equipment Rental (Tent House, Event Equipment, Construction Equipment)
+## Industry 2: Big Coaching Centres (local brand, 100–500 students — NOT ALLEN / Narayana / Sri Chaitanya)
 
-**Why they close fast:** Clear, visual problem (who has which item, when is it due back). Cold WhatsApp works because they have public numbers for bookings. Owner is sole decision-maker. Low existing software adoption.
+**Their problem:** Fee collection is WhatsApp reminders + Excel, batches are managed in groups, attendance is a register per teacher, parent communication is calls, results tracking is paper. When you have 10+ batches and 200+ students, this is daily chaos.
 
-**What you sell:** Rental tracking (issue, return, damage, deposit, overdue alerts) — ₹3,000–6,000/month
+**What you sell:** Batch + fee management — batch scheduling, attendance per batch, fee collection + WhatsApp reminders, student results log, parent portal (basic). One system.
+**Monthly price:** ₹4,000–9,000/month depending on student count
+**Who decides:** Owner / Director (usually present in the institute 9am–1pm or evenings)
+**Contact method:** Walk-in (Tue–Thu, 10am–12pm) or cold call
+**How to find:** Google Maps "coaching centre [locality]", JustDial "IIT coaching Bangalore", UrbanPro listings
 
-**How to find them:** Google "tent house Bangalore", "event equipment rental Bangalore", IndiaMART "equipment rental Bangalore"
+| # | Business | Area | Contact | Notes |
+|---|----------|------|---------|-------|
+| 1 | **Giraffe Learning** | Marathahalli (near Whitefield/Hoodi) | giraffelearning.com | Local brand, JEE/NEET/PUC coaching — established enough to have the batch management problem |
+| 2 | **GATEIIT** | JP Nagar / Jayanagar | gateiit.com | PUC + IIT JEE coaching, own brand, JP Nagar area — walk-in accessible |
+| 3 | **Arjunaa Academy (AAA)** | Bangalore (multiple centres) | aaaedu.in | Own brand, NEET/JEE, 60%+ distinction rate — growing = fee tracking pain growing |
+| 4 | **BASE Education** | Bangalore | baseedu.in | JEE/NEET/KCET, own established brand, multiple batches |
+| 5 | **[UrbanPro search]** "IIT JEE coaching Bangalore" | Any | urbanpro.com → contact | UrbanPro lists coaching centres with direct owner contacts |
+| 6 | **[JustDial]** "coaching centre Kalyan Nagar" | North Bangalore | JustDial → call | Local coaching centres in your area — easiest for walk-in |
+| 7 | **[JustDial]** "NEET coaching Marathahalli" | Marathahalli | JustDial → call | Large student area, many mid-size institutes |
+| 8 | **[JustDial]** "PU college coaching JP Nagar" | JP Nagar | JustDial → call | PUC coaching = large batches = batch management pain |
+| 9 | **[Google Maps]** "coaching institute Whitefield 4+ stars" | Whitefield | Google listing → call | Filter: own name (not chain), 4.0+, 50+ reviews |
+| 10 | **[Sulekha]** "NEET coaching Bangalore" | Any | Sulekha listing | Independent institutes listed here usually respond to calls |
 
-| # | Business | Area | Owner/Contact | Contact Method | Notes |
-|---|----------|------|--------------|----------------|-------|
-| 1 | **[Find via Google]** "tent house Kalyan Nagar" | North Bangalore | Google Business | WhatsApp | Wedding/event tent houses — seasonal = chaos during peak season |
-| 2 | **[Find via Google]** "event equipment rental Bangalore" | Any | Google Business | WhatsApp / Call | Look for 3.5–4.5 stars, 20+ reviews = established but still independent |
-| 3 | **[Find via IndiaMART]** "construction equipment rental Bangalore" | Peenya / Bommasandra | IndiaMART | WhatsApp (direct) | Higher ticket rental = bigger pain when items aren't tracked |
-| 4 | **[Find via Google]** "generator rental Bangalore" | Any | Google Business | Call | Generators + overdue returns = money problem = strong pain |
-| 5 | **[Find via Google]** "sound system rental Bangalore" | Any | Google Business | WhatsApp | Event audio rental = multiple items out simultaneously = tracking pain |
+**What to say (call / walk-in):**
+> "Hi, I'm Sujeth — I build software for coaching institutes. Quick question: how do you currently collect fees and send reminders to parents? I've built a batch + fee management system — WhatsApp reminders automatic, attendance per batch, parent portal. ₹5,000/month. Can I show you a 15-minute demo?"
 
-**WhatsApp cold message template:**
-```
-Hi [Name],
+---
 
-I'm Sujeth, a software developer in Bangalore. I build management tools for rental businesses.
+## Bonus Industry 3: Boutiques (clothing, designer wear — independent, brand-conscious)
 
-Quick question: do you track which items are out, with whom, and when they're due back — on WhatsApp or in a register right now?
+**Their problem:** Custom order tracking is WhatsApp + notebook, alteration pickups are forgotten, customer history doesn't exist, inventory of fabric/stock is guesswork. High-value customers expect professionalism they're not delivering.
 
-I've built a simple rental tracking system: issue, return, damage notes, deposit tracking, overdue alerts. ₹3,500/month. Takes 30 min to set up.
+**What you sell:** Customer order tracking + alteration workflow + WhatsApp follow-ups for pickups + basic inventory. ₹2,500–4,500/month.
+**Contact method:** Walk-in or Instagram DM → call
+**Best time:** Weekday 11am–1pm (before peak afternoon rush)
 
-Happy to show you a demo this week — just 15 minutes over a call or in person.
-```
+| # | Business | Area | Contact | Notes |
+|---|----------|------|---------|-------|
+| 1 | **House of Taamara** | Indiranagar | Instagram → walk-in | Sarees + blouses, high-value customers = order tracking pain real |
+| 2 | **Varnam Craft Collective** | Indiranagar | Instagram → walk-in | Handcrafted clothing, loyal community, alteration tracking = messy |
+| 3 | **Lila** | Indiranagar | Instagram → walk-in | Casual boutique, repeat customers, no visible system |
+| 4 | **Inspira** | Koramangala | Walk-in | Custom-made + readymade, designer blouses = multiple order states |
+| 5 | **Riya Kodali Design House** | Koramangala (8th Main) | Instagram → walk-in | Designer studio, individual attention to each piece = workflow tracking need |
+| 6 | **THE CUT** | HSR Layout (24th Main) | Walk-in | NIFT graduate, Anarkalis/Lehengas/Western — serious orders, needs tracking |
+| 7 | **Silhouette by Neha** | HSR Layout (17th Cross) | Walk-in | Sarees + blouses, established local name |
 
 ---
 
@@ -66,4 +87,7 @@ Happy to show you a demo this week — just 15 minutes over a call or in person.
 |------|----------|----------|--------|----------|-------------|
 | | | | | | |
 
-**Target:** 5 field service + 5 equipment rental contacts this week (10 total)
+## Week 2 Targets
+- **Gyms:** 5 contacts (mix of Instagram DM + call + walk-in)
+- **Coaching centres:** 5 contacts (cold call + walk-in)
+- **Boutiques (bonus):** 2–3 walk-ins if time allows

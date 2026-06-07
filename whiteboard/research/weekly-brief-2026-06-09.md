@@ -6,7 +6,7 @@
 ## Week 2 Context
 
 **Loop area:** Kalyan Nagar + Kammanahalli
-**Freelance Tier 1 industries:** Field Service + Equipment Rental (fast close via call/WhatsApp — no walk-in required)
+**Freelance Tier 1 industries:** Gyms + Big Coaching Centres (brand-conscious, already pay for things, recurring monthly pain, owner accessible)
 **Week type:** First real outreach week — Week 1 was setup. Now we move.
 
 ---
@@ -77,7 +77,7 @@ Angle: Personal OS post — describe your 4-pillar summer (Loop, jobs, DSA, free
 | Applications sent | 15–20 |
 | Founder outreaches | 5 (from list above) |
 | DSA problems | 15 (Strings + HashMap pattern) |
-| Freelance contacts | 10 (5 field service + 5 equipment rental) |
+| Freelance contacts | 10 (5 gyms + 5 coaching centres) + 2–3 boutiques bonus |
 | LinkedIn posts published | 3 |
 
 ---
