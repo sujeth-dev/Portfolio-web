@@ -1,39 +1,31 @@
 # Daily Log Template
 
-> Copy this file each day. Rename to YYYY-MM-DD.md in tracking/daily-logs/. Takes under 5 minutes to fill in.
+> Copy to `logs/daily/YYYY-MM-DD.md` each day. Fill in at night. Under 5 minutes.
 
 ---
 
-# [YYYY-MM-DD] — Day [N of 91]
+# YYYY-MM-DD — Day N of 91 | Mode: A / B / C
 
-## Today's Single Focus Per Pillar
-- **Loop:** [one specific thing — "finish counter mode offline sync" or "walk-in to 3 cafes in Koramangala"]
-- **Jobs:** [one specific thing — "apply to 7 companies" or "send 2 founder DMs"]
-- **DSA:** [X problems — pattern: e.g. "3 problems — sliding window"]
-- **Freelance:** [one specific thing — "deliver homepage update for [client]"]
+## Today's Targets (from research queue)
+- **Loop:** [specific feature task OR restaurant name + address from `research/restaurants-[AREA].md`]
+- **Jobs:** [company names from `research/jobs-YYYY-MM-DD.md`] + N via Easy Apply
+- **DSA:** N problems — pattern: ___
+- **Freelance:** [specific client or prospect from `research/freelance-smb.md`]
 
 ---
 
-## Done Today
+## Done
 - [ ] Loop: ___
-- [ ] Jobs: applied to [N] | messaged [N founders/recruiters]
-- [ ] DSA: [N] problems solved | pattern: ___ | any new insight: ___
+- [ ] Jobs: applied N | messaged N founders/recruiters
+- [ ] DSA: N problems | pattern: ___ | insight: ___
 - [ ] Freelance: ___
-- [ ] LinkedIn: posted YES/NO | engaged (comments): N
+- [ ] LinkedIn: posted Y/N | comments: N
 
 ---
 
-## Blockers / Issues
-- 
+## Energy: morning __ / afternoon __ / evening __
 
----
-
-## Energy / Focus Today (1–10)
-- Morning: ___
-- Afternoon: ___
-- Evening: ___
-
----
+## Blockers: ___
 
 ## Tomorrow
 - Loop: ___
@@ -41,7 +33,4 @@
 - DSA: ___
 - Freelance: ___
 
----
-
-## One Line: How Did Today Feel?
-> [One honest sentence]
+## One line: ___
