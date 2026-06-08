@@ -69,11 +69,11 @@ const featuredProjects = [
   {
     id: 'zingara',
     num: '03',
-    label: 'paid client',
-    category: 'Restaurant Website',
+    label: 'industry',
+    category: 'Business Web Product',
     name: 'Zingara',
     meta: 'Zingara · zingararestaurant.co.in',
-    status: { cls: 'client', text: 'Paid Client' },
+    status: { cls: 'live', text: 'Live' },
     tease: 'A digital home for a Bangalore restaurant, designed to drive customers to WhatsApp, Swiggy, and Zomato.',
     lead: 'Built to <em>convert visitors into orders</em> — every CTA points to WhatsApp, Swiggy, or Zomato.',
     bullets: [
@@ -95,11 +95,11 @@ const featuredProjects = [
   {
     id: 'fitness',
     num: '04',
-    label: 'paid client',
-    category: 'Gym Website',
+    label: 'industry',
+    category: 'Business Web Product',
     name: 'Fitness Garage',
     meta: 'Fitness Garage · fitness-garage.in',
-    status: { cls: 'client', text: 'Paid Client' },
+    status: { cls: 'live', text: 'Live' },
     tease: 'Every page designed around one job: convert visitors into members.',
     lead: '<em>One goal</em> — turn a website visit into a gym enquiry. Every section moves toward that.',
     bullets: [
@@ -131,11 +131,11 @@ const otherProjects = [
   },
   {
     name: 'Aivorain India',
-    desc: 'First paid client website — deployed a professional presence for a DYMO printer solutions provider (B2B).',
+    desc: 'Deployed a professional digital presence for a DYMO printer solutions provider (B2B) — structured for search discovery and B2B enquiry.',
     stack: 'HTML / CSS / JavaScript',
     link: 'https://www.aivoraindia.com/',
     linkText: 'Live ↗',
-    pill: 'Paid client',
+    pill: null,
   },
   {
     name: 'Gadget Store',
@@ -206,38 +206,5 @@ const experiences = [
     ],
     highlight: null,
   },
-  // ── Ventures ─────────────────────────────────────────────────────────
-  {
-    role: 'Greek God Clothing',
-    org: 'Own Venture',
-    period: '2025 · Bengaluru',
-    type: 'venture',
-    bullets: [
-      'Ran a customized clothing venture end-to-end: fabric sourcing, design, marketing shoots, website, fulfilment.',
-      'Scaled through targeted outreach to clubs, schools, and bulk orders.',
-    ],
-    highlight: '~₹50k / month at peak · customized bulk orders for clubs, schools & friends',
-  },
-  {
-    role: 'Gain House',
-    org: 'Gym Vending Venture',
-    period: '2024–2025 · Bengaluru',
-    type: 'venture',
-    bullets: [
-      'Identified gap: gyms lacked on-site protein shake availability. Negotiated machine placement with gym owners, ran operations.',
-      'Shut down after identifying unsustainable margins and maintenance overhead — fast learning, clear exit.',
-    ],
-    highlight: 'Spotted gap → tested → cut losses when unit economics didn\'t work',
-  },
-  {
-    role: 'Bun & Co',
-    org: 'Food Stall',
-    period: '2024 · Bengaluru',
-    type: 'venture',
-    bullets: [
-      'Set up and ran a weekend food stall for 1+ months — mun maska, biscuit bun, chocolate bun.',
-      'Handled sourcing, pricing, and customer operations directly. Learned the pace of physical commerce.',
-    ],
-    highlight: null,
-  },
 ];
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             

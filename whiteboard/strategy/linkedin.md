@@ -21,7 +21,7 @@ Do this in order. Every field has exactly what to write — no guessing.
 ### Banner (1584×396px)
 - Build in Canva (free) — search "LinkedIn Banner" template
 - Design: dark or off-white background, minimal, clean
-- Text: `Building Loop — WhatsApp Loyalty for Restaurants`
+- Text: `Product Engineer · Full-Stack Systems & SaaS`
 - Sub-text: `sujethdev.vercel.app`
 - Optional: add small tech stack pills (Next.js · TypeScript · Supabase)
 - Do NOT use busy stock photos or generic "coding" images
@@ -46,43 +46,26 @@ Remove any trailing numbers. Clean URL is important for resumes and professional
 
 ### Headline (220 chars max — paste exactly)
 ```
-Building Loop — WhatsApp Loyalty for Restaurants | Full-Stack Product Engineer | AIML @ UVCE Bangalore | Open to SWE Roles
+Product Engineer · Full-Stack Systems & SaaS | AIML @ UVCE Bangalore | Open to PE / SWE Roles
 ```
 
 ---
 
-### About Section (paste this — ~1250 chars)
+### About Section (paste this)
 ```
-Final-year AIML student at UVCE, Bangalore. I spend most of my time building things 
-and trying to get them to work in the real world.
+Final-year AIML student at UVCE, Bangalore. I design and ship systems end-to-end — from problem definition to production.
 
-Right now I'm building Loop — a WhatsApp loyalty platform for independent restaurants 
-in India. Multi-tenant SaaS, real payments via Razorpay, automated message flows. 
-Currently onboarding first restaurants in Bangalore.
+What I've built:
+→ Possah — production commerce with real payments, 24 DB migrations, E2E tests, Sentry monitoring
+→ Synthesis — adaptive learning with Bayesian Knowledge Tracing, spaced repetition, prerequisite graph
+→ Loop — WhatsApp retention SaaS for restaurants: multi-tenant, Razorpay, BullMQ message queues
+→ Production web products for two operating Bangalore businesses
 
-In the last 2 years I've shipped 11 things:
-→ Possah — production e-commerce with real payments, 24 DB migrations, E2E tests
-→ Synthesis — adaptive learning with Bayesian Knowledge Tracing + spaced repetition
-→ Zingara & Fitness Garage — paid client sites, live and generating revenue
-
-Along the way: a clothing venture that hit ~₹50k/month, a gym vending machine business 
-I shut down when the margins didn't work, a weekend food stall.
-
-CGPA: 8.9. The degree is context.
-
-I'm not attached to any particular tech stack. Today it's Next.js and Supabase. 
-Tomorrow if the problem needs something I've never touched, I'll figure it out. 
-What matters is whether the problem gets solved — within real constraints of cost, 
-time, and what's actually needed.
-
-Need is the driver. Tech is what you reach for when you've found the right problem.
+8.9 CGPA at UVCE. Not attached to any particular tech stack — it's a means, not an end. Next.js and Supabase today; whatever the problem demands tomorrow, I'll use. What actually matters is whether the product solves it: the right problem, reliably, within the real constraints of cost, time, and what users actually need.
 
 Open to:
-→ SWE internships and new-grad roles (full-stack, startup, product-facing)
-→ Conversations with founders building in India
-
-Currently building:
-→ Loop — if you run a restaurant in Bangalore, let's talk (free pilot, 3 months)
+→ Product Engineer and Full-Stack roles at product-led companies
+→ Designing, building, and deploying end-to-end products and engineering solutions
 
 sujethdev.vercel.app | github.com/sujeth-dev
 ```
@@ -97,21 +80,17 @@ sujethdev.vercel.app | github.com/sujeth-dev
 
 ---
 
-### Experience (4 entries — paste descriptions exactly)
+### Experience (3 entries — paste descriptions exactly)
 
 **Entry 1**
-- Company: Loop *(self-employed or create company page)*
-- Title: `Founder & Product Engineer`
-- Type: Self-employed | Start: January 2026 | End: Present
-- Location: Bangalore, India
+- Company: E-Cell, UVCE
+- Title: `Operations Team Lead`
+- Start: September 2023 | End: May 2025 | Location: Bangalore
 - Description:
 ```
-Building Loop — WhatsApp-native loyalty SaaS for independent restaurants. Multi-tenant 
-architecture with row-level security (Supabase/Postgres), automated WhatsApp message 
-queues (BullMQ), Razorpay payment integration, restaurant onboarding dashboard. 
-Currently onboarding first design partner restaurants in Bangalore.
-
-Stack: Next.js, TypeScript, Supabase, PostgreSQL, BullMQ, Razorpay.
+Coordinated campus entrepreneurship events and national innovation challenges. Drove
+200+ participant registrations for a multi-day case competition. Managed coordination
+across 4 organizing teams over 2 years.
 ```
 
 **Entry 2**
@@ -131,20 +110,8 @@ content and distribution execution.
 - Start: January 2025 | End: April 2025 | Location: Bangalore
 - Description:
 ```
-Built the full digital presence end-to-end: concept → Figma → development → live 
-deployment. Managed content calendar and social channels. The venture I co-ran hit 
-~₹50k/month at peak.
-```
-
-**Entry 4**
-- Company: E-Cell, UVCE
-- Title: `Operations Team Lead`
-- Start: September 2023 | End: May 2025 | Location: Bangalore
-- Description:
-```
-Coordinated campus entrepreneurship events and national innovation challenges. Drove 
-200+ participant registrations for a multi-day case competition. Managed coordination 
-across 4 organizing teams over 2 years.
+Built the full digital presence end-to-end: concept → Figma → development → live
+deployment. Managed content calendar and social channels.
 ```
 
 ---
@@ -165,7 +132,7 @@ across 4 organizing teams over 2 years.
    > Adaptive learning system using Bayesian Knowledge Tracing, prerequisite DAGs, and SM-2 spaced repetition. Personalizes learning paths per user mastery state.
 
 3. **Zingara Restaurant** | zingararestaurant.co.in
-   > Paid client project. Conversion-focused restaurant website driving customers to WhatsApp, Swiggy, and Zomato. Live and in use.
+   > Conversion-focused web product for a Bangalore restaurant — drives customers to WhatsApp, Swiggy, and Zomato. Live and in use.
 
 4. **AirDraw**
    > Computer vision drawing app using MediaPipe + Canvas. Draw in the air using hand gestures via webcam.
@@ -270,3 +237,4 @@ When someone responds to a connection request, comments on a post, or DMs you:
 > "Hi [Name], thanks for reaching out — this looks interesting. I'm a final-year AIML student at UVCE, currently shipping Loop (B2B SaaS, live, real customers). Happy to do a quick screen. What's the process?"
 
 **Rule:** Every DM gets a reply within 24 hrs. Every accepted connection gets a follow-up within 3 days if there's a relevant reason.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
