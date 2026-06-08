@@ -1,60 +1,53 @@
 # Prospects — Tier 2 Industrial Targets
-> Generated: 2026-06-07 | Bengaluru
-> Tier 2 = ₹5L–30L custom build + monthly support. Long game (2–3 months to close).
-> Entry: NOT cold call. Via CA referral / industry association / warm network intro.
+> Updated: 2026-06-07 | Deep research pass — exact contacts
+> These are ₹5L–30L builds. Entry via warm intro / CA / association. NOT cold call.
 
 ---
 
-## Section A: Garment / Apparel Manufacturers (Peenya + surrounding)
+## Section A: Garment / Apparel Manufacturers — Peenya
 
-**Their problem:** Production tracking, inventory, dispatch, karigar job work — all in Excel or paper
-**What you build:** Custom manufacturing OS (orders → production → dispatch → billing → inventory)
+**Sell:** Custom manufacturing OS — orders → production → dispatch → inventory → billing
 **Ticket:** ₹8L–25L build + ₹40–80k/month support
-**Entry point:** Peenya Industries Association (piapeenya.com) member list | CA referral | LinkedIn
 
-| # | Company | Area | Address | Contact | Notes |
-|---|---------|------|---------|---------|-------|
-| 1 | **Shahi Exports Pvt. Ltd.** | Peenya | 192, 7th Main, 3rd Phase, Peenya Industrial Area, Bangalore 560058 | +91 80283 94700 | One of India's largest garment exporters — may be too large for first engagement; use as reference to find mid-tier suppliers nearby |
-| 2 | **Ariatex Garments Pvt Ltd** | Peenya (4th Phase) | Plot No: 351, 9th Cross, 4th Main Rd, Phase 3, Peenya, 560058 | Find on IndiaMart / Tofler | Mid-size garment manufacturer — ideal size for custom system |
-| 3 | **Jeans Knit Private Limited** | Peenya (2nd Phase) | No. 21 E-1, 2nd Phase, Peenya Industrial Area, 560058 | Anupam S Kothari (director) — search LinkedIn | Knit garments + export — multi-step production = tracking pain |
-| 4 | **Update Apparel Factory** | Peenya (4th Phase) | Factory No. 351, 4th Main, 9th Cross, 4th Phase, Peenya, 560058 | M K Thilakan (authorized rep) | Export-oriented apparel unit — known contact name available |
-| 5 | **Birdy Exports Pvt Ltd** | Bangalore | birdyexports.com | Contact via website | Garment export house — find director name on Tofler.in search |
-| 6 | **PMPL Group (Prakash Mohan)** | Bangalore | pmplgroup.com | Contact via website | Large apparel exporter — use for referrals into mid-size peers |
-| 7 | **[PIA Member Directory]** Metal fabrication unit | Peenya | piapeenya.com → Members section | Call PIA office: find members in engineering/fabrication with 50–200 employees | Peenya Industries Association office can introduce you to members — approach PIA first |
-| 8 | **[Karnataka Industries Online]** | Any | karnatakaindustriesonline.com → search by sector + Bangalore | Directory search | Filter: Bangalore, manufacturing, company size 50–300 — find owner names |
-| 9 | **[Tofler]** Any Peenya manufacturer | Peenya | tofler.in → search "Peenya Bangalore" + filter by paid-up capital ₹25L–₹5Cr | Director names on Tofler | Tofler gives director names + contact history — use to find decision-maker before calling |
-| 10 | **[IndiaMart]** Fabrication / garment manufacturer | Peenya / Bommasandra | indiamart.com → search "garment manufacturer Peenya" or "fabrication Bommasandra" | IndiaMart message / call | Most manufacturers list directly with WhatsApp — easiest entry point |
+| # | Company | Address | Phone / Contact | Director / Owner | How to Reach | Notes |
+|---|---------|---------|----------------|-----------------|-------------|-------|
+| 1 | **Shahi Exports Pvt. Ltd.** | 192, 7th Main, 3rd Phase, Peenya Industrial Area, Bengaluru 560058 | **+91 80283 94700** | Search LinkedIn "Shahi Exports Bangalore director" | Call → ask for Operations or IT head | India's largest garment exporter. TOO LARGE for cold approach. Use as a reference company. Find their sub-contractors and mid-tier suppliers around them. |
+| 2 | **Ariatex Garments Pvt Ltd** | Plot No. 351, 9th Cross, 4th Main, 4th Phase, Peenya, Bengaluru 560058 | **absbgl@gmail.com** | **Ranjit Pillai** (contact person) | Email directly to Ranjit Pillai | Mid-size garment exporter — CIN: U17212KA2007PTC044776 (Tofler for full director list) |
+| 3 | **Jeans Knit Private Limited** | No. 21 E-1, 2nd Phase, Peenya Industrial Area, Bengaluru 560058 | **Phone: 080 28397511** | **Anupam S Kothari** (director) | Call direct + LinkedIn search Anupam Kothari | Knit garments = multi-stage production + sizing variants = tracking complexity |
+| 4 | **Update Apparel Factory** | Factory No. 351, 4th Main, 9th Cross, 4th Phase, Peenya, Bengaluru 560058 | Find on IndiaMART: "Update Apparel Peenya" | **M. K. Thilakan** (authorized rep) | IndiaMART contact form → WhatsApp | Export-oriented — known contact name makes intro much easier |
+| 5 | **Birdy Exports Pvt Ltd** | No. 473/A, 12th Cross, 4th Phase, Peenya Industrial Area, Bengaluru 560058 | **9845037688 / 9902587899** | Directors: Denis Marie Joseph Germain, Florence Nicole Xaviere Marie, Erwann Pierre Marie Germain | Call directly | French-Indian export house — CIN: U18101KA1998PTC023270 (Tofler for full details) |
+| 6 | **PMPL Group (Prakash Mohan)** | Bengaluru | pmplgroup.com → contact | Search website About page | Website contact form | Large apparel exporter — use to get introductions to mid-size peers in their ecosystem |
+| 7 | **[Peenya Industries Association]** Member | Peenya | **piapeenya.com** — Members section | PIA office number on website | Call PIA office → ask for member directory | Association intro = warm entry. Ask: "I build operational software for manufacturers — can you introduce me to 2–3 members who might benefit?" |
+| 8 | **[Karnataka Industries Online]** | Any | karnatakaindustriesonline.com → search sector + Bangalore | Directory contact | Search by: sector = garments/fabrication, location = Bangalore | Filter companies with 50–300 employees |
+| 9 | **[Tofler]** Any Peenya company | Peenya | tofler.in → search company name or "Peenya Bangalore" + filter by paid-up capital ₹25L–₹5Cr | Director names + DIN on Tofler | Use director name → LinkedIn search | Tofler gives official director names — use to identify who to contact before calling |
+| 10 | **[IndiaMART]** Fabrication / garment Bengaluru | Any | indiamart.com → search "garment manufacturer Peenya" | Most list WhatsApp directly | IndiaMART WhatsApp button | Easiest first contact — most manufacturers list with active WhatsApp |
 
 ---
 
-## Section B: Real Estate Developers (Mid-size, Active Projects)
+## Section B: Real Estate Developers — Bengaluru (Mid-size)
 
-**Their problem:** Payment collection from buyers (manual follow-up), milestone tracking, sub-contractor management, buyer portal — all fragmented
-**What you build:** Custom project management + buyer portal + payment schedule tracker
+**Sell:** Custom project management + buyer payment schedule + milestone tracker + buyer portal
 **Ticket:** ₹8L–25L + retainer
-**Entry point:** CREDAI Bengaluru member list (credaibengaluru.com) | CA referral | Industry network
+**Entry:** CREDAI Bengaluru member list. CA referral. NOT cold call.
 
-| # | Company | Size | Contact | Entry Angle |
-|---|---------|------|---------|-------------|
-| 1 | **Sumadhura Group** | Large (56+ projects, 17M+ sqft) | sumadhuragroup.com | Founder: Madhusudhan G — use as aspirational reference; approach their sub-contractors or smaller peers |
-| 2 | **Mahaveer Group** | Large (115 projects, 25 yrs) | mahaveergroup.in | Chairman: Praveen Kumbala — large, but has multiple mid-tier subsidiaries. Entry via CA who handles their accounts |
-| 3 | **DSR Infrastructures** | Mid-size (63 projects, 35 yrs) | dsrinfrastructures.com | Since 1988 — look up director on Tofler. Established brand but not mega = more open to custom tools |
-| 4 | **Casagrand Builder** | Mid-large (140+ projects) | casagrand.co.in | MD: Arun MN | Large for cold approach — use to find mid-tier developers through CREDAI network |
-| 5 | **[CREDAI Bengaluru member]** | Mid-size (5–20 projects) | credaibengaluru.com → Members | CREDAI office: Unit 607-608, 6th Floor, Barton Centre, 84, MG Road, Bangalore 560001 | Go to CREDAI Bengaluru website → Members list → filter for smaller developers with 5–20 active projects |
-| 6–10 | **[CREDAI Bengaluru member list]** | Various | credaibengaluru.com | Same as above | The CREDAI Bengaluru member directory lists 200+ local developers. Filter for ones with 3–10 active projects. These are ideal — big enough to have the pain, small enough that the owner is accessible. |
-
----
-
-## Tier 2 Action Plan — This Week
-1. **Do NOT cold call Tier 2.** These are relationship sales.
-2. **One action this week:** Ask one person in your network — "Do you know anyone who runs a manufacturing business or real estate firm in Bangalore?" One warm intro > 100 cold calls.
-3. **LinkedIn:** Connect with founders/directors at DSR Infrastructures and mid-size CREDAI members. Comment on their posts first before DMing.
-4. **CA route:** If you know any CA (chartered accountant), ask if they handle any manufacturers or developers as clients. One intro from a CA = trusted entry.
+| # | Developer | Size | Contact | Owner / Director | How to Reach | Notes |
+|---|-----------|------|---------|-----------------|-------------|-------|
+| 1 | **DSR Infrastructures** | Mid-size (63 projects, 35 yrs) | dsrinfrastructures.com | Search LinkedIn "DSR Infrastructures Bangalore director" | Website → LinkedIn DM to director | Established but not mega = decision-maker is accessible. CREDAI member. |
+| 2 | **Sumadhura Group** | Large (56+ projects, 17M sqft) | sumadhuragroup.com | **Founder: Madhusudhan G** | LinkedIn: search "Madhusudhan G Sumadhura" | Too large to cold pitch — use as reference. Find their contractors, architects, CAs. |
+| 3 | **Mahaveer Group** | Large (115 projects) | mahaveergroup.in | **Chairman: Praveen Kumbala** | LinkedIn: "Praveen Kumbala Mahaveer" | Entry via CA who handles their accounts — ask your CA network |
+| 4 | **[CREDAI Bengaluru member]** 5–15 active projects | Bengaluru | **credaibengaluru.com → Members** | Member list has company names | Go to CREDAI website → Members → find developers with 5–15 active projects = ideal size | CREDAI Bengaluru office: Unit 607-608, 6th Floor, Barton Centre, 84 MG Road, Bengaluru 560001 |
+| 5 | **[CREDAI Bengaluru members — 5 more]** | Bengaluru | Same as above | Same | Same | Browse member list for developers you've heard of locally — warm intro beats cold every time |
 
 ---
 
-## Tier 2 Status Tracker
+## Tier 2 Approach Rules
+1. **Never cold call.** These are 2–3 month sales. Entry = relationship.
+2. **Week 2 action:** Ask one person: "Do you know anyone running a manufacturing or real estate business in Bangalore?" One warm intro > 100 cold calls.
+3. **CA route:** If you know any CA, ask: "Do any of your clients run a manufacturing business or real estate firm?" CAs are trusted — their intro gets you a meeting.
+4. **LinkedIn first:** Comment on 2–3 posts from the director's LinkedIn. Then DM. Don't cold DM without any prior interaction.
+5. **Tofler trick:** tofler.in — search any company name → get director names, DIN, financials. Use to identify the right person before reaching out.
 
-| Company | Sector | First Contact | Meeting | Proposal | Status |
-|---------|--------|---------------|---------|----------|--------|
-| | | | | | |
+## Status Tracker
+| Company | Sector | First Contact | Via | Meeting | Proposal | Status |
+|---------|--------|--------------|-----|---------|----------|--------|
+| | | | | | | |
