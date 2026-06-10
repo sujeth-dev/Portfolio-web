@@ -128,8 +128,9 @@ function populateOverlay(p) {
           <span class="ov-tl" style="background:#28c840"></span>
           <span class="ov-url">${p.demo.label}</span>
         </div>
-        <iframe class="ov-iframe" src="${p.demo.url}" title="${p.name} live demo" loading="lazy"></iframe>
-        <div class="ov-frame-note">↑ Live embed — <a href="${p.demo.url}" target="_blank" rel="noopener">open directly ↗</a> if your browser blocks framing</div>
+        <div class="ov-demo-cta">
+          <a class="ov-lnk solid" href="${p.demo.url}" target="_blank" rel="noopener">Open live site ↗</a>
+        </div>
       </div>`;
   } else {
     center.innerHTML = `
