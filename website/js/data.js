@@ -201,4 +201,9 @@ const experiences = [
     period: 'Sep 2023 – May 2025 · Bengaluru',
     type: 'formal',
     bullets: [
-      'Coordinated logistics, execution, outreach, and cross-functional teams for e
+      'Coordinated logistics, execution, outreach, and cross-functional teams for entrepreneurship events and innovation challenges.',
+      'Drove 200+ participants to a case competition through structured planning and a focused content strategy.',
+    ],
+    highlight: null,
+  },
+];
