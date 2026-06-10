@@ -111,7 +111,7 @@ work in — I've had to solve similar [X] problems building Loop. Happy to show
 you the codebase or walk through the architecture in a call.
 ```
 
-Swap in a different project lead (Synthesis for edtech companies, Possah for e-commerce companies).
+Swap in a different project lead (Synaptic for edtech companies, Possah for e-commerce companies).
 
 **For companies you really want:** Don't use Easy Apply. Find the hiring manager or engineering lead on LinkedIn. Send a connection request + note.
 
@@ -176,7 +176,7 @@ Lead with Loop. It's your flagship. Everything else supports it.
 ### Resume order:
 1. **Header:** Name, email, phone, GitHub, portfolio link, LinkedIn
 2. **Loop (Loyalty Platform):** First project. "Built and shipped a WhatsApp-native multi-tenant loyalty SaaS for restaurants. Next.js, Supabase, Razorpay. [N] restaurants onboarded."
-3. **Synthesis:** Adaptive learning platform with Bayesian mastery tracking
+3. **Synaptic:** Adaptive learning platform with Bayesian mastery tracking
 4. **Possah:** Production e-commerce with real payments + inventory
 5. **Skills:** Next.js, React, TypeScript, Node.js, PostgreSQL, Supabase, Playwright, Razorpay
 6. **Education:** College name, branch, CGPA (only if 8.0+)
@@ -203,7 +203,7 @@ Full Stack Engineer · Building Loop (WhatsApp Loyalty SaaS) · Next.js · Supab
 I build products that solve real business problems — not just code.
 
 Currently shipping Loop, a WhatsApp-native loyalty platform for Indian restaurants. 
-Previously built Synthesis (adaptive learning with Bayesian tracking) and Possah 
+Previously built Synaptic (adaptive learning with Bayesian tracking) and Possah 
 (production e-commerce with Razorpay). All live, all shipped solo.
 
 Stack: Next.js, TypeScript, Supabase, Node.js, Playwright

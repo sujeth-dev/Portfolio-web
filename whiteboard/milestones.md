@@ -76,7 +76,7 @@
 - [ ] Patterns completed: Arrays, Strings, HashMap, Sliding Window, Two Pointers, Stack, Linked List, Binary Search, Trees
 - [ ] 180+ problems solved (cumulative)
 - [ ] All 6 behavioral stories written
-- [ ] Loop + Synthesis pitches practiced (verbal, timed)
+- [ ] Loop + Synaptic pitches practiced (verbal, timed)
 - [ ] System design: 4 of 5 topics covered
 - [ ] Mock interview #1 done
 
@@ -126,7 +126,7 @@
 - [ ] All 13 patterns completed (Arrays through DP)
 - [ ] 3+ mock interviews done
 - [ ] All 6 behavioral stories practiced verbally (recorded, under 2 min each)
-- [ ] All 3 project pitches practiced (Loop, Synthesis, Possah)
+- [ ] All 3 project pitches practiced (Loop, Synaptic, Possah)
 - [ ] System design: all 5 topics covered
 - [ ] Can explain any project architecture in depth without hesitation
 

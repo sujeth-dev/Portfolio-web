@@ -5,12 +5,12 @@
 
 const featuredProjects = [
   {
-    id: 'synthesis',
+    id: 'synaptic',
     num: '01',
     label: 'featured',
     category: 'Adaptive Learning System',
-    name: 'Synthesis',
-    meta: 'Synthesis · Solo',
+    name: 'Synaptic',
+    meta: 'Synaptic · Solo',
     status: { cls: 'live', text: 'Live' },
     tease: 'Curricula as dependency graphs, not playlists — learners only reach what they\'re genuinely ready for.',
     lead: 'Personalizes <em>what you study next</em> — so time goes where learning is actually needed.',
@@ -20,18 +20,18 @@ const featuredProjects = [
       '<b>SM-2 spaced repetition</b> — review scheduling so retention compounds over time instead of cramming before an exam.',
       '<b>Motivation FSM</b> — 4-state machine (neutral / winning / bored / frustrated) adapts encouragement overlays to your streak in real time.',
     ],
-    why: 'Most platforms move every student through the same fixed curriculum. Synthesis routes each learner through only what they actually need — the right concept, at the right time. The hard part wasn\'t any one algorithm; it was making all three systems agree as one coherent loop, not three features bolted on.',
+    why: 'Most platforms move every student through the same fixed curriculum. Synaptic routes each learner through only what they actually need — the right concept, at the right time. The hard part wasn\'t any one algorithm; it was making all three systems agree as one coherent loop, not three features bolted on.',
     demo: {
-      url: 'https://synthesis-adaptive-learning.vercel.app/demo',
-      label: 'synthesis-adaptive-learning.vercel.app/demo',
+      url: 'https://synaptic-adaptive-learning.vercel.app/demo',
+      label: 'synaptic-adaptive-learning.vercel.app/demo',
     },
     arch: {
       caption: 'Three systems that have to agree: the <strong>DAG</strong> controls what\'s reachable, <strong>BKT</strong> decides what\'s mastered, and <strong>SM-2</strong> decides when it returns. The feedback loop back to the graph is what makes it a real adaptive engine, not three features running in parallel.',
-      svg: 'synthesis',
+      svg: 'synaptic',
     },
     stack: ['Next.js 14', 'TypeScript', '@xyflow/react', 'dagre', 'SQLite', 'JWT'],
     links: [
-      { text: 'Live demo ↗', href: 'https://synthesis-adaptive-learning.vercel.app/demo', solid: true },
+      { text: 'Live demo ↗', href: 'https://synaptic-adaptive-learning.vercel.app/demo', solid: true },
       { text: 'Code ↗', href: 'https://github.com/sujeth-dev', solid: false },
     ],
   },
@@ -201,9 +201,4 @@ const experiences = [
     period: 'Sep 2023 – May 2025 · Bengaluru',
     type: 'formal',
     bullets: [
-      'Coordinated logistics, execution, outreach, and cross-functional teams for entrepreneurship events and innovation challenges.',
-      'Drove 200+ participants to a case competition through structured planning and a focused content strategy.',
-    ],
-    highlight: null,
-  },
-];
+      'Coordinated logistics, execution, outreach, and cross-functional teams for e

@@ -57,7 +57,7 @@ Final-year AIML student at UVCE, Bangalore. I design and ship systems end-to-end
 
 What I've built:
 → Possah — production commerce with real payments, 24 DB migrations, E2E tests, Sentry monitoring
-→ Synthesis — adaptive learning with Bayesian Knowledge Tracing, spaced repetition, prerequisite graph
+→ Synaptic — adaptive learning with Bayesian Knowledge Tracing, spaced repetition, prerequisite graph
 → Loop — WhatsApp retention SaaS for restaurants: multi-tenant, Razorpay, BullMQ message queues
 → Production web products for two operating Bangalore businesses
 
@@ -75,7 +75,7 @@ sujethdev.vercel.app | github.com/sujeth-dev
 ### Featured Section (max 4, add as Link in this order)
 1. Title: `Portfolio — 11 Shipped Projects` | URL: sujethdev.vercel.app
 2. Title: `Possah — Production E-Commerce Platform` | URL: thepossah.com
-3. Title: `Synthesis — Adaptive Learning System` | URL: [GitHub or demo link]
+3. Title: `Synaptic — Adaptive Learning System` | URL: [GitHub or demo link]
 4. *(Leave empty — replace with your first post that hits 500+ impressions)*
 
 ---
@@ -128,7 +128,7 @@ deployment. Managed content calendar and social channels.
 1. **Possah** | thepossah.com
    > Full-stack e-commerce with Razorpay payments, inventory management, Row-Level Security (Supabase/Postgres), 24 DB migrations, Playwright E2E tests. Production-grade, live.
 
-2. **Synthesis** | [demo link]
+2. **Synaptic** | [demo link]
    > Adaptive learning system using Bayesian Knowledge Tracing, prerequisite DAGs, and SM-2 spaced repetition. Personalizes learning paths per user mastery state.
 
 3. **Zingara Restaurant** | zingararestaurant.co.in

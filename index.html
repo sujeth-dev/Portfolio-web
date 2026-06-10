@@ -141,9 +141,9 @@
 
     <div class="feat"><div class="fhead">
       <div class="findex">01 \u2014 Adaptive Learning System</div>
-      <div class="ftop"><span class="fname">Synthesis</span><span class="pill live">Live / Solo</span></div>
+      <div class="ftop"><span class="fname">Synaptic</span><span class="pill live">Live / Solo</span></div>
       <div class="ftype">Most platforms move every student through the same fixed curriculum.</div>
-      <div class="fbody">Synthesis adapts learning paths based on what a learner actually knows. As learners answer questions, mastery estimates continuously update and future concepts unlock dynamically. It combines:</div>
+      <div class="fbody">Synaptic adapts learning paths based on what a learner actually knows. As learners answer questions, mastery estimates continuously update and future concepts unlock dynamically. It combines:</div>
       <ul class="flist">
         <li>Knowledge graphs to model prerequisite relationships</li>
         <li>Bayesian Knowledge Tracing to estimate mastery</li>
@@ -151,14 +151,14 @@
       </ul>
       <div class="why"><div class="wl">Why it matters</div>Students spend less time repeating concepts they've already mastered, and more time where learning is actually needed.</div>
       <div class="demo">
-        <div class="demobar"><span class="tl" style="background:#ff5f57"></span><span class="tl" style="background:#febc2e"></span><span class="tl" style="background:#28c840"></span><span class="url">synthesis-adaptive-learning.vercel.app/demo</span></div>
-        <iframe class="demoframe" src="https://synthesis-adaptive-learning.vercel.app/demo" title="Synthesis live demo" loading="lazy"></iframe>
-        <div class="demonote">↑ Live embed. If your browser blocks framing, open it directly → <a class="flink ext" href="https://synthesis-adaptive-learning.vercel.app/demo" target="_blank">full demo</a></div>
+        <div class="demobar"><span class="tl" style="background:#ff5f57"></span><span class="tl" style="background:#febc2e"></span><span class="tl" style="background:#28c840"></span><span class="url">synaptic-adaptive-learning.vercel.app/demo</span></div>
+        <iframe class="demoframe" src="https://synaptic-adaptive-learning.vercel.app/demo" title="Synaptic live demo" loading="lazy"></iframe>
+        <div class="demonote">↑ Live embed. If your browser blocks framing, open it directly → <a class="flink ext" href="https://synaptic-adaptive-learning.vercel.app/demo" target="_blank">full demo</a></div>
       </div>
       <div class="stack"><span class="tag">Next.js</span><span class="tag">TypeScript</span><span class="tag">React Flow</span><span class="tag">Dagre</span><span class="tag">SQLite</span><span class="tag">JWT</span></div>
-      <div class="flinks"><a class="flink ext" href="https://synthesis-adaptive-learning.vercel.app/demo" target="_blank">Live demo</a><a class="flink ext" href="https://github.com/Sujeth-17" target="_blank">Code</a><button class="csbtn" data-cs="synth">Case study ↓</button></div>
+      <div class="flinks"><a class="flink ext" href="https://synaptic-adaptive-learning.vercel.app/demo" target="_blank">Live demo</a><a class="flink ext" href="https://github.com/Sujeth-17" target="_blank">Code</a><button class="csbtn" data-cs="synap">Case study ↓</button></div>
     </div>
-    <div class="drawer" id="cs-synth"><div class="dinner"><div class="dgrid">
+    <div class="drawer" id="cs-synap"><div class="dinner"><div class="dgrid">
       <div class="dk">The idea</div><div class="dv">Treat a curriculum like a dependency graph, not a playlist. You can't learn X before its prerequisites \u2014 so model that explicitly and route each learner through what they actually need.</div>
       <div class="dk">How it works</div><div class="dv"><ul><li>Prerequisite DAG \u2014 concepts as nodes, dependencies as edges, laid out with dagre + React Flow.</li><li>BKT \u2014 probabilistic per-concept mastery that updates with every answer.</li><li>SM-2 \u2014 schedules reviews so retention compounds instead of cramming.</li></ul></div>
       <div class="dk">Why it's hard</div><div class="dv">The three have to agree: mastery feeds what unlocks next, which feeds what gets scheduled. Making the loop coherent \u2014 not three features bolted together \u2014 was the real work.</div>

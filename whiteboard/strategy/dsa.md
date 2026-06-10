@@ -163,9 +163,9 @@ Currently onboarding design-partner restaurants in Bangalore. Pricing starts at
 - How would you scale to 1000 restaurants? (connection pooling, Supabase dedicated, Redis for sessions, CDN for QR assets)
 - What would you do differently? (consider GraphQL for admin dashboard, better observability from day 1)
 
-### Synthesis — 3-Minute Pitch
+### Synaptic — 3-Minute Pitch
 ```
-Synthesis is an adaptive learning platform that routes learners through 
+Synaptic is an adaptive learning platform that routes learners through 
 personalized curricula using Bayesian Knowledge Tracing (BKT) + SM-2 
 spaced repetition + a prerequisite dependency graph.
 
@@ -201,7 +201,7 @@ Use **STAR format** for all of these: Situation → Task → Action → Result.
 → Use Loop. Designed the whole architecture, made every product decision, shipped solo.
 
 **2. Solved a hard technical problem**
-→ Use Synthesis BKT algorithm, OR the payment idempotency in Possah, OR the BullMQ async queue in Loop.
+→ Use Synaptic BKT algorithm, OR the payment idempotency in Possah, OR the BullMQ async queue in Loop.
 
 **3. Handled failure / setback**
 → A bug that broke something in production, a client project that had scope creep, something that didn't go as planned. Be specific.

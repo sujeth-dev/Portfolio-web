@@ -3,8 +3,8 @@
 
 // ── SVG arch diagram templates ──────────────────────────────────────────
 function archSVG(id) {
-  if (id === 'synthesis') return `
-    <svg viewBox="0 0 520 215" role="img" aria-label="Synthesis architecture">
+  if (id === 'synaptic') return `
+    <svg viewBox="0 0 520 215" role="img" aria-label="Synaptic architecture">
       <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a4f3d"/></marker></defs>
       <text x="10" y="16" class="acap">Prerequisite DAG</text>
       <circle cx="40" cy="64" r="18" class="an lit"/><text x="40" y="68" text-anchor="middle" class="anl w">A</text>
@@ -337,3 +337,4 @@ document.querySelectorAll('.btn').forEach(btn => {
   });
   btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
 });
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
