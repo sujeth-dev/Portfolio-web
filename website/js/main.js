@@ -261,20 +261,13 @@ const ventureList = document.getElementById('exp-venture-list');
 if (formalList)  formalList.innerHTML  = experiences.filter(e => e.type === 'formal').map(buildExpItem).join('');
 if (ventureList) ventureList.innerHTML = experiences.filter(e => e.type === 'venture').map((e,i) => buildExpItem(e,i)).join('');
 
-// ── Custom cursor ───────────────────────────────────────────────────────
-const dot  = document.querySelector('.cur-dot');
-const ring = document.querySelector('.cur-ring');
-let rx = 0, ry = 0;
-if (dot && ring) {
+// ── Custom cursor (dot only) ────────────────────────────────────────────
+const dot = document.querySelector('.cur-dot');
+if (dot) {
   document.addEventListener('mousemove', e => {
-    dot.style.left  = e.clientX + 'px';
-    dot.style.top   = e.clientY + 'px';
-    rx += (e.clientX - rx) * 0.12;
-    ry += (e.clientY - ry) * 0.12;
-    ring.style.left = rx + 'px';
-    ring.style.top  = ry + 'px';
+    dot.style.left = e.clientX + 'px';
+    dot.style.top  = e.clientY + 'px';
   });
-  (function loop() { rx += (parseFloat(dot.style.left || 0) - rx) * 0.12; ry += (parseFloat(dot.style.top || 0) - ry) * 0.12; ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; requestAnimationFrame(loop); })();
 }
 
 // ── Scroll progress bar ─────────────────────────────────────────────────

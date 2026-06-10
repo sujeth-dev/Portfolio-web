@@ -29,8 +29,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9997;o
 
 /* ══ CUSTOM CURSOR ════════════════════════════════════════════════════ */
 .cur-dot{position:fixed;top:0;left:0;width:7px;height:7px;border-radius:50%;background:var(--ink);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .05s}
-.cur-ring{position:fixed;top:0;left:0;width:34px;height:34px;border-radius:50%;border:1px solid var(--ink);pointer-events:none;z-index:9996;transform:translate(-50%,-50%);mix-blend-mode:multiply;transition:transform .18s ease,width .2s,height .2s}
-@media(hover:none){.cur-dot,.cur-ring{display:none}}
+@media(hover:none){.cur-dot{display:none}}
 
 /* ══ STATUS BAR ═══════════════════════════════════════════════════════ */
 .strip{position:sticky;top:0;z-index:40;background:var(--ink);color:var(--paper);font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.04em}
@@ -145,13 +144,13 @@ h1 em{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;col
 .pc-arrow:hover{background:var(--ck);color:var(--cp);border-color:var(--ck)}
 
 /* ══ FULL-SCREEN OVERLAY ══════════════════════════════════════════════ */
-.card-overlay{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:clamp(12px,3vw,28px);opacity:0;pointer-events:none;transition:opacity .3s ease;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.card-overlay{position:fixed;inset:0;z-index:200;display:flex;justify-content:center;align-items:flex-start;padding:clamp(12px,3vw,28px);opacity:0;pointer-events:none;transition:opacity .3s ease;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .card-overlay.active{opacity:1;pointer-events:all}
 .ov-backdrop{position:fixed;inset:0;background:rgba(21,18,13,.52);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .ov-card{
   position:relative;z-index:1;
   background:linear-gradient(135deg, var(--cp) 0%, var(--cp2) 100%);
-  width:100%;max-width:1080px;border-radius:8px;
+  width:100%;max-width:1080px;border-radius:8px;margin:auto 0;
   box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 60px 120px -20px rgba(0,0,0,.85);
   transform:none;
   transition:transform 0.55s var(--cs-open), opacity 0.3s ease;
@@ -298,7 +297,7 @@ section{padding:76px 0;border-top:1px solid var(--line)}
 
 /* ══ PHILOSOPHY ═══════════════════════════════════════════════════════ */
 .phi-wrap{background:var(--ink);margin:0 -32px;padding:100px 32px;border-top:1px solid #2a2920}
-.phi-inner{max-width:var(--maxw);margin:0 auto}
+.phi-inner{max-width:var(--maxw);margin:0 auto;padding-left:24px;border-left:2px solid var(--accent)}
 .phi-wrap .shead{border-top:none;padding-top:0;margin-bottom:36px}
 .phi-wrap .shead .num{color:var(--accent)}
 .phi-wrap .shead h2{color:rgba(250,250,247,.32)}
