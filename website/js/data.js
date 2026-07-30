@@ -174,17 +174,6 @@ const otherProjects = [
 const experiences = [
   // ── Formal Roles ──────────────────────────────────────────────────────
   {
-    role: 'Marketing Intern',
-    org: 'Jobert Apparels Pvt Ltd',
-    period: 'Apr 2025 – Oct 2025 · Bengaluru',
-    type: 'formal',
-    bullets: [
-      'Developed 3 new sub-brand identities from scratch — names, logos, slogans tailored to distinct target audiences.',
-      'Established the brand\'s complete customer-facing communication channels from zero.',
-    ],
-    highlight: null,
-  },
-  {
     role: 'Web Design & Content',
     org: 'Greek God Clothing',
     period: 'Jan 2025 – Apr 2025 · Bengaluru',
