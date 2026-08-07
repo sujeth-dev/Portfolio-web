@@ -12,34 +12,55 @@ export default function Lab() {
             <h1 style={{ fontSize: 'clamp(32px, 4vw, 48px)' }}>Experiments</h1>
             <Robot pose="goggles" size={40} />
           </div>
-          <p style={{ color: 'var(--muted)', marginBottom: 40, maxWidth: 500 }}>
+          <p className="lab-intro">
             Side projects, prototypes, and things built for the joy of building.
+            Some are live, some are perpetual works-in-progress, all taught me something.
           </p>
         </ScrollReveal>
 
         <div className="lab-grid">
           {labProjects.map((p, i) => (
             <ScrollReveal key={p.slug} delay={i * 100}>
-              <div className="lab-cartridge">
+              <div className="lab-cartridge" style={{ transform: `rotate(${i % 2 === 0 ? -1 : 1}deg)` }}>
                 <div className={`lab-cartridge-stripe ${p.color}`} />
-                <div className="lab-cartridge-name">{p.name}</div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginTop: 8 }}>
+                  <div className="lab-cartridge-name">{p.name}</div>
+                  <span className={`lab-cartridge-status ${p.status.toLowerCase()}`}>
+                    {p.status}
+                  </span>
+                </div>
                 <p className="lab-cartridge-desc">{p.tagline}</p>
                 <div className="project-card-stack">
                   {p.stack.map((s) => (
                     <span key={s} className="tag">{s}</span>
                   ))}
                 </div>
-                {p.url && (
-                  <a
-                    href={p.url}
-                    className="mini-card-link"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ marginTop: 12, display: 'inline-block' }}
-                  >
-                    View ↗
-                  </a>
+                {p.description && (
+                  <p className="lab-cartridge-detail">{p.description}</p>
                 )}
+                <div className="lab-cartridge-links">
+                  {p.url && (
+                    <a
+                      href={p.url}
+                      className="mini-card-link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {p.url.includes('github.com') ? 'Source ↗' : 'View ↗'}
+                    </a>
+                  )}
+                  {p.sourceUrl && (
+                    <a
+                      href={p.sourceUrl}
+                      className="mini-card-link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: 'var(--cobalt)' }}
+                    >
+                      Source ↗
+                    </a>
+                  )}
+                </div>
               </div>
             </ScrollReveal>
           ))}

@@ -6,8 +6,7 @@ export const experiences = [
     period: 'Apr 2025 – Oct 2025',
     type: 'formal',
     bullets: [
-      'Created three sub-brand identities and managed their digital presence across platforms.',
-      'Led content strategy and campaign execution for product launches.',
+      'Created three sub-brand identities from scratch, including names, logos, slogans, and audience-specific messaging, and established their customer-facing communication channels.',
     ],
   },
   {
@@ -17,8 +16,7 @@ export const experiences = [
     period: 'Jan 2025 – Apr 2025',
     type: 'formal',
     bullets: [
-      'Led end-to-end lifecycle for the brand\'s first online store — concept, Figma prototyping, development, live deployment.',
-      'Shaped the content calendar around product drops and managed the brand\'s digital presence.',
+      'Delivered the brand\'s first online store end to end, from requirements and Figma prototype through live deployment, and aligned launch content with the product calendar.',
     ],
   },
   {
@@ -28,8 +26,8 @@ export const experiences = [
     period: 'Sep 2023 – May 2025',
     type: 'formal',
     bullets: [
-      'Coordinated logistics, execution, outreach, and cross-functional teams for entrepreneurship events.',
-      'Drove 200+ participants to a case competition through structured planning and content strategy.',
+      'Coordinated logistics, outreach, and cross-functional execution for entrepreneurship events and innovation challenges.',
+      'Drove 200+ participants to a case competition through structured planning and a focused content strategy.',
     ],
   },
 ]

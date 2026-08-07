@@ -265,21 +265,15 @@ h1, h2, h3, h4 {
 .zigzag {
   width: 100%;
   height: 24px;
-  background:
-    linear-gradient(135deg, var(--bg) 33.33%, transparent 33.33%) 0 0,
-    linear-gradient(225deg, var(--bg) 33.33%, transparent 33.33%) 0 0;
-  background-size: 24px 24px;
-  background-position: top;
-  background-repeat: repeat-x;
+  background: var(--border);
+  clip-path: polygon(0 42%,5% 22%,11% 46%,18% 20%,26% 44%,34% 18%,42% 44%,51% 22%,60% 46%,68% 20%,76% 44%,84% 22%,92% 46%,100% 24%,100% 100%,0 100%);
 }
 
 .zigzag-dark {
-  background:
-    linear-gradient(135deg, var(--bg-dark) 33.33%, transparent 33.33%) 0 0,
-    linear-gradient(225deg, var(--bg-dark) 33.33%, transparent 33.33%) 0 0;
-  background-size: 24px 24px;
-  background-position: top;
-  background-repeat: repeat-x;
+  width: 100%;
+  height: 24px;
+  background: var(--bg-dark);
+  clip-path: polygon(0 42%,5% 22%,11% 46%,18% 20%,26% 44%,34% 18%,42% 44%,51% 22%,60% 46%,68% 20%,76% 44%,84% 22%,92% 46%,100% 24%,100% 100%,0 100%);
 }
 
 /* ── LED Indicator ── */
@@ -732,35 +726,97 @@ h1, h2, h3, h4 {
   color: var(--red);
 }
 
-/* ── Currently / Ticker Section ── */
-.currently-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
+/* ── Thoughts / Currently Section ── */
+.thoughts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 700px;
 }
 
-.currently-item {
-  padding: 16px;
+.thought-card {
+  padding: 24px;
   border: var(--border-sm);
   background: var(--bg-card);
+  box-shadow: var(--shadow-sm);
+  position: relative;
 }
 
-.currently-label {
+.thought-num {
+  font-family: var(--font-label);
+  font-size: 28px;
+  color: var(--border);
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  line-height: 1;
+}
+
+.thought-question {
+  font-weight: 800;
+  font-size: clamp(16px, 1.5vw, 19px);
+  line-height: 1.35;
+  margin-bottom: 10px;
+  max-width: 90%;
+}
+
+.thought-body {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* ── Other Projects Grid ── */
+.other-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.other-card {
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  padding: 16px;
+  transition: transform var(--duration) var(--ease-snap);
+}
+
+.other-card:hover {
+  transform: translate(-1px, -1px);
+}
+
+.other-card-name {
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.other-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.other-card-stack {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--faint);
+  margin-bottom: 6px;
+}
+
+.other-card-link {
   font-family: var(--font-label);
   font-size: 10px;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--red);
-  margin-bottom: 8px;
+  color: var(--cobalt);
 }
 
-.currently-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 14px;
-  color: var(--muted);
+/* ── Card Accent Stripe ── */
+.project-card-accent {
+  height: 5px;
+  margin: -clamp(20px, 3vw, 28px);
+  margin-bottom: 12px;
 }
 
 /* ── Contact ── */
@@ -1174,6 +1230,381 @@ h1, h2, h3, h4 {
 
 .project-nav-link:hover { color: var(--ink); }
 
+/* ── Trifold Overlay ── */
+.trifold-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: clamp(12px, 3vw, 28px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.trifold-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.trifold-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(34, 30, 28, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.trifold-card {
+  position: relative;
+  z-index: 1;
+  background: var(--bg-card);
+  width: 100%;
+  max-width: 900px;
+  margin: auto 0;
+  border: var(--border-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.trifold-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: var(--border-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-label);
+  font-size: 14px;
+  color: var(--muted);
+  z-index: 10;
+  transition: background var(--duration), color var(--duration);
+}
+
+.trifold-close:hover {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.trifold-header {
+  padding: 24px 28px 20px;
+  border-bottom: 2px dashed var(--border);
+  position: relative;
+}
+
+.trifold-header-category {
+  font-family: var(--font-label);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.trifold-header-name {
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+
+.trifold-header-tagline {
+  font-size: 16px;
+  color: var(--muted);
+  line-height: 1.4;
+  max-width: 60ch;
+}
+
+.trifold-header-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.trifold-body {
+  position: relative;
+}
+
+.trifold-body::before,
+.trifold-body::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 10;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(34, 28, 20, 0.12) 20%, rgba(34, 28, 20, 0.16) 50%, rgba(34, 28, 20, 0.12) 80%, transparent);
+}
+
+.trifold-body::before { top: 0; }
+.trifold-body::after { bottom: 0; }
+
+.trifold-top-outer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.88s var(--ease-snap) 0.2s;
+}
+
+.trifold-overlay.active .trifold-top-outer {
+  grid-template-rows: 1fr;
+}
+
+.trifold-top-inner {
+  overflow: hidden;
+  min-height: 0;
+  position: relative;
+}
+
+.trifold-top-inner::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(34, 28, 20, 0.1) 20%, rgba(34, 28, 20, 0.14) 50%, rgba(34, 28, 20, 0.1) 80%, transparent);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.trifold-top {
+  padding: 24px 28px;
+  transform-origin: bottom center;
+  transform: perspective(1100px) rotateX(-62deg);
+  opacity: 0;
+  transition: transform 0.92s var(--ease-snap) 0.22s, opacity 0.5s ease 0.22s;
+}
+
+.trifold-overlay.active .trifold-top {
+  transform: perspective(1100px) rotateX(0deg);
+  opacity: 1;
+}
+
+.trifold-center {
+  padding: 20px 28px;
+  border-top: 1px solid var(--border);
+  background: var(--cream);
+}
+
+.trifold-demo-shell {
+  border: var(--border-sm);
+  overflow: hidden;
+  background: var(--white);
+}
+
+.trifold-demo-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--cream);
+  border-bottom: 1px solid var(--border);
+}
+
+.trifold-demo-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.trifold-demo-url {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--faint);
+  margin-left: 8px;
+}
+
+.trifold-demo-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.trifold-bottom-outer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.88s var(--ease-snap) 0.32s;
+}
+
+.trifold-overlay.active .trifold-bottom-outer {
+  grid-template-rows: 1fr;
+}
+
+.trifold-bottom-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.trifold-bottom {
+  border-top: 1px solid var(--border);
+  transform-origin: top center;
+  transform: perspective(1100px) rotateX(62deg);
+  opacity: 0;
+  transition: transform 0.92s var(--ease-snap) 0.34s, opacity 0.5s ease 0.34s;
+}
+
+.trifold-overlay.active .trifold-bottom {
+  transform: perspective(1100px) rotateX(0deg);
+  opacity: 1;
+}
+
+.trifold-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  transition: opacity 0.7s ease 0.4s;
+}
+
+.trifold-top .trifold-shade {
+  background: linear-gradient(180deg, rgba(34, 28, 20, 0.4), rgba(34, 28, 20, 0) 65%);
+}
+
+.trifold-bottom .trifold-shade {
+  background: linear-gradient(0deg, rgba(34, 28, 20, 0.4), rgba(34, 28, 20, 0) 65%);
+}
+
+.trifold-overlay.active .trifold-shade {
+  opacity: 0.04;
+}
+
+.trifold-lead {
+  font-size: clamp(16px, 1.5vw, 19px);
+  font-weight: 600;
+  line-height: 1.4;
+  max-width: 58ch;
+  margin-bottom: 16px;
+}
+
+.trifold-bullets {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 64ch;
+}
+
+.trifold-bullets li {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+  padding: 10px 14px;
+  padding-left: 28px;
+  position: relative;
+  border-left: 3px solid var(--red);
+  background: var(--cream);
+}
+
+.trifold-bullets li::before {
+  content: '▸';
+  position: absolute;
+  left: 10px;
+  color: var(--red);
+}
+
+.trifold-decisions {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-left: 3px solid var(--cobalt);
+  background: var(--cream);
+}
+
+.trifold-decisions-label {
+  font-family: var(--font-label);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--cobalt);
+  margin-bottom: 6px;
+}
+
+.trifold-decisions p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.trifold-footer {
+  padding: 20px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  border-top: 2px dashed var(--border);
+}
+
+.trifold-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.trifold-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+@media (max-width: 600px) {
+  .trifold-header { padding: 20px 16px 16px; }
+  .trifold-top { padding: 20px 16px; }
+  .trifold-center { padding: 16px; }
+  .trifold-footer { padding: 16px; }
+}
+
+/* ── Lab Page Enhanced ── */
+.lab-intro {
+  font-size: 17px;
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 520px;
+  margin-bottom: 40px;
+}
+
+.lab-cartridge-status {
+  font-family: var(--font-label);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
+  border: 1.5px solid currentColor;
+  display: inline-block;
+  margin-top: 12px;
+}
+
+.lab-cartridge-status.live { color: var(--green); }
+.lab-cartridge-status.experiment { color: var(--cobalt); }
+.lab-cartridge-status.building { color: var(--yellow); }
+
+.lab-cartridge-detail {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+
+.lab-cartridge-links {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
 /* ── Reduced Motion ── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -1183,4 +1614,14 @@ h1, h2, h3, h4 {
   }
   .reveal { opacity: 1; transform: none; }
   html { scroll-behavior: auto; }
+  .trifold-top,
+  .trifold-bottom {
+    transform: none;
+    opacity: 1;
+  }
+  .trifold-top-outer,
+  .trifold-bottom-outer {
+    grid-template-rows: 1fr;
+  }
+  .trifold-shade { opacity: 0.04; }
 }

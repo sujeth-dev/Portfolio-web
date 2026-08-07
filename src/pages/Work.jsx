@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { projects } from '../data/projects'
 import Robot from '../components/robot/Robot'
 import ScrollReveal from '../components/common/ScrollReveal'
+import ProjectOverlay from '../components/project/ProjectOverlay'
 
 const filters = [
   { key: 'all', label: 'All' },
@@ -13,6 +14,7 @@ const filters = [
 
 export default function Work() {
   const [active, setActive] = useState('all')
+  const [overlayProject, setOverlayProject] = useState(null)
 
   const filtered =
     active === 'all' ? projects : projects.filter((p) => p.tier === active)
@@ -46,44 +48,76 @@ export default function Work() {
 
         <div className="projects-grid">
           {filtered.map((p, i) => {
-            const hasPage = p.tier === 'featured'
-            const Wrapper = hasPage ? Link : 'a'
-            const wrapperProps = hasPage
-              ? { to: `/work/${p.slug}` }
-              : {
-                  href: p.url || p.sourceUrl || '#',
-                  target: '_blank',
-                  rel: 'noopener noreferrer',
-                }
+            const isFeatured = p.tier === 'featured'
+
+            if (isFeatured) {
+              return (
+                <ScrollReveal key={p.slug} delay={i * 60}>
+                  <div
+                    className="project-card"
+                    onClick={() => setOverlayProject(p)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => { if (e.key === 'Enter') setOverlayProject(p) }}
+                  >
+                    <div className="project-card-accent" style={{ background: p.visual?.accent || 'var(--red)' }} />
+                    <div className="project-card-header">
+                      <div>
+                        <div className="project-card-category">{p.category}</div>
+                        <div className="project-card-name">{p.name}</div>
+                      </div>
+                      <span className={`badge badge-${p.status}`}>{p.statusLabel}</span>
+                    </div>
+                    <p className="project-card-tease">{p.tease}</p>
+                    <div className="project-card-stack">
+                      {p.stack.slice(0, 4).map((s) => (
+                        <span key={s} className="tag">{s}</span>
+                      ))}
+                    </div>
+                    <div className="project-card-footer">
+                      <span className="project-card-cta">Open Case Study →</span>
+                      <Robot pose="inspect" size={18} />
+                    </div>
+                  </div>
+                </ScrollReveal>
+              )
+            }
+
+            const href = p.url || p.sourceUrl
+            const Tag = href ? 'a' : 'div'
+            const wrapperProps = href
+              ? { href, target: '_blank', rel: 'noopener noreferrer' }
+              : {}
 
             return (
               <ScrollReveal key={p.slug} delay={i * 60}>
-                <Wrapper {...wrapperProps} className="project-card">
-                  <div className="project-card-header">
-                    <div>
-                      <div className="project-card-category">{p.category}</div>
-                      <div className="project-card-name">{p.name}</div>
-                    </div>
-                    <span className={`badge badge-${p.status}`}>{p.statusLabel}</span>
-                  </div>
-                  <p className="project-card-tease">{p.tease}</p>
-                  <div className="project-card-stack">
-                    {p.stack.slice(0, 4).map((s) => (
-                      <span key={s} className="tag">{s}</span>
-                    ))}
-                  </div>
-                  <div className="project-card-footer">
-                    <span className="project-card-cta">
-                      {hasPage ? 'Case Study →' : (p.url ? 'Visit ↗' : 'Code ↗')}
+                <Tag {...wrapperProps} className={p.tier === 'other' ? 'other-card' : 'mini-card'} style={p.tier === 'secondary' ? { display: 'flex', flexDirection: 'column' } : undefined}>
+                  <div className={p.tier === 'other' ? 'other-card-name' : 'mini-card-name'}>
+                    {p.name}
+                    <span className={`badge badge-${p.status}`} style={{ marginLeft: 8, verticalAlign: 'middle' }}>
+                      {p.statusLabel}
                     </span>
-                    <Robot pose="inspect" size={18} />
                   </div>
-                </Wrapper>
+                  <div className={p.tier === 'other' ? 'other-card-desc' : 'mini-card-desc'}>{p.tease}</div>
+                  <div className={p.tier === 'other' ? 'other-card-stack' : 'mini-card-stack'}>{p.stack.join(' · ')}</div>
+                  {href && (
+                    <span className={p.tier === 'other' ? 'other-card-link' : 'mini-card-link'}>
+                      {p.url ? `${p.urlLabel || 'Visit'} ↗` : 'Source Code ↗'}
+                    </span>
+                  )}
+                </Tag>
               </ScrollReveal>
             )
           })}
         </div>
       </div>
+
+      {overlayProject && (
+        <ProjectOverlay
+          project={overlayProject}
+          onClose={() => setOverlayProject(null)}
+        />
+      )}
     </section>
   )
 }

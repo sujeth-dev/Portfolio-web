@@ -3,7 +3,7 @@ import { meta } from '../data/meta'
 import { getFeatured, getSecondary, getOther } from '../data/projects'
 import { experiences } from '../data/experience'
 import { skillGroups } from '../data/skills'
-import { now } from '../data/now'
+import { thoughts } from '../data/now'
 import Robot from '../components/robot/Robot'
 import ScrollReveal from '../components/common/ScrollReveal'
 
@@ -29,7 +29,7 @@ export default function Home() {
                 </div>
                 <div className="ticker">
                   <span className="led led-on" />
-                  <span>currently building: {now.building[0]}</span>
+                  <span>open to opportunities</span>
                 </div>
               </ScrollReveal>
             </div>
@@ -79,7 +79,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Zigzag ── */}
       <div className="zigzag" />
 
       {/* ── Selected Work ── */}
@@ -96,6 +95,7 @@ export default function Home() {
             {featured.map((p, i) => (
               <ScrollReveal key={p.slug} delay={i * 100}>
                 <Link to={`/work/${p.slug}`} className="project-card">
+                  <div className="project-card-accent" style={{ background: p.visual?.accent || 'var(--red)' }} />
                   <div className="project-card-header">
                     <div>
                       <div className="project-card-category">{p.category}</div>
@@ -119,43 +119,77 @@ export default function Home() {
           </div>
 
           {/* Secondary projects */}
+          <ScrollReveal>
+            <h3 style={{ fontSize: 18, fontWeight: 700, marginTop: 48, marginBottom: 8 }}>Client Work</h3>
+            <p style={{ color: 'var(--muted)', fontSize: 14, marginBottom: 20 }}>
+              Shipped for real businesses — live and earning.
+            </p>
+          </ScrollReveal>
           <div className="secondary-grid">
-            {secondary.map((p, i) => (
-              <ScrollReveal key={p.slug} delay={i * 100}>
-                <a
-                  href={p.url || p.sourceUrl || '#'}
-                  className="mini-card"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <div className="mini-card-name">
-                    {p.name}
-                    <span className={`badge badge-${p.status}`} style={{ marginLeft: 8, verticalAlign: 'middle' }}>
-                      {p.statusLabel}
-                    </span>
-                  </div>
-                  <div className="mini-card-desc">{p.tease}</div>
-                  <div className="mini-card-stack">{p.stack.join(' · ')}</div>
-                  {p.url && <span className="mini-card-link">{p.urlLabel} ↗</span>}
-                </a>
-              </ScrollReveal>
-            ))}
-            {other.slice(0, 3).map((p, i) => (
-              <ScrollReveal key={p.slug} delay={i * 100}>
-                <a
-                  href={p.url || p.sourceUrl || '#'}
-                  className="mini-card"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <div className="mini-card-name">{p.name}</div>
-                  <div className="mini-card-desc">{p.tease}</div>
-                  <div className="mini-card-stack">{p.stack.join(' · ')}</div>
-                  {p.url && <span className="mini-card-link">{p.urlLabel} ↗</span>}
-                </a>
-              </ScrollReveal>
-            ))}
+            {secondary.map((p, i) => {
+              const href = p.url || p.sourceUrl
+              const Tag = href ? 'a' : 'div'
+              const linkProps = href ? { href, target: '_blank', rel: 'noopener noreferrer' } : {}
+              return (
+                <ScrollReveal key={p.slug} delay={i * 100}>
+                  <Tag {...linkProps} className="mini-card">
+                    <div className="mini-card-name">
+                      {p.name}
+                      <span className={`badge badge-${p.status}`} style={{ marginLeft: 8, verticalAlign: 'middle' }}>
+                        {p.statusLabel}
+                      </span>
+                    </div>
+                    <div className="mini-card-desc">{p.tease}</div>
+                    <div className="mini-card-stack">{p.stack.join(' · ')}</div>
+                    {href && (
+                      <span className="mini-card-link">
+                        {p.url ? `${p.urlLabel} ↗` : 'Source Code ↗'}
+                      </span>
+                    )}
+                  </Tag>
+                </ScrollReveal>
+              )
+            })}
           </div>
+
+          {/* Other projects */}
+          {other.length > 0 && (
+            <>
+              <ScrollReveal>
+                <h3 style={{ fontSize: 16, fontWeight: 700, marginTop: 40, marginBottom: 16, color: 'var(--muted)' }}>
+                  More Projects
+                </h3>
+              </ScrollReveal>
+              <div className="other-grid">
+                {other.map((p, i) => {
+                  const href = p.url || p.sourceUrl
+                  const Tag = href ? 'a' : 'div'
+                  const linkProps = href ? { href, target: '_blank', rel: 'noopener noreferrer' } : {}
+                  return (
+                    <ScrollReveal key={p.slug} delay={i * 80}>
+                      <Tag {...linkProps} className="other-card">
+                        <div className="other-card-name">
+                          {p.name}
+                          {p.statusLabel && (
+                            <span className={`badge badge-${p.status}`} style={{ marginLeft: 8, verticalAlign: 'middle', fontSize: 9 }}>
+                              {p.statusLabel}
+                            </span>
+                          )}
+                        </div>
+                        <div className="other-card-desc">{p.tease}</div>
+                        <div className="other-card-stack">{p.stack.join(' · ')}</div>
+                        {href && (
+                          <span className="other-card-link">
+                            {p.url ? 'Visit ↗' : 'Code ↗'}
+                          </span>
+                        )}
+                      </Tag>
+                    </ScrollReveal>
+                  )
+                })}
+              </div>
+            </>
+          )}
 
           <ScrollReveal>
             <div style={{ textAlign: 'center', marginTop: 40 }}>
@@ -164,6 +198,8 @@ export default function Home() {
           </ScrollReveal>
         </div>
       </section>
+
+      <div className="zigzag" />
 
       {/* ── Skills Toolbox ── */}
       <section className="section" style={{ background: 'var(--cream)' }}>
@@ -190,6 +226,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <div className="zigzag" />
 
       {/* ── Experience ── */}
       <section className="section" id="experience">
@@ -226,36 +264,33 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Currently ── */}
+      <div className="zigzag" />
+
+      {/* ── Currently / Thoughts ── */}
       <section className="section" style={{ background: 'var(--cream)' }}>
         <div className="container">
           <ScrollReveal>
             <span className="section-label silkscreen" style={{ background: 'var(--cream)' }}>
               CURRENTLY.EXE
             </span>
+            <h2 style={{ fontSize: 'clamp(24px, 2.5vw, 32px)', marginBottom: 8 }}>
+              Questions I'm thinking about
+            </h2>
+            <p style={{ color: 'var(--muted)', marginBottom: 32, maxWidth: 500 }}>
+              Not answers — just the threads I keep pulling on.
+            </p>
           </ScrollReveal>
-          <ScrollReveal delay={100}>
-            <div className="currently-grid">
-              <div className="currently-item">
-                <div className="currently-label">Building</div>
-                <ul className="currently-list">
-                  {now.building.map((item, i) => <li key={i}>▸ {item}</li>)}
-                </ul>
-              </div>
-              <div className="currently-item">
-                <div className="currently-label">Exploring</div>
-                <ul className="currently-list">
-                  {now.exploring.map((item, i) => <li key={i}>▸ {item}</li>)}
-                </ul>
-              </div>
-              <div className="currently-item">
-                <div className="currently-label">Learning</div>
-                <ul className="currently-list">
-                  {now.learning.map((item, i) => <li key={i}>▸ {item}</li>)}
-                </ul>
-              </div>
-            </div>
-          </ScrollReveal>
+          <div className="thoughts-list">
+            {thoughts.map((t, i) => (
+              <ScrollReveal key={t.num} delay={i * 120}>
+                <div className="thought-card">
+                  <div className="thought-num">{t.num}</div>
+                  <div className="thought-question">{t.question}</div>
+                  <p className="thought-body">{t.body}</p>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
         </div>
       </section>
 

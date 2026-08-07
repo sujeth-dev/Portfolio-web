@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import Robot from '../robot/Robot'
 import { meta } from '../../data/meta'
 
 export default function Nav() {
@@ -24,7 +23,13 @@ export default function Nav() {
       <nav className="nav">
         <div className="nav-inner">
           <Link to="/" className="nav-logo" onClick={() => setOpen(false)}>
-            <Robot pose="build" size={24} />
+            <svg width="26" height="26" viewBox="0 0 9 9" shapeRendering="crispEdges">
+              <rect x="2" y="1" width="5" height="1" fill="#E2402D"/>
+              <rect x="1" y="2" width="7" height="4" fill="#E2402D"/>
+              <rect x="3" y="3" width="1" height="1" fill="#F5EEDC"/>
+              <rect x="5" y="3" width="1" height="1" fill="#F5EEDC"/>
+              <rect x="2" y="6" width="5" height="2" fill="#221E1C"/>
+            </svg>
             <span>SUJETH</span>
           </Link>
 

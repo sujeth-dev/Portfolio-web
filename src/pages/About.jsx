@@ -3,6 +3,31 @@ import { skillGroups } from '../data/skills'
 import Robot from '../components/robot/Robot'
 import ScrollReveal from '../components/common/ScrollReveal'
 
+const education = [
+  {
+    degree: 'B.Tech, Artificial Intelligence & Machine Learning',
+    school: 'University Visvesvaraya College of Engineering (UVCE)',
+    location: 'Bengaluru',
+    period: 'Expected 2027',
+    detail: 'CGPA 8.9 / 10',
+    coursework: 'Data Structures & Algorithms, Software Engineering, DBMS, OOP, Machine Learning, Computer Networks',
+  },
+  {
+    degree: 'Pre-University (PCMC)',
+    school: 'Base PU College',
+    location: 'Bengaluru',
+    period: '2021 – 2023',
+    detail: '92%',
+  },
+  {
+    degree: 'Class X',
+    school: 'Jaigopal Garodia Rashtrotthana Vidya Kendra',
+    location: 'Bengaluru',
+    period: '2021',
+    detail: '94%',
+  },
+]
+
 export default function About() {
   return (
     <section className="section">
@@ -38,13 +63,30 @@ export default function About() {
 
             <ScrollReveal delay={200}>
               <h2 style={{ fontSize: 20, marginTop: 40, marginBottom: 16 }}>Education</h2>
-              <div className="exp-item" style={{ marginBottom: 32 }}>
-                <div className="exp-meta">
-                  <div className="exp-role">B.E. Computer Science</div>
-                  <div className="exp-org">University Visvesvaraya College of Engineering (UVCE)</div>
-                  <div className="exp-period">Bengaluru · 2022 – 2026</div>
+              {education.map((ed, i) => (
+                <div key={i} className="exp-item" style={{ marginBottom: 16 }}>
+                  <div className="exp-meta">
+                    <div className="exp-role">{ed.degree}</div>
+                    <div className="exp-org">{ed.school}</div>
+                    <div className="exp-period">{ed.location} · {ed.period}</div>
+                    {ed.detail && (
+                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--green)', marginTop: 4 }}>
+                        {ed.detail}
+                      </div>
+                    )}
+                  </div>
+                  {ed.coursework && (
+                    <div>
+                      <div style={{ fontFamily: 'var(--font-label)', fontSize: 10, textTransform: 'uppercase', color: 'var(--faint)', marginBottom: 6 }}>
+                        Coursework
+                      </div>
+                      <div style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.5 }}>
+                        {ed.coursework}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
+              ))}
             </ScrollReveal>
 
             <ScrollReveal delay={300}>
@@ -70,7 +112,7 @@ export default function About() {
                   <div className="dev-card-title">{meta.title}</div>
                 </div>
                 <div className="starburst">
-                  <span style={{ fontSize: 7, lineHeight: 1, textAlign: 'center' }}>2026</span>
+                  <span style={{ fontSize: 7, lineHeight: 1, textAlign: 'center' }}>2027</span>
                 </div>
               </div>
               <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--faint)', marginTop: 8 }}>
