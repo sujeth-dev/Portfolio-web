@@ -1,6 +1,10 @@
+node_modules/
+dist/
 certificates/
 design/
 design-1.html
 design-3.html
 loyalty_plan/
 resume/
+.DS_Store
+*.log
