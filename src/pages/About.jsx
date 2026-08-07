@@ -1,6 +1,6 @@
 import { meta } from '../data/meta'
 import { skillGroups } from '../data/skills'
-import Robot from '../components/robot/Robot'
+import PixelRobot from '../components/common/PixelRobot'
 import ScrollReveal from '../components/common/ScrollReveal'
 
 const education = [
@@ -104,7 +104,7 @@ export default function About() {
           <ScrollReveal delay={200}>
             <div className="dev-card" style={{ position: 'sticky', top: 80 }}>
               <div style={{ textAlign: 'center', marginBottom: 16 }}>
-                <Robot pose="wave" size={56} />
+                <PixelRobot size={40} />
               </div>
               <div className="dev-card-header">
                 <div>

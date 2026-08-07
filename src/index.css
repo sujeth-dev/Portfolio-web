@@ -775,14 +775,17 @@ h1, h2, h3, h4 {
 }
 
 .other-card {
-  background: var(--cream);
-  border: 1.5px solid var(--border);
+  background: var(--bg-card);
+  border: var(--border-sm);
+  box-shadow: 2px 2px 0 var(--ink);
   padding: 16px;
-  transition: transform var(--duration) var(--ease-snap);
+  transition: transform var(--duration) var(--ease-snap),
+              box-shadow var(--duration) var(--ease-snap);
 }
 
 .other-card:hover {
-  transform: translate(-1px, -1px);
+  transform: translate(-1px, -2px);
+  box-shadow: 3px 4px 0 var(--ink);
 }
 
 .other-card-name {

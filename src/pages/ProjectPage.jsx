@@ -1,6 +1,5 @@
 import { useParams, Link, Navigate } from 'react-router-dom'
 import { getBySlug, projects } from '../data/projects'
-import Robot from '../components/robot/Robot'
 import ScrollReveal from '../components/common/ScrollReveal'
 import ArchDiagram from '../components/project/ArchDiagram'
 

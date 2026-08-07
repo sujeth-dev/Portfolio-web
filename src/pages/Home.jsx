@@ -4,7 +4,7 @@ import { getFeatured, getSecondary, getOther } from '../data/projects'
 import { experiences } from '../data/experience'
 import { skillGroups } from '../data/skills'
 import { thoughts } from '../data/now'
-import Robot from '../components/robot/Robot'
+import PixelRobot from '../components/common/PixelRobot'
 import ScrollReveal from '../components/common/ScrollReveal'
 
 const featured = getFeatured()
@@ -45,7 +45,7 @@ export default function Home() {
                   alignItems: 'center',
                   gap: 16,
                 }}>
-                  <Robot pose="wave" size={80} />
+                  <PixelRobot size={64} />
                   <div style={{
                     fontFamily: 'var(--font-label)',
                     fontSize: 11,
@@ -111,7 +111,7 @@ export default function Home() {
                   </div>
                   <div className="project-card-footer">
                     <span className="project-card-cta">Explore →</span>
-                    <Robot pose="inspect" size={20} />
+                    <PixelRobot size={16} />
                   </div>
                 </Link>
               </ScrollReveal>
@@ -300,7 +300,7 @@ export default function Home() {
         <div className="container">
           <div className="contact-section">
             <ScrollReveal>
-              <Robot pose="signal" size={56} />
+              <PixelRobot size={40} />
               <h2 className="contact-heading" style={{ marginTop: 16 }}>Let's build something</h2>
               <p className="contact-desc">
                 I'm always interested in new projects, collaborations, and opportunities.

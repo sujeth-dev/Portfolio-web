@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom'
-import Robot from '../components/robot/Robot'
+import PixelRobot from '../components/common/PixelRobot'
 
 export default function NotFound() {
   return (
     <section className="section">
       <div className="container">
         <div className="not-found">
-          <Robot pose="lost" size={80} />
+          <PixelRobot size={56} />
           <div className="not-found-code">404</div>
           <div className="not-found-text">
             This page doesn't exist. The robot is confused too.
