@@ -596,6 +596,7 @@ h1, h2, h3, h4 {
 }
 
 .mini-card {
+  display: block;
   background: var(--bg-card);
   border: var(--border-sm);
   box-shadow: var(--shadow-sm);
