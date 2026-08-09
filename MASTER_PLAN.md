@@ -58,7 +58,7 @@ The available options were:
 | ID | Task | Depends on | Status |
 |---|---|---|---|
 | P1-T01 | Create `src/hooks/useScrollEngine.js` (ScrollTrigger wrapper, auto-cleanup on unmount) | P0 | Done |
-| P1-T02 | Create `src/hooks/useMouseProximity.js` (radius/normalize, GSAP-ticker throttled) | P0 | Not Started |
+| P1-T02 | Create `src/hooks/useMouseProximity.js` (radius/normalize, GSAP-ticker throttled) | P0 | Done |
 | P1-T03 | Create `src/components/layout/CompactHeader.jsx` + `src/styles/compact-header.css` (44px control strip, breadcrumb, accent line) | P0 | Not Started |
 | P1-T04 | Create `src/components/project/ProjectStage.jsx` + `src/styles/project-stage.css` (5 scroll states: identity → problem → architecture → engineering → results) | P1-T01 | Not Started |
 | P1-T05 | Create the 3 lazy-loaded stage sub-components: `src/components/project/stages/SynapticStage.jsx`, `PossahStage.jsx`, `VelmontStage.jsx` (per-project SVG compositions, design doc §3) | P1-T04 | Not Started |

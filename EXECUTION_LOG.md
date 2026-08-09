@@ -181,3 +181,28 @@ Git:
 
 Next:
 P1-T02 — create `useMouseProximity.js` per design doc §2D.
+
+## 2026-08-10 00:17 — P1-T02
+
+Action:
+Created the §2D `useMouseProximity` hook using the provider's shared, lerped pointer values. It computes 0–1 proximity, near state, and pointer angle on the shared GSAP ticker, supports normalized or binary radius behavior, returns neutral values for reduced motion/mobile, and removes its ticker callback on cleanup.
+
+Changed:
+- src/hooks/useMouseProximity.js
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS
+- direct hook bundle check: PASS (`esbuild`, browser ESM)
+- API/runtime-rule review: PASS (matches §2D return shape; no raw mouse handler or extra rAF loop; ticker cleanup present)
+- task-specific manual checks: deferred until P1-T07/P5/P8 consumers are mounted
+
+Git:
+- commit: self (`P1-T02: add mouse proximity hook`)
+- push: SUCCESS
+
+Next:
+P1-T03 — create `CompactHeader.jsx` and `compact-header.css`.
