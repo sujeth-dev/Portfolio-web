@@ -76,3 +76,29 @@ Git:
 
 Next:
 P0-T02 — create `InteractionContext.js` and `InteractionProvider.jsx` per design doc §2A.
+
+## 2026-08-10 00:00 — P0-T02
+
+Action:
+Created the interaction context and provider from design doc §2A. The provider owns Lenis lifecycle, runs Lenis and interpolated mouse/scroll metrics through one GSAP ticker, publishes the specified context shape and root CSS variables, tracks mobile state/current section, and disables motion under the existing reduced-motion hook.
+
+Changed:
+- src/systems/InteractionContext.js
+- src/systems/InteractionProvider.jsx
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS
+- direct provider bundle check: PASS (`esbuild`, browser ESM)
+- context shape/spec review: PASS
+- manual DevTools/reduced-motion checks: deferred to P0-T04 because the provider is intentionally not mounted until that task
+
+Git:
+- commit: self (`P0-T02: add interaction provider and context`)
+- push: SUCCESS
+
+Next:
+P0-T03 — create `src/styles/interaction-layer.css` per design doc §4.
