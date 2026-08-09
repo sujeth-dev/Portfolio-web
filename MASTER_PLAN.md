@@ -29,11 +29,11 @@ The available options were:
 
 **Goal:** Lenis + GSAP wired in, mouse/scroll CSS vars live, zero visual change.
 **Depends on:** nothing (portfolio Phase 2 / PixelRobot rollout already complete per commits `5209461`, `1475eb7`).
-**Status:** Not Started
+**Status:** In Progress
 
 | ID | Task | Depends on | Status |
 |---|---|---|---|
-| P0-T01 | `npm install gsap lenis`; confirm versions land in `package.json` + `package-lock.json` | — | Not Started |
+| P0-T01 | `npm install gsap lenis`; confirm versions land in `package.json` + `package-lock.json` | — | Done |
 | P0-T02 | Create `src/systems/InteractionContext.js` (context shape per design doc §2A) and `src/systems/InteractionProvider.jsx` (Lenis init, GSAP ticker, mouse lerp at 0.08/frame, `useReducedMotion` wiring) | P0-T01 | Not Started |
 | P0-T03 | Create `src/styles/interaction-layer.css` (custom properties block from design doc §4, `will-change` rules, reduced-motion overrides) | P0-T02 | Not Started |
 | P0-T04 | Wire `<InteractionProvider>` around the app in `src/App.jsx`; remove `scroll-behavior: smooth` from `src/index.css`; import `interaction-layer.css` in `src/main.jsx` | P0-T02, P0-T03 | Not Started |

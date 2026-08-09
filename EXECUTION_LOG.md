@@ -51,3 +51,28 @@ Git:
 
 Next:
 P0-T01 — `npm install gsap lenis`, per `MASTER_PLAN.md` Phase 0 and `DEVELOPMENT_LOOP.md`. Before starting, the executing agent should also register the Phase 5 open design question with the user at the appropriate time (not blocking — P0 through P4/P6 and most of P7 can proceed first).
+
+## 2026-08-09 23:52 — P0-T01
+
+Action:
+Installed GSAP and Lenis as production dependencies and confirmed their resolved versions in both npm manifests.
+
+Changed:
+- package.json
+- package-lock.json
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS
+- dependency presence check: PASS (`gsap@3.15.0`, `lenis@1.3.26`)
+- task-specific manual checks: not applicable (dependency-only task; Phase 0 runtime checks begin after provider wiring)
+
+Git:
+- commit: self (`P0-T01: install GSAP and Lenis`)
+- push: SUCCESS
+
+Next:
+P0-T02 — create `InteractionContext.js` and `InteractionProvider.jsx` per design doc §2A.
