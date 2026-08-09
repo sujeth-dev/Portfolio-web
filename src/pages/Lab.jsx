@@ -1,5 +1,5 @@
 import { labProjects } from '../data/projects'
-import Robot from '../components/robot/Robot'
+import PixelRobot from '../components/common/PixelRobot'
 import ScrollReveal from '../components/common/ScrollReveal'
 
 export default function Lab() {
@@ -10,7 +10,7 @@ export default function Lab() {
           <span className="section-label">Lab</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 8 }}>
             <h1 style={{ fontSize: 'clamp(32px, 4vw, 48px)' }}>Experiments</h1>
-            <Robot pose="goggles" size={40} />
+            <PixelRobot size={32} />
           </div>
           <p style={{ color: 'var(--muted)', marginBottom: 40, maxWidth: 500 }}>
             Side projects, prototypes, and things built for the joy of building.

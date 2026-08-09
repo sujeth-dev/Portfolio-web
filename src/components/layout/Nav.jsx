@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import Robot from '../robot/Robot'
+import PixelRobot from '../common/PixelRobot'
 import { meta } from '../../data/meta'
 
 export default function Nav() {
@@ -37,7 +37,7 @@ export default function Nav() {
       <nav className="nav">
         <div className="nav-inner">
           <Link to="/" className="nav-logo" onClick={() => setOpen(false)}>
-            <Robot pose="build" size={24} />
+            <PixelRobot size={26} />
             <span>SUJETH</span>
           </Link>
 
