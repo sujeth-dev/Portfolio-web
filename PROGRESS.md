@@ -2,7 +2,7 @@
 
 > Machine-readable-ish status snapshot. Updated after every task per `DEVELOPMENT_LOOP.md` §11. If this file and `EXECUTION_LOG.md` ever disagree, `EXECUTION_LOG.md` (append-only, chronological) wins — fix this file to match it.
 
-**Last updated:** 2026-08-10 00:17
+**Last updated:** 2026-08-10 00:20
 **Branch:** `work`
 
 ---
@@ -14,8 +14,8 @@ Status: In Progress
 
 ## Current task
 
-**P1-T03** — Create `src/components/layout/CompactHeader.jsx` and `src/styles/compact-header.css` as a 44px control strip with breadcrumb and accent line.
-Dependency Phase 0 is complete.
+**P1-T04** — Create `src/components/project/ProjectStage.jsx` and `src/styles/project-stage.css` with the five project scroll states.
+Dependency `P1-T01` is complete.
 
 ## Completed tasks
 
@@ -25,6 +25,7 @@ Dependency Phase 0 is complete.
 - **P0-T04** — Mounted the provider, imported the interaction stylesheet, removed native smooth scrolling, and completed Phase 0 browser validation.
 - **P1-T01** — Added the ScrollTrigger engine hook with progress/activity/direction state, lifecycle callbacks, and automatic cleanup.
 - **P1-T02** — Added the shared-pointer proximity hook with radius falloff, near state, angle, reduced-motion/mobile neutralization, and GSAP-ticker cleanup.
+- **P1-T03** — Added the semantic 44px compact header with back navigation, breadcrumb, project-file status, configurable accent line, responsive layout, and focus styling.
 
 (Prerequisite work — PixelRobot rollout, card-grid fixes — was already completed on `main`/`work` before this plan existed: commits `5209461` and `1475eb7`. See `EXECUTION_LOG.md` P0-T00 entry for the baseline this plan starts from.)
 
@@ -36,7 +37,7 @@ None currently active.
 
 ## Next action
 
-Start `P1-T03`: create the compact project-page control strip and its styles per design doc §3, then run the full validation gate.
+Start `P1-T04`: create the five-state project visual stage and styles per design doc §3, then run the full validation gate.
 
 ## Repository baseline at plan creation (2026-08-09)
 

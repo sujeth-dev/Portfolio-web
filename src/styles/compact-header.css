@@ -1,0 +1,108 @@
+.compact-header {
+  --compact-header-accent: var(--red);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 44px;
+  background: color-mix(in srgb, var(--bg) 94%, transparent);
+  border-bottom: 2px solid var(--ink);
+  backdrop-filter: blur(8px);
+}
+
+.compact-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: min(32vw, 360px);
+  height: 2px;
+  background: var(--compact-header-accent);
+}
+
+.compact-header__inner {
+  width: min(100% - 32px, var(--max-w));
+  height: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(12px, 3vw, 32px);
+}
+
+.compact-header__back,
+.compact-header__breadcrumb-label,
+.compact-header__status {
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+}
+
+.compact-header__back {
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+}
+
+.compact-header__back:hover {
+  color: var(--ink);
+}
+
+.compact-header__back:focus-visible {
+  outline: 2px solid var(--compact-header-accent);
+  outline-offset: 2px;
+}
+
+.compact-header__breadcrumb {
+  min-width: 0;
+  padding-left: clamp(12px, 2vw, 24px);
+  border-left: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.compact-header__breadcrumb-label {
+  display: block;
+  overflow: hidden;
+  color: var(--ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.compact-header__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.compact-header__status-led {
+  width: 7px;
+  height: 7px;
+  background: var(--compact-header-accent);
+  border: 1px solid var(--ink);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+@media (max-width: 560px) {
+  .compact-header__inner {
+    width: min(100% - 24px, var(--max-w));
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .compact-header__status {
+    display: none;
+  }
+
+  .compact-header::after {
+    width: 40vw;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .compact-header,
+  .compact-header__back {
+    transition: none;
+  }
+}
