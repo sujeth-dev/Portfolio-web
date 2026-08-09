@@ -12,7 +12,6 @@ export default function ProjectPage() {
     return <Navigate to="/work" replace />
   }
 
-  const idx = projects.findIndex((p) => p.slug === slug)
   const featuredProjects = projects.filter((p) => p.tier === 'featured')
   const currentFeaturedIdx = featuredProjects.findIndex((p) => p.slug === slug)
   const prev = featuredProjects[currentFeaturedIdx - 1]
