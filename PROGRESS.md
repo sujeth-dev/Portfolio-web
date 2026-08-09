@@ -2,7 +2,7 @@
 
 > Machine-readable-ish status snapshot. Updated after every task per `DEVELOPMENT_LOOP.md` §11. If this file and `EXECUTION_LOG.md` ever disagree, `EXECUTION_LOG.md` (append-only, chronological) wins — fix this file to match it.
 
-**Last updated:** 2026-08-10 00:24
+**Last updated:** 2026-08-10 00:28
 **Branch:** `work`
 
 ---
@@ -14,8 +14,8 @@ Status: In Progress
 
 ## Current task
 
-**P1-T05** — Create lazy-loaded Synaptic, Possah, and Velmont stage components with project-specific SVG compositions.
-Dependency `P1-T04` is complete.
+**P1-T06** — Create `src/components/project/ProjectNav.jsx` with previous/all-work/next navigation and an enlarged next-project preview.
+Dependency Phase 0 is complete.
 
 ## Completed tasks
 
@@ -27,6 +27,7 @@ Dependency `P1-T04` is complete.
 - **P1-T02** — Added the shared-pointer proximity hook with radius falloff, near state, angle, reduced-motion/mobile neutralization, and GSAP-ticker cleanup.
 - **P1-T03** — Added the semantic 44px compact header with back navigation, breadcrumb, project-file status, configurable accent line, responsive layout, and focus styling.
 - **P1-T04** — Added the generic five-state ProjectStage with continuous progress token, architecture reuse/fallbacks, state rail, reduced-motion final state, and 200px mobile strip.
+- **P1-T05** — Added lazy-loaded Synaptic knowledge-machine, Possah payment-terminal, and Velmont blueprint SVG scenes driven by continuous stage progress.
 
 (Prerequisite work — PixelRobot rollout, card-grid fixes — was already completed on `main`/`work` before this plan existed: commits `5209461` and `1475eb7`. See `EXECUTION_LOG.md` P0-T00 entry for the baseline this plan starts from.)
 
@@ -38,7 +39,7 @@ None currently active.
 
 ## Next action
 
-Start `P1-T05`: create the three lazy-loaded, project-specific SVG stage compositions per design doc §3, then run the full validation gate.
+Start `P1-T06`: create the previous/all-work/next project navigation and enlarged next-project preview per design doc §3, then run the full validation gate.
 
 ## Repository baseline at plan creation (2026-08-09)
 

@@ -260,3 +260,33 @@ Git:
 
 Next:
 P1-T05 — create Synaptic, Possah, and Velmont lazy-loaded stage compositions.
+
+## 2026-08-10 00:28 — P1-T05
+
+Action:
+Created three project-specific decorative SVG scenes and wired them into ProjectStage through literal `React.lazy` imports and Suspense. Synaptic draws a knowledge graph and BKT mastery bars, Possah moves a package through a payment terminal/receipt flow, and Velmont draws a blueprint building with construction measurements; all consume continuous stage progress and sit behind the generic state UI.
+
+Changed:
+- src/components/project/ProjectStage.jsx
+- src/components/project/stages/SynapticStage.jsx
+- src/components/project/stages/PossahStage.jsx
+- src/components/project/stages/VelmontStage.jsx
+- src/styles/project-stage.css
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS
+- direct ProjectStage bundle check: PASS (`esbuild`, browser ESM including all scene modules)
+- direct CSS parse check: PASS (`lightningcss`)
+- lazy-loading/scene identity/accessibility review: PASS (three literal dynamic imports; decorative SVGs `aria-hidden`)
+- mounted three-project desktop/mobile/reduced-motion checks: deferred to P1-T07 when ProjectStage is integrated
+
+Git:
+- commit: self (`P1-T05: add lazy project stage scenes`)
+- push: SUCCESS
+
+Next:
+P1-T06 — create `ProjectNav.jsx` with previous/all-work/next navigation and enlarged next-project preview.

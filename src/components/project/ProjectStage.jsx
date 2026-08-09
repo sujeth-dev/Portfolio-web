@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import ArchDiagram from './ArchDiagram'
 import { useInteraction } from '../../systems/InteractionContext'
 import '../../styles/project-stage.css'
@@ -9,6 +10,12 @@ const stageStates = [
   { id: 'engineering', label: 'Engineering' },
   { id: 'results', label: 'Results' },
 ]
+
+const stageScenes = {
+  synaptic: lazy(() => import('./stages/SynapticStage')),
+  possah: lazy(() => import('./stages/PossahStage')),
+  velmont: lazy(() => import('./stages/VelmontStage')),
+}
 
 function clamp(value) {
   return Math.min(1, Math.max(0, Number.isFinite(value) ? value : 0))
@@ -30,6 +37,7 @@ export default function ProjectStage({ project, scrollProgress = 0, children }) 
   const activeIndex = Math.min(stageStates.length - 1, Math.floor(progress * 5))
   const activeState = stageStates[activeIndex]
   const accent = project.visual?.accent || 'var(--red)'
+  const Scene = stageScenes[project.slug]
 
   return (
     <aside
@@ -125,7 +133,15 @@ export default function ProjectStage({ project, scrollProgress = 0, children }) 
           </span>
         </div>
 
-        {children ? <div className="project-stage__visual-slot">{children}</div> : null}
+        {children || Scene ? (
+          <div className="project-stage__visual-slot">
+            {children || (
+              <Suspense fallback={<div className="project-stage__scene-fallback" />}>
+                <Scene progress={progress} activeState={activeState.id} />
+              </Suspense>
+            )}
+          </div>
+        ) : null}
       </div>
 
       <ol className="project-stage__rail" aria-label="Project visualization states">
