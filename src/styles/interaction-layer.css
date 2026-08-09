@@ -1,0 +1,61 @@
+:root {
+  /* Mouse tracking (set by InteractionProvider every frame). */
+  --mouse-x: 0.5;
+  --mouse-y: 0.5;
+  --mouse-x-norm: 0;
+  --mouse-y-norm: 0;
+
+  /* Scroll tracking (set by InteractionProvider every frame). */
+  --scroll-vel: 0;
+  --scroll-dir: 1;
+  --section-progress: 0;
+
+  /* Interaction layer stacking order. */
+  --z-bg: -10;
+  --z-env: -5;
+  --z-fg: -1;
+  --z-content: 1;
+  --z-cursor-companion: 9999;
+  --z-scroll-indicator: 150;
+}
+
+.interaction-layer {
+  position: relative;
+  isolation: isolate;
+}
+
+.parallax-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  contain: layout style paint;
+  transform: translate3d(0, 0, 0);
+}
+
+[data-interaction-active='true'] {
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --mouse-x: 0.5 !important;
+    --mouse-y: 0.5 !important;
+    --mouse-x-norm: 0 !important;
+    --mouse-y-norm: 0 !important;
+    --scroll-vel: 0 !important;
+    --scroll-dir: 0 !important;
+    --section-progress: 0 !important;
+  }
+
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  .parallax-layer,
+  [data-interaction-active='true'] {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    will-change: auto !important;
+  }
+}
