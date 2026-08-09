@@ -233,3 +233,30 @@ Git:
 
 Next:
 P1-T04 — create `ProjectStage.jsx` and `project-stage.css` with five scroll states.
+
+## 2026-08-10 00:24 — P1-T04
+
+Action:
+Created the generic ProjectStage shell and styles for identity, problem, architecture, engineering, and results progress bands. It exposes continuous progress to future SVG scenes, reuses existing architecture diagrams where available, includes generic fallbacks/state navigation, forces the results state under reduced motion, and becomes a 200px non-sticky strip below 768px.
+
+Changed:
+- src/components/project/ProjectStage.jsx
+- src/styles/project-stage.css
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS
+- direct component bundle check: PASS (`esbuild`, browser ESM)
+- direct CSS parse check: PASS (`lightningcss`)
+- five-state/reduced-motion/mobile review: PASS
+- per-project visual transitions: deferred to P1-T05; mounted page checks deferred to P1-T07
+
+Git:
+- commit: self (`P1-T04: add five-state project stage`)
+- push: SUCCESS
+
+Next:
+P1-T05 — create Synaptic, Possah, and Velmont lazy-loaded stage compositions.
