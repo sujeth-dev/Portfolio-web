@@ -156,3 +156,28 @@ Git:
 
 Next:
 P1-T01 — create `useScrollEngine.js` per design doc §2B.
+
+## 2026-08-10 00:15 — P1-T01
+
+Action:
+Created the §2B `useScrollEngine` hook as a thin ScrollTrigger wrapper. It exposes progress, active state, and direction; forwards progress/enter/leave callbacks in both scroll directions; and tears down its trigger and GSAP context on dependency changes or unmount.
+
+Changed:
+- src/hooks/useScrollEngine.js
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS
+- direct hook bundle check: PASS (`esbuild`, browser ESM with ScrollTrigger)
+- API/cleanup review: PASS (matches §2B signature and return shape; explicit trigger kill + context revert)
+- task-specific manual checks: not applicable until P1-T04 consumes the hook
+
+Git:
+- commit: self (`P1-T01: add ScrollTrigger engine hook`)
+- push: SUCCESS
+
+Next:
+P1-T02 — create `useMouseProximity.js` per design doc §2D.
