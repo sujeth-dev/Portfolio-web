@@ -127,3 +127,32 @@ Git:
 
 Next:
 P0-T04 — mount the provider, import the stylesheet, remove native smooth scrolling, and complete Phase 0 runtime validation.
+
+## 2026-08-10 00:12 — P0-T04
+
+Action:
+Mounted `InteractionProvider` around the app shell inside `BrowserRouter`, imported the interaction-layer stylesheet, and removed native smooth scrolling. Completed Phase 0 runtime validation in local Chrome via the DevTools protocol, including pointer movement, wheel scrolling, computed root variables, visual layout, and reduced-motion emulation.
+
+Changed:
+- src/App.jsx
+- src/main.jsx
+- src/index.css
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (GSAP/Lenis bundled; JS 118.87KB gzip, CSS 4.17KB gzip)
+- root custom properties: PASS (mouse, normalized mouse, velocity, direction, and section progress update live)
+- Lenis/native scroll check: PASS (`html.lenis` active; computed `scroll-behavior: auto`)
+- reduced-motion emulation: PASS (Lenis class removed; all motion variables frozen at neutral)
+- visual layout check: PASS (settled 1280×800 homepage capture; no new visible layer or layout shift)
+- browser runtime exceptions: PASS (none)
+
+Git:
+- commit: self (`P0-T04: wire interaction foundation`)
+- push: SUCCESS
+
+Next:
+P1-T01 — create `useScrollEngine.js` per design doc §2B.

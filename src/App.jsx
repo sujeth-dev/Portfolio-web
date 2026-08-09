@@ -9,6 +9,7 @@ import Lab from './pages/Lab'
 import About from './pages/About'
 import NotFound from './pages/NotFound'
 import { useScrollTop } from './hooks/useScrollTop'
+import { InteractionProvider } from './systems/InteractionProvider'
 import { getBySlug } from './data/projects'
 
 function getPageTitle(pathname) {
@@ -32,7 +33,7 @@ export default function App() {
   }, [location.pathname])
 
   return (
-    <>
+    <InteractionProvider>
       <Nav />
       <main>
         <Routes>
@@ -45,6 +46,6 @@ export default function App() {
         </Routes>
       </main>
       <Footer />
-    </>
+    </InteractionProvider>
   )
 }
