@@ -37,6 +37,7 @@ export default function Work() {
                 key={f.key}
                 className={`filter-tab${active === f.key ? ' active' : ''}`}
                 onClick={() => setActive(f.key)}
+                aria-pressed={active === f.key}
               >
                 {f.label}
               </button>
