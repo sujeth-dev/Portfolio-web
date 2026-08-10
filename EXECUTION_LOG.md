@@ -1251,3 +1251,27 @@ Git:
 
 Next:
 R2-T05 — make Selected Work grid symmetric across breakpoints.
+
+## 2026-08-10 17:55 — R2-T05
+
+Action:
+Replaced `repeat(auto-fill, minmax(340px/280px, 1fr))` on `.projects-grid`/`.secondary-grid` with explicit breakpoint column counts (1 col below 640px, 2 cols 640–959px, 3 cols from 960px), so the column count changes at fixed points instead of wherever the next 340px/280px card happens to fit at an arbitrary viewport width. Normalized row-height variance from content length by clamping `.project-card-tease` to 3 lines and `.mini-card-desc` to 2 lines (`-webkit-line-clamp`, both already `overflow` boxes) — cards in the same row no longer stretch to wildly different heights depending on tease-text length or stack-tag count. Note honestly recorded: with exactly 3 featured projects, the 3-column desktop breakpoint is fully symmetric, but the 2-column tablet breakpoint still leaves a 1-item last row (inherent to an odd item count over an even column count, not fixable by grid CSS alone) — this is a normal, expected responsive remainder, not the auto-fill unpredictability the user was reacting to.
+
+Changed:
+- src/index.css (`.projects-grid`, `.secondary-grid`, `.project-card-tease`, `.mini-card-desc`)
+- MASTER_PLAN.md (R2-T05 marked Done)
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (CSS 39.01KB / 8.27KB gzip)
+- code review: PASS — confirmed 3 `tier: 'featured'` projects (`.projects-grid`) and 5 items in `.secondary-grid` (2 `secondary` + `other.slice(0,3)`) in `src/data/projects.js`, consistent with the breakpoint reasoning above
+- manual/visual browser check: NOT PERFORMED this session — no browser-automation tool available. Recommend the user confirm visually via `npm run dev` across a few widths (375px, 700px, 1024px, 1280px).
+
+Git:
+- commit: self (pending, see below)
+- push: pending
+
+Next:
+R2-T06 — fix the Contact "Let's build something" ripple.
