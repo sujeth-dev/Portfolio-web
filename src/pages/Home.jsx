@@ -7,6 +7,7 @@ import { now } from '../data/now'
 import PixelRobot from '../components/common/PixelRobot'
 import ScrollReveal from '../components/common/ScrollReveal'
 import VelocityEffects from '../components/systems/VelocityEffects'
+import { SectionBackground } from '../components/systems/SectionBackground'
 
 const featured = getFeatured()
 const secondary = getSecondary()
@@ -16,7 +17,8 @@ export default function Home() {
   return (
     <>
       {/* ── Hero ── */}
-      <section className="hero">
+      <section className="hero interaction-layer">
+        <SectionBackground theme="open" />
         <div className="container">
           <div className="hero-grid">
             <div>
@@ -84,7 +86,8 @@ export default function Home() {
       <div className="zigzag" />
 
       {/* ── Selected Work ── */}
-      <section className="section" id="work">
+      <section className="section interaction-layer" id="work">
+        <SectionBackground theme="technical" />
         <div className="container">
           <ScrollReveal>
             <span className="section-label">Selected Work</span>
@@ -167,7 +170,8 @@ export default function Home() {
       </section>
 
       {/* ── Skills Toolbox ── */}
-      <section className="section" style={{ background: 'var(--cream)' }}>
+      <section className="section interaction-layer" style={{ background: 'var(--cream)' }}>
+        <SectionBackground theme="technical" intensity={0.35} />
         <div className="container">
           <ScrollReveal>
             <span className="section-label" style={{ background: 'var(--cream)' }}>Toolbox</span>
@@ -263,7 +267,8 @@ export default function Home() {
       </section>
 
       {/* ── Contact ── */}
-      <section className="section-dark">
+      <section className="section-dark interaction-layer">
+        <SectionBackground theme="signal" />
         <div className="zigzag-dark" />
         <div className="container">
           <div className="contact-section">

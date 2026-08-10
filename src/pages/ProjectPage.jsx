@@ -5,6 +5,7 @@ import ArchDiagram from '../components/project/ArchDiagram'
 import ProjectNav from '../components/project/ProjectNav'
 import ProjectStage from '../components/project/ProjectStage'
 import VelocityEffects from '../components/systems/VelocityEffects'
+import { SectionBackground } from '../components/systems/SectionBackground'
 import { projects, getBySlug } from '../data/projects'
 import { useScrollEngine } from '../hooks/useScrollEngine'
 
@@ -25,10 +26,11 @@ function ProjectScene({ project, prev, next }) {
   return (
     <section
       ref={sceneRef}
-      className="project-scene"
+      className="project-scene interaction-layer"
       style={{ '--project-accent': accent }}
       aria-labelledby="project-title"
     >
+      <SectionBackground theme="technical" />
       <div className="container project-scene__grid">
           <VelocityEffects
             className="project-scroll-content"

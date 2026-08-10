@@ -2,7 +2,7 @@
 
 > Machine-readable-ish status snapshot. Updated after every task per `DEVELOPMENT_LOOP.md` §11. If this file and `EXECUTION_LOG.md` ever disagree, `EXECUTION_LOG.md` (append-only, chronological) wins — fix this file to match it.
 
-**Last updated:** 2026-08-10 11:18
+**Last updated:** 2026-08-10 11:40
 **Branch:** `work`
 
 ---
@@ -14,8 +14,8 @@ Status: In Progress
 
 ## Current task
 
-**P3-T05** — Add `SectionBackground` to project pages first (validate), then Home page sections per design doc §5 table.
-Dependency P3-T04 is complete.
+**P3-T06** — Build the mobile scroll-driven `ProjectStage`: non-sticky, inline, five-state, replacing the interim 200px illustration strip.
+Dependencies P3-T02, P3-T01, P1-T07 are all complete.
 
 ## Completed tasks
 
@@ -38,6 +38,7 @@ Dependency P3-T04 is complete.
 - **P3-T02** — Added `useSectionProgress.js`: thin ScrollTrigger wrapper per design doc §2E returning `{ progress, isInView }`, for the background system's theme crossfade.
 - **P3-T03** — Added `ParallaxLayer.jsx` (layer-indexed wrapper applying `useParallax`) and `SectionBackground.jsx` (per-section themed container that crossfades opacity via `useSectionProgress`, stays static under reduced motion, and disables its visual output — while keeping its scroll-tracking ref mounted — on mobile). Added minimal `.section-background` base positioning to `interaction-layer.css`; the 5 theme fills remain P3-T04's scope.
 - **P3-T04** — Added `section-backgrounds.css` with all 5 themes (`.bg-open`, `.bg-technical`, `.bg-messy`, `.bg-warm`, `.bg-signal`) built from the existing Retro Toy design tokens; each theme paints its wash color on `.section-background` and its dot/grid/scatter/glow/ring pattern on the `.section-background__pattern` child (the `ParallaxLayer`), which is already nudged by `useParallax`'s own mouse/scroll response — no separate CSS mouse-transform was layered on top to avoid fighting GSAP's inline transform.
+- **P3-T05** — Mounted `SectionBackground` on the featured project-page scene (`technical` — project pages have no named theme in design doc §5, so this documents that judgment call) and on Home's Hero (`open`), Selected Work (`technical`), Skills (`technical`, `intensity=0.35` for "lighter"), and Contact (`signal`) sections, each wrapped in the existing `.interaction-layer` utility so the background's negative z-index stays scoped to its own section. Added an `intensity` prop to `SectionBackground` for the Skills/Work-page "lighter/reduced opacity" cases named in §5. Verified with real Playwright scroll-throughs (not `fullPage` screenshots, which don't fire ScrollTrigger) on Home and the Synaptic project page at 1280×900 and 375×812, plus a reduced-motion pass — zero console/page errors, correct per-section theming, correct mobile disable, no layout shift or readability regressions.
 
 (Prerequisite work — PixelRobot rollout, card-grid fixes — was already completed on `main`/`work` before this plan existed: commits `5209461` and `1475eb7`. See `EXECUTION_LOG.md` P0-T00 entry for the baseline this plan starts from.)
 
@@ -49,7 +50,7 @@ None currently active.
 
 ## Next action
 
-Start `P3-T05`: mount `SectionBackground` on project pages first, validate visually, then apply to Home page sections per design doc §5's per-section theme table.
+Start `P3-T06`: build the mobile scroll-driven `ProjectStage` (non-sticky, inline, five-state) to replace the interim 200px illustration strip. Note: `useParallax` currently hard no-ops on `isMobile` (per P3-T01's literal acceptance criterion); this task's "lighter parallax... via `useParallax`'s mobile path" language may require extending that hook with an opt-in mobile path rather than a blanket no-op — resolve as part of this task and record the decision here.
 
 ## Repository baseline at plan creation (2026-08-09)
 

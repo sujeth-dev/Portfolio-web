@@ -564,3 +564,34 @@ Git:
 
 Next:
 P3-T05 — mount SectionBackground on project pages first, validate, then Home page sections.
+
+## 2026-08-10 11:40 — P3-T05
+
+Action:
+Mounted `SectionBackground` for the first time. Design doc §5 names a theme for every Home section and for the standalone Work/Lab/About pages, but not for the dynamic project-page scene (`/work/:slug`) — since `MASTER_PLAN.md`'s own task row still says "project pages first (validate)", resolved that gap as an implementing judgment call: `technical` theme on the project-page scene, matching the Work page's own technical assignment and the case-study content's technical nature (documented here rather than guessed silently). Wrapped each target section (project scene; Home Hero/Selected-Work/Skills/Contact) in the existing `.interaction-layer` utility class so each background's `z-index: -10` stays contained to its own local stacking context instead of interacting with unrelated sections. Added an `intensity` prop to `SectionBackground` (multiplies final opacity) to implement the "Skills: technical (lighter)" wording from §5 — used `intensity={0.35}` there; the same prop is available for Work page's later "reduced opacity 0.3" case in Phase 8. Left Experience/Currently (no theme in §5) and the non-existent Thoughts section (already dead per P2-T03) untouched, and left Work/Lab/About standalone pages untouched since their `SectionBackground` assignments belong to Phase 8 (P8-T02/T03), not this task.
+
+Verified with real browser automation rather than static analysis: started `npm run preview`, drove Playwright/Chromium against Home and the Synaptic project page. First attempt used `fullPage` screenshots and showed most below-fold content missing — traced this to a capture artifact (resizing the viewport instantly for a full-page shot never fires the real scroll events ScrollReveal's GSAP ScrollTrigger and Lenis depend on, so those triggers never activate) rather than a real regression; re-verified by driving genuine `page.mouse.wheel` scroll steps instead, which produced fully correct renders at both viewport sizes. Also captured a `reducedMotion: 'reduce'` context pass, where ScrollReveal's existing immediate-render behavior meant even the `fullPage` shot came back fully populated, corroborating the capture-artifact diagnosis.
+
+Changed:
+- src/components/systems/SectionBackground.jsx
+- src/pages/ProjectPage.jsx
+- src/pages/Home.jsx
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (CSS 32.24KB / 6.91KB gzip; main JS 422.60KB / 139.91KB gzip — `SectionBackground`/`ParallaxLayer` now actually bundled, consistent size increase from P3-T03/T04's previously-unconsumed components)
+- browser console/page errors: PASS (none, across all scroll-through and reduced-motion passes)
+- desktop (1280×900) scroll-through: PASS — Home Hero shows sparse dot pattern, Selected Work and Skills show the technical grid at full and 0.35 intensity respectively (Skills barely tinted, as intended), Contact shows the signal ring pattern cleanly against the existing dark section, project page shows the technical grid behind the case-study narrative without hurting text contrast
+- mobile (375×812) scroll-through: PASS — `SectionBackground` correctly renders nothing (opacity 0, no theme class, no pattern layer) on both Home and the project page; only the pre-existing site-wide body dot pattern remains; no horizontal overflow, no layout shift
+- reduced motion: PASS — full opacity, static, all `ScrollReveal` content immediately visible, no animation
+- z-index containment review: PASS (`.interaction-layer` isolation scopes each section's negative z-index background locally; no bleed observed between sections in any screenshot)
+
+Git:
+- commit: self (`P3-T05: mount section backgrounds`)
+- push: SUCCESS
+
+Next:
+P3-T06 — build the mobile scroll-driven ProjectStage (non-sticky, inline, five-state), replacing the interim 200px strip. Also resolve, as part of that task, whether `useParallax`'s current hard no-op on `isMobile` (P3-T01) needs an opt-in "mobile path" to satisfy this task's "lighter parallax... via useParallax's mobile path" wording.
