@@ -1,0 +1,182 @@
+/* ── Section Backgrounds ── */
+/* Each theme paints the section-wash color on .section-background itself;
+   the actual pattern lives on its .section-background__pattern child
+   (a ParallaxLayer), which is nudged by useParallax's own mouse/scroll
+   response — no separate CSS transform is layered on top of it. */
+
+.bg-open {
+  background: var(--bg);
+}
+
+.bg-open .section-background__pattern {
+  background-image:
+    radial-gradient(circle, var(--border) 1.5px, transparent 1.5px),
+    radial-gradient(circle, var(--faint) 1px, transparent 1px);
+  background-size: 96px 96px, 44px 44px;
+  background-position: 0 0, 14px 14px;
+  opacity: 0.13;
+  animation: bg-open-drift 48s linear infinite;
+  /* Dots stay visible near the hero's own center and fade out toward the
+     edges — a texture behind the content, not a wall-to-wall pattern. */
+  mask-image: radial-gradient(ellipse 65% 65% at 50% 42%, black 0%, black 35%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 65% 65% at 50% 42%, black 0%, black 35%, transparent 78%);
+}
+
+/* Moves each layer exactly one of its own tile widths so the loop is seamless. */
+@keyframes bg-open-drift {
+  from { background-position: 0 0, 14px 14px; }
+  to { background-position: 96px 96px, 58px 58px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-open .section-background__pattern {
+    animation: none;
+  }
+}
+
+.bg-technical {
+  background: var(--bg);
+}
+
+.bg-technical .section-background__pattern {
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px),
+    radial-gradient(circle, var(--faint) 1px, transparent 1px);
+  background-size:
+    40px 40px,
+    40px 40px,
+    20px 20px;
+  opacity: 0.45;
+}
+
+.bg-messy {
+  background: var(--bg);
+}
+
+.bg-messy .section-background__pattern {
+  background-image:
+    radial-gradient(circle at 10% 20%, var(--faint) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 70% 60%, var(--border) 2px, transparent 2px),
+    radial-gradient(circle at 40% 85%, var(--faint) 1px, transparent 1px),
+    radial-gradient(circle at 90% 15%, var(--border) 1.5px, transparent 1.5px);
+  background-size:
+    180px 180px,
+    220px 220px,
+    140px 140px,
+    260px 260px;
+  opacity: 0.55;
+}
+
+.bg-warm {
+  background: var(--cream);
+}
+
+.bg-warm .section-background__pattern {
+  background-image: radial-gradient(
+    circle at 50% 40%,
+    rgba(242, 183, 5, 0.18),
+    transparent 60%
+  );
+  opacity: 1;
+}
+
+.bg-signal {
+  background: var(--bg-dark);
+}
+
+.bg-signal .section-background__pattern {
+  background-image: repeating-radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 253, 245, 0.08) 0,
+    rgba(255, 253, 245, 0.08) 1px,
+    transparent 1px,
+    transparent 48px
+  );
+  opacity: 0.8;
+}
+
+/* A rock-dropped-in-water ripple on the parent (not the GSAP-parallaxed
+   __pattern child, whose transform this must not fight): each of two
+   layers grows outward from the center and fades as it expands, offset
+   half a cycle from the other, so a new ripple is always emerging as the
+   last one fades — distinct rings born and dying, not one pattern
+   breathing in place. */
+.bg-signal::before,
+.bg-signal::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 253, 245, 0.14) 0,
+    rgba(255, 253, 245, 0.14) 1.5px,
+    transparent 1.5px,
+    transparent 48px
+  );
+  transform-origin: 50% 50%;
+  animation: bg-signal-ripple 5s ease-out infinite;
+}
+
+.bg-signal::after {
+  animation-delay: -2.5s;
+}
+
+@keyframes bg-signal-ripple {
+  0% { transform: scale(0.3); opacity: 0.7; }
+  100% { transform: scale(2); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-signal::before,
+  .bg-signal::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* ── Project page stage background (enrichment) ── */
+/* A `.bg-technical` instance scoped to ProjectStage only, via the
+   `project-stage-bg` className passed from ProjectPage — layers a
+   per-project accent glow + a second, looser accent dot grid on top of
+   the shared technical wash without touching `.bg-technical` itself
+   (which Home's Selected Work section also uses). `--project-accent` is
+   inherited from `.project-scene`, so this recolors per project for free. */
+/* Project pages get the same tamed, dots-only treatment as the Home hero
+   (`.bg-open`) instead of the denser grid+dots `.bg-technical` wash used
+   elsewhere (Home's Selected Work / Skills sections) — higher specificity
+   than `.bg-technical .section-background__pattern` so it wins regardless
+   of source order, without touching the shared base rule those sections
+   still use. */
+.bg-technical.project-stage-bg .section-background__pattern {
+  background-image: radial-gradient(circle, var(--faint) 1px, transparent 1px);
+  background-size: 44px 44px;
+  opacity: 0.13;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 35%, black 0%, black 35%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 35%, black 0%, black 35%, transparent 78%);
+}
+
+.project-stage-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 25% 15%,
+    color-mix(in srgb, var(--project-accent) 18%, transparent),
+    transparent 62%
+  );
+}
+
+.project-stage-bg .section-background__pattern::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--project-accent) 45%, transparent) 2px,
+    transparent 2px
+  );
+  background-size: 128px 128px;
+  background-position: 48px 32px;
+  opacity: 0.5;
+}

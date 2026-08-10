@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom'
-import Robot from '../robot/Robot'
+import PixelRobot from '../common/PixelRobot'
 import { meta } from '../../data/meta'
 
 export default function Footer() {
   return (
     <footer className="footer">
+      <div className="zigzag footer__zigzag" aria-hidden="true" />
       <div className="footer-inner">
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <Robot pose="sleep" size={24} />
+          <PixelRobot size={20} />
           <span className="footer-text">
             Built by {meta.name} — Bengaluru
           </span>

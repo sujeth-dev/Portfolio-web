@@ -1,0 +1,169 @@
+.animated-pixel-robot {
+  display: block;
+  width: clamp(72px, 9vw + 24px, 140px);
+  height: auto;
+  overflow: visible;
+  margin-bottom: 12px;
+  /* Occasional 1-frame CRT-style flicker on the whole mascot; kept on a
+     different element than the body's own drift transform below so the
+     two never fight over the same `transform` property. */
+  animation: apr-glitch 9s steps(1) infinite;
+}
+
+@media (max-width: 768px) {
+  .animated-pixel-robot {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@keyframes apr-glitch {
+  0%, 96%, 100% { transform: translate(0, 0); filter: none; }
+  97% { transform: translate(0.6px, -0.4px); filter: hue-rotate(15deg); }
+  98% { transform: translate(-0.5px, 0.3px); filter: none; }
+}
+
+.animated-pixel-robot__body {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: apr-drift 6.4s ease-in-out infinite;
+}
+
+/* Hover head-bop: a fresh CSS animation is applied each time `:hover`
+   starts, so it naturally replays on every new hover rather than needing
+   JS state. */
+.animated-pixel-robot:hover .animated-pixel-robot__body {
+  animation: apr-drift 6.4s ease-in-out infinite, apr-bop 0.4s ease-out;
+}
+
+.animated-pixel-robot__eye {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: apr-blink 4.8s ease-in-out infinite;
+}
+
+.animated-pixel-robot__eye--right {
+  animation-delay: 0.04s;
+}
+
+/* Eyes glance around: on a precise pointer, they track the live global
+   cursor position (already-lerped --mouse-x-norm/--mouse-y-norm, no extra
+   JS); on touch, there's no meaningful pointer position, so they get a
+   slow ambient idle-look loop instead. Applied to a wrapping <g> rather
+   than the eye rect itself, which already owns the blink's own transform
+   — nesting avoids two animations fighting over one element's transform. */
+.animated-pixel-robot__eye-look {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .animated-pixel-robot__eye-look {
+    transform: translate(calc(var(--mouse-x-norm) * 2px), calc(var(--mouse-y-norm) * 1px));
+  }
+}
+
+@media (hover: none) {
+  .animated-pixel-robot__eye-look {
+    animation: apr-look 13s ease-in-out infinite;
+  }
+
+  .animated-pixel-robot__eye-look--right {
+    animation-delay: 0.3s;
+  }
+}
+
+@keyframes apr-drift {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-4%) rotate(-2deg); }
+  50% { transform: translateY(0) rotate(0deg); }
+  75% { transform: translateY(-2%) rotate(2deg); }
+}
+
+@keyframes apr-bop {
+  0% { transform: translateY(0) scale(1); }
+  40% { transform: translateY(-2px) scale(1.05, 0.95); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes apr-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.15); }
+}
+
+@keyframes apr-look {
+  0%, 38%, 100% { transform: translateX(0); }
+  42%, 48% { transform: translateX(-0.6px); }
+  52%, 58% { transform: translateX(0.6px); }
+  62% { transform: translateX(0); }
+}
+
+/* AFK / sleep mode: after 45s with no mouse movement, eyes settle into the
+   blink's own squished pose (reads as closed) and small "z"s float up. */
+.animated-pixel-robot.is-asleep .animated-pixel-robot__eye {
+  animation: none;
+  transform: scaleY(0.15);
+}
+
+.animated-pixel-robot__zzz {
+  transform-box: fill-box;
+  transform-origin: center;
+  font-family: var(--font-label), monospace;
+  font-size: 1.4px;
+  fill: var(--faint, #8A7E6C);
+  opacity: 0;
+  animation: apr-zzz-float 2.6s ease-in infinite;
+}
+
+.animated-pixel-robot__zzz--2 {
+  animation-delay: 1.3s;
+}
+
+@keyframes apr-zzz-float {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.6); }
+  15% { opacity: 0.9; }
+  100% { opacity: 0; transform: translate(1px, -3px) scale(1); }
+}
+
+/* Click expression cycling: happy -> surprised -> wink -> dizzy, each a
+   static pose override except dizzy's own spin, auto-reverting to the
+   default blink/look state after a couple of seconds. */
+.animated-pixel-robot.is-happy .animated-pixel-robot__eye {
+  animation: none;
+  transform: scaleY(0.35) translateY(-0.15px);
+}
+
+.animated-pixel-robot.is-surprised .animated-pixel-robot__eye {
+  animation: none;
+  transform: scale(1.35);
+}
+
+.animated-pixel-robot.is-wink .animated-pixel-robot__eye--right {
+  animation: none;
+  transform: scaleY(0.15);
+}
+
+.animated-pixel-robot.is-wink .animated-pixel-robot__eye:not(.animated-pixel-robot__eye--right) {
+  animation: none;
+  transform: scaleY(1);
+}
+
+.animated-pixel-robot.is-dizzy .animated-pixel-robot__eye {
+  animation: apr-dizzy 0.5s linear infinite;
+}
+
+@keyframes apr-dizzy {
+  from { transform: rotate(0deg) scale(1.2); }
+  to { transform: rotate(360deg) scale(1.2); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animated-pixel-robot,
+  .animated-pixel-robot__body,
+  .animated-pixel-robot__eye,
+  .animated-pixel-robot__eye-look,
+  .animated-pixel-robot__zzz {
+    animation: none !important;
+    transform: none !important;
+  }
+}

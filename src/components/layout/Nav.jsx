@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import Robot from '../robot/Robot'
+import PixelRobot from '../common/PixelRobot'
 import { meta } from '../../data/meta'
 
 export default function Nav() {
@@ -19,12 +19,25 @@ export default function Nav() {
     return location.pathname.startsWith(to)
   }
 
+  useEffect(() => {
+    setOpen(false)
+  }, [location.pathname])
+
+  useEffect(() => {
+    if (!open) return undefined
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') setOpen(false)
+    }
+    window.addEventListener('keydown', closeOnEscape)
+    return () => window.removeEventListener('keydown', closeOnEscape)
+  }, [open])
+
   return (
     <>
       <nav className="nav">
         <div className="nav-inner">
           <Link to="/" className="nav-logo" onClick={() => setOpen(false)}>
-            <Robot pose="build" size={24} />
+            <PixelRobot size={26} />
             <span>SUJETH</span>
           </Link>
 
@@ -34,6 +47,7 @@ export default function Nav() {
                 <Link
                   to={l.to}
                   className={`nav-link${isActive(l.to) ? ' active' : ''}`}
+                  aria-current={isActive(l.to) ? 'page' : undefined}
                 >
                   {l.label}
                 </Link>
@@ -82,20 +96,23 @@ export default function Nav() {
             onClick={() => setOpen(!open)}
             aria-label="Toggle menu"
             aria-expanded={open}
+            aria-controls="mobile-navigation"
           >
             <span style={open ? { transform: 'rotate(45deg) translate(4px, 4px)' } : {}} />
             <span style={open ? { opacity: 0 } : {}} />
             <span style={open ? { transform: 'rotate(-45deg) translate(4px, -4px)' } : {}} />
           </button>
         </div>
+        <div className="zigzag nav__zigzag" aria-hidden="true" />
       </nav>
 
-      <div className={`mobile-menu${open ? ' open' : ''}`}>
+      <div id="mobile-navigation" className={`mobile-menu${open ? ' open' : ''}`} aria-hidden={!open}>
         {links.map((l) => (
           <Link
             key={l.to}
             to={l.to}
             className={`nav-link${isActive(l.to) ? ' active' : ''}`}
+            aria-current={isActive(l.to) ? 'page' : undefined}
             onClick={() => setOpen(false)}
           >
             {l.label}
@@ -111,10 +128,10 @@ export default function Nav() {
           Resume
         </a>
         <div style={{ display: 'flex', gap: 16, marginTop: 8 }}>
-          <a href={meta.github} className="nav-icon" target="_blank" rel="noopener noreferrer">
+          <a href={meta.github} className="nav-icon" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile">
             GitHub
           </a>
-          <a href={meta.linkedin} className="nav-icon" target="_blank" rel="noopener noreferrer">
+          <a href={meta.linkedin} className="nav-icon" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">
             LinkedIn
           </a>
         </div>

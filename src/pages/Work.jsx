@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { projects } from '../data/projects'
-import Robot from '../components/robot/Robot'
+import PixelRobot from '../components/common/PixelRobot'
 import ScrollReveal from '../components/common/ScrollReveal'
 
 const filters = [
@@ -37,6 +37,7 @@ export default function Work() {
                 key={f.key}
                 className={`filter-tab${active === f.key ? ' active' : ''}`}
                 onClick={() => setActive(f.key)}
+                aria-pressed={active === f.key}
               >
                 {f.label}
               </button>
@@ -76,7 +77,7 @@ export default function Work() {
                     <span className="project-card-cta">
                       {hasPage ? 'Case Study →' : (p.url ? 'Visit ↗' : 'Code ↗')}
                     </span>
-                    <Robot pose="inspect" size={18} />
+                    <PixelRobot size={16} />
                   </div>
                 </Wrapper>
               </ScrollReveal>

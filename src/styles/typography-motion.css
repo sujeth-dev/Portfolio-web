@@ -1,0 +1,17 @@
+.typography-motion--slide-in {
+  transform: translateX(calc((1 - var(--motion-progress, 1)) * -48px));
+  opacity: var(--motion-progress, 1);
+}
+
+.typography-motion--mask-reveal {
+  clip-path: inset(0 calc((1 - var(--motion-progress, 1)) * 100%) 0 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .typography-motion--slide-in,
+  .typography-motion--mask-reveal {
+    transform: none;
+    clip-path: none;
+    opacity: 1;
+  }
+}

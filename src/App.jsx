@@ -1,5 +1,7 @@
+import { useEffect } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import Nav from './components/layout/Nav'
+import CompactHeader from './components/layout/CompactHeader'
 import Footer from './components/layout/Footer'
 import Home from './pages/Home'
 import Work from './pages/Work'
@@ -8,14 +10,49 @@ import Lab from './pages/Lab'
 import About from './pages/About'
 import NotFound from './pages/NotFound'
 import { useScrollTop } from './hooks/useScrollTop'
+import { InteractionProvider } from './systems/InteractionProvider'
+import { useInteraction } from './systems/InteractionContext'
+import { getBySlug } from './data/projects'
+import ScrollProgressIndicator from './components/systems/ScrollProgressIndicator'
 
-export default function App() {
+function getFeaturedProject(pathname) {
+  if (!pathname.startsWith('/work/')) return null
+
+  const project = getBySlug(pathname.slice('/work/'.length))
+  return project?.tier === 'featured' ? project : null
+}
+
+function getPageTitle(pathname) {
+  if (pathname === '/') return 'Sujeth A S — Software Engineer'
+  if (pathname === '/work') return 'Work — Sujeth A S'
+  if (pathname === '/lab') return 'Lab — Sujeth A S'
+  if (pathname === '/about') return 'About — Sujeth A S'
+  const project = getFeaturedProject(pathname)
+  if (project) return `${project.name} — Sujeth A S`
+  return 'Page Not Found — Sujeth A S'
+}
+
+function AppShell() {
   const location = useLocation()
-  useScrollTop(location.pathname)
+  const activeProject = getFeaturedProject(location.pathname)
+  const { lenisRef } = useInteraction()
+  useScrollTop(location.pathname, lenisRef.current)
+
+  useEffect(() => {
+    document.title = getPageTitle(location.pathname)
+  }, [location.pathname])
 
   return (
     <>
-      <Nav />
+      {activeProject ? (
+        <CompactHeader
+          breadcrumb={`WORK / ${activeProject.name.toUpperCase()}`}
+          accent={activeProject.visual?.accent || 'var(--red)'}
+        />
+      ) : (
+        <Nav />
+      )}
+      <ScrollProgressIndicator key={location.pathname} />
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -28,5 +65,13 @@ export default function App() {
       </main>
       <Footer />
     </>
+  )
+}
+
+export default function App() {
+  return (
+    <InteractionProvider>
+      <AppShell />
+    </InteractionProvider>
   )
 }

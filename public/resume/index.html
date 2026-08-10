@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Resume — Sujeth A S</title>
+    <meta name="description" content="Resume of Sujeth A S, software and product engineer in Bengaluru." />
+    <style>
+      :root { color-scheme: light; font-family: Arial, Helvetica, sans-serif; color: #171717; }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: #eee; font-size: 10.5pt; line-height: 1.35; }
+      main { width: min(210mm, 100%); min-height: 297mm; margin: 20px auto; padding: 14mm 16mm; background: #fff; }
+      h1 { margin: 0; font-size: 24pt; letter-spacing: .04em; }
+      h2 { margin: 14px 0 6px; padding-bottom: 3px; border-bottom: 1.5px solid #171717; font-size: 11pt; letter-spacing: .08em; }
+      h3 { margin: 8px 0 2px; font-size: 10.5pt; }
+      p { margin: 3px 0; }
+      ul { margin: 3px 0 7px; padding-left: 18px; }
+      li { margin: 2px 0; }
+      a { color: inherit; }
+      .headline { margin-top: 1px; font-size: 13pt; font-weight: 700; }
+      .contact { margin: 5px 0 10px; }
+      .row { display: flex; justify-content: space-between; gap: 20px; }
+      .meta { font-weight: 400; white-space: nowrap; }
+      .stack { color: #333; font-size: 9.5pt; font-weight: 700; }
+      .print-action { position: fixed; top: 16px; right: 16px; padding: 9px 14px; border: 1px solid #171717; background: #fff; cursor: pointer; font: inherit; }
+      @media (max-width: 700px) {
+        main { margin: 0; padding: 24px 18px; }
+        .row { display: block; }
+        .meta { white-space: normal; }
+        .print-action { position: static; display: block; margin: 12px 18px 0 auto; }
+      }
+      @media print {
+        @page { size: A4; margin: 0; }
+        body { background: #fff; }
+        main { margin: 0; }
+        .print-action { display: none; }
+        a { text-decoration: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <button class="print-action" type="button" onclick="window.print()">Print / Save PDF</button>
+    <main>
+      <header>
+        <h1>SUJETH A S</h1>
+        <div class="headline">Software Engineer · Full-Stack &amp; Product Engineering</div>
+        <div class="contact">
+          Bengaluru, India · <a href="mailto:a.s.sujeth17@gmail.com">a.s.sujeth17@gmail.com</a> ·
+          <a href="https://www.linkedin.com/in/sujeth-a-s">LinkedIn</a> ·
+          <a href="https://github.com/sujeth-dev">GitHub</a>
+        </div>
+      </header>
+      <section>
+        <h2>SUMMARY</h2>
+        <p>Software engineering student who ships production systems end to end—from database schema and API design to deployment and iteration. Builds full-stack products for real users, transactions, and business workflows.</p>
+      </section>
+      <section>
+        <h2>TECHNICAL SKILLS</h2>
+        <p><strong>Full-Stack:</strong> TypeScript, JavaScript, Python, React, Next.js, Node.js, REST APIs, JWT, OAuth, responsive design</p>
+        <p><strong>Data &amp; Systems:</strong> PostgreSQL, Supabase, SQLite, Firebase, schema design, row-level security, migrations, system design</p>
+        <p><strong>Product &amp; Delivery:</strong> Requirements engineering, UX architecture, rapid prototyping, Figma, Git, GitHub, Vercel, CI/CD</p>
+      </section>
+      <section>
+        <h2>SELECTED PROJECTS</h2>
+        <article>
+          <h3 class="row"><span>Possah — Production E-commerce Platform</span><span class="meta">thepossah.com</span></h3>
+          <div class="stack">Next.js · TypeScript · Supabase/Postgres · Razorpay</div>
+          <ul>
+            <li>Architected a live storefront, admin dashboard, payment processing, inventory, and order-fulfillment workflow.</li>
+            <li>Added server-side price validation, scoped database clients, idempotent webhooks, and zero-downtime migrations.</li>
+          </ul>
+        </article>
+        <article>
+          <h3 class="row"><span>Synaptic — Adaptive Learning Engine</span><span class="meta">synaptic-adaptive-learning.vercel.app</span></h3>
+          <div class="stack">Next.js · TypeScript · SQLite · React Flow · JWT</div>
+          <ul>
+            <li>Combined prerequisite-graph traversal, Bayesian Knowledge Tracing, and SM-2 repetition to personalize study paths.</li>
+            <li>Built interactive dependency visualizations and a feedback loop that updates mastery and unlocks concepts.</li>
+          </ul>
+        </article>
+        <article>
+          <h3>Blueprint Builder — Structured Requirements Tool</h3>
+          <div class="stack">Next.js · TypeScript · Supabase/Postgres · Tailwind CSS</div>
+          <p>Transforms client goals into implementation-ready website specifications to reduce planning ambiguity and accelerate delivery.</p>
+        </article>
+        <article>
+          <h3>Fitness Garage &amp; Zingara — Local Business Websites</h3>
+          <div class="stack">HTML · CSS · JavaScript</div>
+          <p>Designed and launched conversion-focused production sites with clear information architecture and WhatsApp integration.</p>
+        </article>
+      </section>
+      <section>
+        <h2>EXPERIENCE</h2>
+        <article>
+          <h3 class="row"><span>Web Design &amp; Content Lead — Greek God Clothing</span><span class="meta">Jan 2025 – Apr 2025</span></h3>
+          <p>Led the first online store from concept and Figma prototyping through development and live deployment.</p>
+        </article>
+        <article>
+          <h3 class="row"><span>Operations Team Lead — E-Cell, UVCE</span><span class="meta">Sep 2023 – May 2025</span></h3>
+          <p>Coordinated cross-functional entrepreneurship events and drove 200+ participants to a case competition.</p>
+        </article>
+      </section>
+      <section>
+        <h2>EDUCATION</h2>
+        <h3 class="row"><span>University Visvesvaraya College of Engineering (UVCE)</span><span class="meta">Bengaluru · 2022–2026</span></h3>
+        <p>B.E. Computer Science</p>
+      </section>
+    </main>
+  </body>
+</html>

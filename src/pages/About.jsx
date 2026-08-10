@@ -1,6 +1,6 @@
 import { meta } from '../data/meta'
 import { skillGroups } from '../data/skills'
-import Robot from '../components/robot/Robot'
+import PixelRobot from '../components/common/PixelRobot'
 import ScrollReveal from '../components/common/ScrollReveal'
 
 export default function About() {
@@ -12,7 +12,7 @@ export default function About() {
             <ScrollReveal>
               <span className="section-label">About</span>
               <h1 style={{ fontSize: 'clamp(32px, 4vw, 48px)', marginBottom: 24 }}>
-                {meta.name}
+                The person behind the projects
               </h1>
             </ScrollReveal>
 
@@ -62,7 +62,7 @@ export default function About() {
           <ScrollReveal delay={200}>
             <div className="dev-card" style={{ position: 'sticky', top: 80 }}>
               <div style={{ textAlign: 'center', marginBottom: 16 }}>
-                <Robot pose="wave" size={56} />
+                <PixelRobot size={40} />
               </div>
               <div className="dev-card-header">
                 <div>

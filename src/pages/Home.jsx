@@ -1,80 +1,54 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { meta } from '../data/meta'
 import { getFeatured, getSecondary, getOther } from '../data/projects'
 import { experiences } from '../data/experience'
 import { skillGroups } from '../data/skills'
 import { now } from '../data/now'
-import Robot from '../components/robot/Robot'
+import PixelRobot from '../components/common/PixelRobot'
+import AnimatedPixelRobot from '../components/common/AnimatedPixelRobot'
 import ScrollReveal from '../components/common/ScrollReveal'
+import VelocityEffects from '../components/systems/VelocityEffects'
+import { SectionBackground } from '../components/systems/SectionBackground'
+import { useAccordionRefresh } from '../hooks/useAccordionRefresh'
 
 const featured = getFeatured()
 const secondary = getSecondary()
 const other = getOther()
 
 export default function Home() {
+  const [experienceExpanded, setExperienceExpanded] = useState(false)
+  useAccordionRefresh(experienceExpanded)
+
   return (
     <>
       {/* ── Hero ── */}
-      <section className="hero">
+      <section className="hero interaction-layer">
+        <SectionBackground theme="open" />
         <div className="container">
           <div className="hero-grid">
-            <div>
-              <ScrollReveal>
-                <div className="hero-title">{meta.subtitle}</div>
-                <h1 className="hero-name">{meta.name}</h1>
-                <p className="hero-desc">{meta.summary}</p>
-                <div className="hero-actions">
-                  <Link to="/work" className="btn btn-primary">View Work</Link>
-                  <a href={`mailto:${meta.email}`} className="btn btn-secondary">Get in Touch</a>
-                </div>
-                <div className="ticker">
-                  <span className="led led-on" />
-                  <span>currently building: {now.building[0]}</span>
-                </div>
-              </ScrollReveal>
-            </div>
-            <div className="workshop-vignette">
-              <ScrollReveal delay={200}>
-                <div style={{
-                  border: 'var(--border-md)',
-                  background: 'var(--bg-card)',
-                  padding: 32,
-                  boxShadow: 'var(--shadow-lg)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: 16,
-                }}>
-                  <Robot pose="wave" size={80} />
-                  <div style={{
-                    fontFamily: 'var(--font-label)',
-                    fontSize: 11,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.08em',
-                    color: 'var(--muted)',
-                    textAlign: 'center',
-                  }}>
-                    Workshop Status
-                  </div>
-                  <div style={{ display: 'flex', gap: 12 }}>
-                    <span className="led led-on" />
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--green)' }}>
-                      ALL SYSTEMS ONLINE
-                    </span>
-                  </div>
-                  <div style={{
-                    display: 'flex',
-                    gap: 8,
-                    flexWrap: 'wrap',
-                    justifyContent: 'center',
-                  }}>
-                    {['React', 'Node', 'Postgres', 'Ship'].map((s) => (
-                      <span key={s} className="tag">{s}</span>
-                    ))}
-                  </div>
-                </div>
-              </ScrollReveal>
-            </div>
+            <ScrollReveal>
+              <div className="hero-title">{meta.subtitle}</div>
+            </ScrollReveal>
+            <ScrollReveal delay={150}>
+              <h1 className="hero-name-wrap">
+                <span className="sr-only">{meta.name}</span>
+                <AnimatedPixelRobot />
+              </h1>
+            </ScrollReveal>
+            <ScrollReveal delay={300}>
+              <p className="hero-desc">{meta.summary}</p>
+            </ScrollReveal>
+            <ScrollReveal delay={450}>
+              <div className="hero-actions">
+                <Link to="/work" className="btn btn-primary">View Work</Link>
+                <a href={`mailto:${meta.email}`} className="btn btn-secondary">Get in Touch</a>
+              </div>
+              <div className="ticker">
+                <span className="led led-on" />
+                <span>currently building: {now.building[0]}</span>
+              </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
@@ -83,7 +57,8 @@ export default function Home() {
       <div className="zigzag" />
 
       {/* ── Selected Work ── */}
-      <section className="section" id="work">
+      <section className="section interaction-layer" id="work">
+        <SectionBackground theme="technical" />
         <div className="container">
           <ScrollReveal>
             <span className="section-label">Selected Work</span>
@@ -111,7 +86,7 @@ export default function Home() {
                   </div>
                   <div className="project-card-footer">
                     <span className="project-card-cta">Explore →</span>
-                    <Robot pose="inspect" size={20} />
+                    <PixelRobot size={16} />
                   </div>
                 </Link>
               </ScrollReveal>
@@ -165,8 +140,11 @@ export default function Home() {
         </div>
       </section>
 
+      <div className="zigzag" />
+
       {/* ── Skills Toolbox ── */}
-      <section className="section" style={{ background: 'var(--cream)' }}>
+      <section className="section interaction-layer" style={{ background: 'var(--cream)' }}>
+        <SectionBackground theme="technical" intensity={0.35} />
         <div className="container">
           <ScrollReveal>
             <span className="section-label" style={{ background: 'var(--cream)' }}>Toolbox</span>
@@ -177,54 +155,79 @@ export default function Home() {
           <div className="skills-grid">
             {skillGroups.map((g, i) => (
               <ScrollReveal key={g.label} delay={i * 80}>
-                <div className="skill-group">
-                  <div className="skill-group-label">{g.label}</div>
-                  <div className="skill-group-items">
-                    {g.items.map((s) => (
-                      <span key={s} className="tag">{s}</span>
-                    ))}
+                <VelocityEffects effects={['lag']}>
+                  <div className="skill-group">
+                    <div className="skill-group-label">{g.label}</div>
+                    <div className="skill-group-items">
+                      {g.items.map((s) => (
+                        <span key={s} className="tag">{s}</span>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                </VelocityEffects>
               </ScrollReveal>
             ))}
           </div>
         </div>
       </section>
 
+      <div className="zigzag" />
+
       {/* ── Experience ── */}
       <section className="section" id="experience">
         <div className="container">
           <ScrollReveal>
             <span className="section-label">Experience</span>
-            <h2 style={{ fontSize: 'clamp(24px, 2.5vw, 32px)', marginBottom: 32 }}>
+            <h2 style={{ fontSize: 'clamp(24px, 2.5vw, 32px)', marginBottom: 20 }}>
               Where I've worked
             </h2>
           </ScrollReveal>
-          <div className="exp-list">
-            {experiences.map((e, i) => (
-              <ScrollReveal key={i} delay={i * 100}>
-                <div className="exp-item">
-                  <div className="exp-meta">
-                    <div className="exp-role">{e.role}</div>
-                    <div className="exp-org">{e.org}</div>
-                    <div className="exp-period">{e.period}</div>
-                    <div style={{ marginTop: 8 }}>
-                      <span className="stamp">{e.type === 'formal' ? 'Role' : 'Venture'}</span>
+          <button
+            type="button"
+            className="accordion-toggle"
+            onClick={() => setExperienceExpanded((value) => !value)}
+            aria-expanded={experienceExpanded}
+            aria-controls="experience-list"
+          >
+            {experienceExpanded ? 'Hide experience' : `View experience (${experiences.length})`}
+          </button>
+          <div
+            id="experience-list"
+            className="accordion-panel"
+            data-expanded={experienceExpanded}
+            role="region"
+            aria-label="Work experience timeline"
+          >
+            <div className="accordion-panel__inner">
+              <div className="exp-list">
+                {experiences.map((e, i) => (
+                  <ScrollReveal key={i} delay={i * 100}>
+                    <div className="exp-item">
+                      <div className="exp-meta">
+                        <div className="exp-role">{e.role}</div>
+                        <div className="exp-org">{e.org}</div>
+                        <div className="exp-period">{e.period}</div>
+                        <div style={{ marginTop: 8 }}>
+                          <span className="stamp">{e.type === 'formal' ? 'Role' : 'Venture'}</span>
+                        </div>
+                      </div>
+                      <div>
+                        <ul className="exp-bullets">
+                          {e.bullets.map((b, j) => (
+                            <li key={j}>{b}</li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <ul className="exp-bullets">
-                      {e.bullets.map((b, j) => (
-                        <li key={j}>{b}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </ScrollReveal>
-            ))}
+                  </ScrollReveal>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
+
+      <div className="zigzag" />
 
       {/* ── Currently ── */}
       <section className="section" style={{ background: 'var(--cream)' }}>
@@ -260,12 +263,13 @@ export default function Home() {
       </section>
 
       {/* ── Contact ── */}
-      <section className="section-dark">
-        <div className="zigzag-dark" />
+      <section className="section-dark interaction-layer">
+        <SectionBackground theme="signal" mobileOpacity={0.6} />
+        <div className="zigzag zigzag-dark" aria-hidden="true" />
         <div className="container">
           <div className="contact-section">
             <ScrollReveal>
-              <Robot pose="signal" size={56} />
+              <PixelRobot size={40} />
               <h2 className="contact-heading" style={{ marginTop: 16 }}>Let's build something</h2>
               <p className="contact-desc">
                 I'm always interested in new projects, collaborations, and opportunities.

@@ -1,0 +1,43 @@
+.scroll-indicator {
+  position: fixed;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: var(--z-scroll-indicator);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.scroll-indicator__track {
+  position: relative;
+  width: 2px;
+  height: 140px;
+  background: var(--border);
+}
+
+.scroll-indicator__fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: var(--yellow);
+  transition: height 0.1s linear;
+}
+
+@media (max-width: 767px) {
+  .scroll-indicator {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-indicator {
+    display: none !important;
+  }
+
+  .scroll-indicator__fill {
+    transition: none !important;
+  }
+}
