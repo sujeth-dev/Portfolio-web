@@ -1,7 +1,6 @@
 import { useLayoutEffect, useRef } from 'react'
 import { Navigate, useParams } from 'react-router-dom'
 import ScrollReveal from '../components/common/ScrollReveal'
-import CompactHeader from '../components/layout/CompactHeader'
 import ArchDiagram from '../components/project/ArchDiagram'
 import ProjectNav from '../components/project/ProjectNav'
 import ProjectStage from '../components/project/ProjectStage'
@@ -23,19 +22,13 @@ function ProjectScene({ project, prev, next }) {
   const accent = project.visual?.accent || 'var(--red)'
 
   return (
-    <>
-      <CompactHeader
-        breadcrumb={`WORK / ${project.name.toUpperCase()}`}
-        accent={accent}
-      />
-
-      <section
-        ref={sceneRef}
-        className="project-scene"
-        style={{ '--project-accent': accent }}
-        aria-labelledby="project-title"
-      >
-        <div className="container project-scene__grid">
+    <section
+      ref={sceneRef}
+      className="project-scene"
+      style={{ '--project-accent': accent }}
+      aria-labelledby="project-title"
+    >
+      <div className="container project-scene__grid">
           <article className="project-scroll-content">
             <header className="project-hero">
               <ScrollReveal>
@@ -163,9 +156,8 @@ function ProjectScene({ project, prev, next }) {
               <ProjectNav prev={prev} next={next} />
             </ScrollReveal>
           </div>
-        </div>
-      </section>
-    </>
+      </div>
+    </section>
   )
 }
 

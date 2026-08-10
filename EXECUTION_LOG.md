@@ -344,3 +344,32 @@ Git:
 
 Next:
 P1-T08 — conditionally render the full Nav versus CompactHeader on project routes and complete the Phase 1 validation gate.
+
+## 2026-08-10 10:33 — P1-T08
+
+Action:
+Centralized route-aware header selection in App: featured project routes now render the project-specific CompactHeader and no main Nav, while Home, Work, Lab, About, and non-project routes retain the full Nav. Removed the page-local header mount and completed the full Phase 1 regression gate. Preserved the newly recorded direction that ProjectStage is the primary storytelling surface and that Phase 3 will replace P1's interim static mobile strip with a real mobile scroll system.
+
+Changed:
+- src/App.jsx
+- src/pages/ProjectPage.jsx
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (CSS 30.54KB / 6.56KB gzip; main JS 418.70KB / 138.71KB gzip; three stage scenes remain lazy chunks)
+- conditional headers: PASS (full Nav on Home/Work/Lab/About; only 44px CompactHeader on all 3 featured project routes)
+- desktop Phase 1 regression: PASS (all 3 projects at 1280×800; exact 55/45 layout; sticky stage; all 5 states)
+- mobile Phase 1 regression: PASS (all 3 projects at 375×812; 200px relative interim stage; no overflow)
+- reduced motion: PASS (results state at 100%, content visible, Lenis inactive)
+- keyboard navigation: PASS (natural CompactHeader → case-study links → ProjectNav order; no trap)
+- browser runtime exceptions: PASS (none)
+
+Git:
+- commit: self (`P1-T08: route project compact header`)
+- push: SUCCESS
+
+Next:
+P2-T01 — migrate ScrollReveal internals to GSAP ScrollTrigger while preserving its public API and call sites.

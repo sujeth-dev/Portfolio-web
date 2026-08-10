@@ -2,20 +2,20 @@
 
 > Machine-readable-ish status snapshot. Updated after every task per `DEVELOPMENT_LOOP.md` §11. If this file and `EXECUTION_LOG.md` ever disagree, `EXECUTION_LOG.md` (append-only, chronological) wins — fix this file to match it.
 
-**Last updated:** 2026-08-10 10:14
+**Last updated:** 2026-08-10 10:33
 **Branch:** `work`
 
 ---
 
 ## Current phase
 
-**Phase 1 — Project Page Scene (proving ground)** (`MASTER_PLAN.md` → Phase 1)
+**Phase 2 — ScrollReveal Upgrade + Velocity** (`MASTER_PLAN.md` → Phase 2)
 Status: In Progress
 
 ## Current task
 
-**P1-T08** — Add conditional main `Nav` versus `CompactHeader` routing logic in `src/App.jsx` so project routes render only the compact control strip.
-Dependency P1-T07 is complete.
+**P2-T01** — Rewrite `src/components/common/ScrollReveal.jsx` internals to GSAP ScrollTrigger while preserving the existing external API.
+Dependency Phase 1 is complete.
 
 ## Completed tasks
 
@@ -30,6 +30,7 @@ Dependency P1-T07 is complete.
 - **P1-T05** — Added lazy-loaded Synaptic knowledge-machine, Possah payment-terminal, and Velmont blueprint SVG scenes driven by continuous stage progress.
 - **P1-T06** — Added previous/all-work/next project navigation with an enlarged accent preview for the next case study, responsive stacking, and visible keyboard focus.
 - **P1-T07** — Restructured featured case studies into the 55/45 scrolling-content/sticky-stage scene, wired the compact header and project navigation, added the 200px mobile stage fallback, and connected all five scroll states.
+- **P1-T08** — Centralized route-aware header selection in App so featured project routes render only CompactHeader while all other routes retain the full Nav; completed the Phase 1 regression gate.
 
 (Prerequisite work — PixelRobot rollout, card-grid fixes — was already completed on `main`/`work` before this plan existed: commits `5209461` and `1475eb7`. See `EXECUTION_LOG.md` P0-T00 entry for the baseline this plan starts from.)
 
@@ -41,7 +42,7 @@ None currently active.
 
 ## Next action
 
-Start `P1-T08`: conditionally render the full navigation outside project routes and the compact project header on `/work/:slug`, then run the Phase 1 validation gate.
+Start `P2-T01`: migrate ScrollReveal internals to GSAP ScrollTrigger without changing its props or any call site, then run visual regressions on every consuming page.
 
 ## Repository baseline at plan creation (2026-08-09)
 

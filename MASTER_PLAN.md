@@ -25,6 +25,14 @@ The available options were:
 
 ---
 
+## Project page end-state vision (recorded for P1, drives P3)
+
+**Decided 2026-08-10:** the right-side `ProjectStage` is not a decorative panel — at full development it is the primary storytelling surface of the project page. The left column carries supporting case-study text; the visual system carries the actual narrative through its 5 states (identity → problem → architecture → engineering → results) as the user scrolls. Phases 2–8 (backgrounds, parallax, cursor, velocity, robot) enrich this same system — they do not replace it. P1's sticky 55/45 split is the permanent desktop foundation, not a temporary preview.
+
+This means **mobile needs its own real system, not a disabled fallback.** The plan as originally written (P1-T07, and design doc mobile rules) treats mobile as static: 200px illustration strip, no stickiness, parallax/backgrounds/velocity all disabled below 768px. That strip is an interim placeholder only. Mobile is expected to get a genuine scroll-driven version of the same 5-state story — non-sticky (no split layout on a narrow screen), but with its own scroll-triggered state transitions and lighter motion, folded into Phase 3 (see P3-T06 below) rather than staying an afterthought. `docs/FUTURE-ENVIRONMENT-LAYER.md`'s mobile section is stale on this point and should be revised when P3-T06 lands.
+
+---
+
 ## Phase 0 — Foundation
 
 **Goal:** Lenis + GSAP wired in, mouse/scroll CSS vars live, zero visual change.
@@ -53,7 +61,7 @@ The available options were:
 
 **Goal:** Project pages (`/work/:slug`) become the single self-contained page where every new system is built and proven before touching the homepage.
 **Depends on:** P0 done.
-**Status:** In Progress
+**Status:** Done
 
 | ID | Task | Depends on | Status |
 |---|---|---|---|
@@ -63,8 +71,8 @@ The available options were:
 | P1-T04 | Create `src/components/project/ProjectStage.jsx` + `src/styles/project-stage.css` (5 scroll states: identity → problem → architecture → engineering → results) | P1-T01 | Done |
 | P1-T05 | Create the 3 lazy-loaded stage sub-components: `src/components/project/stages/SynapticStage.jsx`, `PossahStage.jsx`, `VelmontStage.jsx` (per-project SVG compositions, design doc §3) | P1-T04 | Done |
 | P1-T06 | Create `src/components/project/ProjectNav.jsx` (prev/all-work/next, enlarged next-project preview) | P0 | Done |
-| P1-T07 | Restructure `src/pages/ProjectPage.jsx` into the two-column sticky layout (55% scroll content / 45% sticky `ProjectStage`); wire `CompactHeader` + `ProjectNav`; mobile fallback = 200px illustration strip, no stickiness, below 768px | P1-T02–P1-T06 | Done |
-| P1-T08 | Conditional `Nav` vs `CompactHeader` routing logic in `src/App.jsx` | P1-T07 | Not Started |
+| P1-T07 | Restructure `src/pages/ProjectPage.jsx` into the two-column sticky layout (55% scroll content / 45% sticky `ProjectStage`); wire `CompactHeader` + `ProjectNav`; mobile fallback = 200px illustration strip, no stickiness, below 768px (interim only — see P3-T06) | P1-T02–P1-T06 | Done |
+| P1-T08 | Conditional `Nav` vs `CompactHeader` routing logic in `src/App.jsx` | P1-T07 | Done |
 
 **Acceptance criteria:** All 5 scroll states render and transition correctly for all 3 featured projects (Synaptic, Possah, Velmont); `CompactHeader` replaces main `Nav` only on `/work/:slug`; mobile viewport (375px) shows stacked illustration strip with no pinning; keyboard tab order stays natural through scroll content; reduced motion renders final state immediately with no animation.
 
@@ -76,7 +84,7 @@ The available options were:
 
 **Goal:** Existing reveal animations migrate to GSAP ScrollTrigger under the same external API; restrained velocity effects added.
 **Depends on:** P1 done.
-**Status:** Not Started
+**Status:** In Progress
 
 | ID | Task | Depends on | Status |
 |---|---|---|---|
@@ -90,9 +98,9 @@ The available options were:
 
 ---
 
-## Phase 3 — Parallax + Section Backgrounds
+## Phase 3 — Parallax + Section Backgrounds + Mobile Scroll System
 
-**Goal:** Living, per-section backgrounds with 3-layer parallax depth.
+**Goal:** Living, per-section backgrounds with 3-layer parallax depth on desktop; a real scroll-driven mobile version of `ProjectStage` replacing the static fallback strip.
 **Depends on:** P1 done (P2 not required but recommended done first for a stable base).
 **Status:** Not Started
 
@@ -103,10 +111,11 @@ The available options were:
 | P3-T03 | Create `src/components/systems/ParallaxLayer.jsx` + `src/components/systems/SectionBackground.jsx` | P3-T01, P3-T02 | Not Started |
 | P3-T04 | Create `src/styles/section-backgrounds.css` with all 5 themes: `.bg-open`, `.bg-technical`, `.bg-messy`, `.bg-warm`, `.bg-signal` | P3-T03 | Not Started |
 | P3-T05 | Add backgrounds to project pages first (validate), then Home page sections per design doc §5 table | P3-T04 | Not Started |
+| P3-T06 | Build the mobile scroll-driven `ProjectStage`: non-sticky, inline layout (no split/pin), state transitions (identity → problem → architecture → engineering → results) driven by `useSectionProgress` scroll position instead of desktop's pin+scrub; lighter parallax (single layer or none per perf budget) via `useParallax`'s mobile path; replaces the static 200px illustration strip from P1-T07. Update `docs/FUTURE-ENVIRONMENT-LAYER.md` mobile section to match. | P3-T02, P3-T01, P1-T07 | Not Started |
 
-**Acceptance criteria:** 3 parallax layers visibly respond differently to mouse/scroll; backgrounds crossfade gradually through scroll (no hard section cuts); background responds to `--mouse-x-norm`/`--mouse-y-norm`; mobile (<768px) disables all parallax/background motion per design doc §9 runtime rule 7.
+**Acceptance criteria:** 3 parallax layers visibly respond differently to mouse/scroll on desktop; backgrounds crossfade gradually through scroll (no hard section cuts); background responds to `--mouse-x-norm`/`--mouse-y-norm`; mobile (<768px) no longer shows a static illustration strip — it shows the same 5-state story via scroll-triggered transitions, with parallax/background motion scaled down (not fully disabled) per the P3-T06 design; reduced motion still renders the final state immediately with no animation on both desktop and mobile.
 
-**Required tests:** `npm test`, `npm run build`, manual scroll-through on project pages + Home at desktop and 375px, Lighthouse Performance spot-check (target stays ≥90 — full audit is P9).
+**Required tests:** `npm test`, `npm run build`, manual scroll-through on project pages + Home at desktop and 375px (confirming mobile state transitions fire correctly), Lighthouse Performance spot-check (target stays ≥90 — full audit is P9).
 
 ---
 
