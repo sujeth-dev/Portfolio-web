@@ -1,7 +1,173 @@
-import { useParams, Link, Navigate } from 'react-router-dom'
-import { getBySlug, projects } from '../data/projects'
+import { useLayoutEffect, useRef } from 'react'
+import { Navigate, useParams } from 'react-router-dom'
 import ScrollReveal from '../components/common/ScrollReveal'
+import CompactHeader from '../components/layout/CompactHeader'
 import ArchDiagram from '../components/project/ArchDiagram'
+import ProjectNav from '../components/project/ProjectNav'
+import ProjectStage from '../components/project/ProjectStage'
+import { projects, getBySlug } from '../data/projects'
+import { useScrollEngine } from '../hooks/useScrollEngine'
+
+function ProjectScene({ project, prev, next }) {
+  const sceneRef = useRef(null)
+
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0)
+  }, [project.slug])
+
+  const { progress } = useScrollEngine(sceneRef, {
+    start: 'top 44px',
+    end: 'bottom bottom',
+    scrub: true,
+  })
+  const accent = project.visual?.accent || 'var(--red)'
+
+  return (
+    <>
+      <CompactHeader
+        breadcrumb={`WORK / ${project.name.toUpperCase()}`}
+        accent={accent}
+      />
+
+      <section
+        ref={sceneRef}
+        className="project-scene"
+        style={{ '--project-accent': accent }}
+        aria-labelledby="project-title"
+      >
+        <div className="container project-scene__grid">
+          <article className="project-scroll-content">
+            <header className="project-hero">
+              <ScrollReveal>
+                <p className="project-scene__eyebrow silkscreen">Case study</p>
+                <h1 id="project-title" className="project-name">{project.name}</h1>
+                <p className="project-tagline">{project.tagline}</p>
+                <div className="project-meta-row">
+                  <span className={`badge badge-${project.status}`}>{project.statusLabel}</span>
+                  <span className="project-meta-item">{project.role}</span>
+                  <span className="project-meta-item">{project.year}</span>
+                  {project.url && (
+                    <a
+                      href={project.url}
+                      className="project-meta-item project-meta-link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {project.urlLabel} ↗
+                    </a>
+                  )}
+                </div>
+                <div className="project-stack-row">
+                  {project.stack.map((item) => (
+                    <span key={item} className="tag">{item}</span>
+                  ))}
+                </div>
+                {(project.url || project.sourceUrl) && (
+                  <div className="project-links-row">
+                    {project.url && (
+                      <a href={project.url} className="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                        Live Site ↗
+                      </a>
+                    )}
+                    {project.sourceUrl && (
+                      <a href={project.sourceUrl} className="btn btn-secondary" target="_blank" rel="noopener noreferrer">
+                        Source Code ↗
+                      </a>
+                    )}
+                  </div>
+                )}
+              </ScrollReveal>
+            </header>
+
+            <div className="zigzag project-scene__divider" aria-hidden="true" />
+
+            <div className="project-content">
+              {project.problem && (
+                <ScrollReveal>
+                  <section className="project-section">
+                    <h2 className="project-section-label">The Problem</h2>
+                    <p className="project-section-text">{project.problem}</p>
+                  </section>
+                </ScrollReveal>
+              )}
+
+              {project.solution && (
+                <ScrollReveal>
+                  <section className="project-section">
+                    <h2 className="project-section-label">What I Built</h2>
+                    <p className="project-section-text">{project.solution}</p>
+                  </section>
+                </ScrollReveal>
+              )}
+
+              {project.highlights && (
+                <ScrollReveal>
+                  <section className="project-section">
+                    <h2 className="project-section-label">Engineering Highlights</h2>
+                    <ul className="project-highlights">
+                      {project.highlights.map((highlight) => (
+                        <li key={highlight}>{highlight}</li>
+                      ))}
+                    </ul>
+                  </section>
+                </ScrollReveal>
+              )}
+
+              {project.architecture && (
+                <ScrollReveal>
+                  <section className="project-section">
+                    <h2 className="project-section-label">Architecture</h2>
+                    <ArchDiagram id={project.architecture.svg} />
+                    {project.architecture.caption && (
+                      <p className="arch-caption">{project.architecture.caption}</p>
+                    )}
+                  </section>
+                </ScrollReveal>
+              )}
+
+              {project.decisions && (
+                <ScrollReveal>
+                  <section className="project-section">
+                    <h2 className="project-section-label">Decisions &amp; Trade-offs</h2>
+                    <p className="project-section-text">{project.decisions}</p>
+                  </section>
+                </ScrollReveal>
+              )}
+
+              {project.result && (
+                <ScrollReveal>
+                  <section className="project-section">
+                    <h2 className="project-section-label">Result</h2>
+                    <p className="project-section-text">{project.result}</p>
+                  </section>
+                </ScrollReveal>
+              )}
+
+              {project.reflection && (
+                <ScrollReveal>
+                  <section className="project-section">
+                    <h2 className="project-section-label">Reflection</h2>
+                    <p className="project-section-text">{project.reflection}</p>
+                  </section>
+                </ScrollReveal>
+              )}
+            </div>
+          </article>
+
+          <div className="project-stage-container">
+            <ProjectStage project={project} scrollProgress={progress} />
+          </div>
+
+          <div className="project-scene__nav">
+            <ScrollReveal>
+              <ProjectNav prev={prev} next={next} />
+            </ScrollReveal>
+          </div>
+        </div>
+      </section>
+    </>
+  )
+}
 
 export default function ProjectPage() {
   const { slug } = useParams()
@@ -11,153 +177,10 @@ export default function ProjectPage() {
     return <Navigate to="/work" replace />
   }
 
-  const featuredProjects = projects.filter((p) => p.tier === 'featured')
-  const currentFeaturedIdx = featuredProjects.findIndex((p) => p.slug === slug)
-  const prev = featuredProjects[currentFeaturedIdx - 1]
-  const next = featuredProjects[currentFeaturedIdx + 1]
+  const featuredProjects = projects.filter((item) => item.tier === 'featured')
+  const currentFeaturedIndex = featuredProjects.findIndex((item) => item.slug === slug)
+  const prev = featuredProjects[currentFeaturedIndex - 1]
+  const next = featuredProjects[currentFeaturedIndex + 1]
 
-  return (
-    <>
-      <section className="project-hero">
-        <div className="container">
-          <ScrollReveal>
-            <Link to="/work" className="project-back">← Back to Work</Link>
-            <h1 className="project-name">{project.name}</h1>
-            <p className="project-tagline">{project.tagline}</p>
-            <div className="project-meta-row">
-              <span className={`badge badge-${project.status}`}>{project.statusLabel}</span>
-              <span className="project-meta-item">{project.role}</span>
-              <span className="project-meta-item">{project.year}</span>
-              {project.url && (
-                <a
-                  href={project.url}
-                  className="project-meta-item"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ color: 'var(--red)' }}
-                >
-                  {project.urlLabel} ↗
-                </a>
-              )}
-            </div>
-            <div className="project-stack-row">
-              {project.stack.map((s) => (
-                <span key={s} className="tag">{s}</span>
-              ))}
-            </div>
-            {(project.url || project.sourceUrl) && (
-              <div className="project-links-row">
-                {project.url && (
-                  <a href={project.url} className="btn btn-primary" target="_blank" rel="noopener noreferrer">
-                    Live Site ↗
-                  </a>
-                )}
-                {project.sourceUrl && (
-                  <a href={project.sourceUrl} className="btn btn-secondary" target="_blank" rel="noopener noreferrer">
-                    Source Code ↗
-                  </a>
-                )}
-              </div>
-            )}
-          </ScrollReveal>
-        </div>
-      </section>
-
-      <div className="zigzag" />
-
-      <section className="project-content">
-        <div className="container">
-          {project.problem && (
-            <ScrollReveal>
-              <div className="project-section">
-                <div className="project-section-label">The Problem</div>
-                <p className="project-section-text">{project.problem}</p>
-              </div>
-            </ScrollReveal>
-          )}
-
-          {project.solution && (
-            <ScrollReveal>
-              <div className="project-section">
-                <div className="project-section-label">What I Built</div>
-                <p className="project-section-text">{project.solution}</p>
-              </div>
-            </ScrollReveal>
-          )}
-
-          {project.highlights && (
-            <ScrollReveal>
-              <div className="project-section">
-                <div className="project-section-label">Engineering Highlights</div>
-                <ul className="project-highlights">
-                  {project.highlights.map((h, i) => (
-                    <li key={i}>{h}</li>
-                  ))}
-                </ul>
-              </div>
-            </ScrollReveal>
-          )}
-
-          {project.architecture && (
-            <ScrollReveal>
-              <div className="project-section">
-                <div className="project-section-label">Architecture</div>
-                <ArchDiagram id={project.architecture.svg} />
-                {project.architecture.caption && (
-                  <p className="arch-caption">{project.architecture.caption}</p>
-                )}
-              </div>
-            </ScrollReveal>
-          )}
-
-          {project.decisions && (
-            <ScrollReveal>
-              <div className="project-section">
-                <div className="project-section-label">Decisions & Trade-offs</div>
-                <p className="project-section-text">{project.decisions}</p>
-              </div>
-            </ScrollReveal>
-          )}
-
-          {project.result && (
-            <ScrollReveal>
-              <div className="project-section">
-                <div className="project-section-label">Result</div>
-                <p className="project-section-text">{project.result}</p>
-              </div>
-            </ScrollReveal>
-          )}
-
-          {project.reflection && (
-            <ScrollReveal>
-              <div className="project-section">
-                <div className="project-section-label">Reflection</div>
-                <p className="project-section-text">{project.reflection}</p>
-              </div>
-            </ScrollReveal>
-          )}
-
-          {/* Project Navigation */}
-          <ScrollReveal>
-            <div className="project-nav">
-              <div>
-                {prev && (
-                  <Link to={`/work/${prev.slug}`} className="project-nav-link">
-                    ← {prev.name}
-                  </Link>
-                )}
-              </div>
-              <div>
-                {next && (
-                  <Link to={`/work/${next.slug}`} className="project-nav-link">
-                    {next.name} →
-                  </Link>
-                )}
-              </div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-    </>
-  )
+  return <ProjectScene key={project.slug} project={project} prev={prev} next={next} />
 }

@@ -63,7 +63,7 @@ The available options were:
 | P1-T04 | Create `src/components/project/ProjectStage.jsx` + `src/styles/project-stage.css` (5 scroll states: identity → problem → architecture → engineering → results) | P1-T01 | Done |
 | P1-T05 | Create the 3 lazy-loaded stage sub-components: `src/components/project/stages/SynapticStage.jsx`, `PossahStage.jsx`, `VelmontStage.jsx` (per-project SVG compositions, design doc §3) | P1-T04 | Done |
 | P1-T06 | Create `src/components/project/ProjectNav.jsx` (prev/all-work/next, enlarged next-project preview) | P0 | Done |
-| P1-T07 | Restructure `src/pages/ProjectPage.jsx` into the two-column sticky layout (55% scroll content / 45% sticky `ProjectStage`); wire `CompactHeader` + `ProjectNav`; mobile fallback = 200px illustration strip, no stickiness, below 768px | P1-T02–P1-T06 | Not Started |
+| P1-T07 | Restructure `src/pages/ProjectPage.jsx` into the two-column sticky layout (55% scroll content / 45% sticky `ProjectStage`); wire `CompactHeader` + `ProjectNav`; mobile fallback = 200px illustration strip, no stickiness, below 768px | P1-T02–P1-T06 | Done |
 | P1-T08 | Conditional `Nav` vs `CompactHeader` routing logic in `src/App.jsx` | P1-T07 | Not Started |
 
 **Acceptance criteria:** All 5 scroll states render and transition correctly for all 3 featured projects (Synaptic, Possah, Velmont); `CompactHeader` replaces main `Nav` only on `/work/:slug`; mobile viewport (375px) shows stacked illustration strip with no pinning; keyboard tab order stays natural through scroll content; reduced motion renders final state immediately with no animation.

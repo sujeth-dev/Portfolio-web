@@ -316,3 +316,31 @@ Git:
 
 Next:
 P1-T07 — mount the compact header, scrolling content, sticky ProjectStage, and ProjectNav in the restructured project page.
+
+## 2026-08-10 10:14 — P1-T07
+
+Action:
+Restructured featured case studies into one 55/45 scene with scrolling semantic content and a sticky ProjectStage driven by scene progress. Wired CompactHeader and ProjectNav, added the 200px non-sticky mobile stage above content, and reset project scenes before ScrollTrigger initialization during next-project route changes.
+
+Changed:
+- src/pages/ProjectPage.jsx
+- src/index.css
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (CSS 30.54KB / 6.56KB gzip; main JS 418.64KB / 138.67KB gzip; three stage scenes emitted as lazy chunks)
+- desktop layout and five-state transitions: PASS (all 3 featured projects at 1280×800; exact 55/45 columns; sticky top 68px; identity → problem → architecture → engineering → results)
+- mobile fallback: PASS (all 3 projects at 375×812; 200px relative stage above content; no horizontal overflow)
+- reduced motion: PASS (results state at 100%, content visible, Lenis inactive)
+- keyboard and route navigation: PASS (natural content-to-project-nav tab order; no trap; next route returns to scroll top in identity state)
+- browser runtime exceptions: PASS (none)
+
+Git:
+- commit: self (`P1-T07: integrate project page scene`)
+- push: SUCCESS
+
+Next:
+P1-T08 — conditionally render the full Nav versus CompactHeader on project routes and complete the Phase 1 validation gate.
