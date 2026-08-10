@@ -75,3 +75,35 @@
   );
   opacity: 0.8;
 }
+
+/* ── Project page stage background (enrichment) ── */
+/* A `.bg-technical` instance scoped to ProjectStage only, via the
+   `project-stage-bg` className passed from ProjectPage — layers a
+   per-project accent glow + a second, looser accent dot grid on top of
+   the shared technical wash without touching `.bg-technical` itself
+   (which Home's Selected Work section also uses). `--project-accent` is
+   inherited from `.project-scene`, so this recolors per project for free. */
+.project-stage-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 25% 15%,
+    color-mix(in srgb, var(--project-accent) 18%, transparent),
+    transparent 62%
+  );
+}
+
+.project-stage-bg .section-background__pattern::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--project-accent) 45%, transparent) 2px,
+    transparent 2px
+  );
+  background-size: 128px 128px;
+  background-position: 48px 32px;
+  opacity: 0.5;
+}

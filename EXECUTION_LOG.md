@@ -978,3 +978,29 @@ Git:
 
 Next:
 `R1-T06` — enrich the project-page visual system's background (richer pattern/per-project accent on the `technical` theme instance `ProjectStage`'s `SectionBackground` uses), scoped so the shared `.bg-technical` used elsewhere on the site is untouched.
+
+## 2026-08-10 17:20 — R1-T06
+
+Action:
+Enriched the project pages' visual-system background per the user's "improve the visual system background" feedback, now that R1-T05 made it the page's dominant element. Added a `project-stage-bg` modifier class, passed via `SectionBackground`'s existing `className` prop (`<SectionBackground theme="technical" className="project-stage-bg" />` in `ProjectPage.jsx`) rather than editing the shared `.bg-technical` rule Home's Selected Work section also uses. Two additions, both in `section-backgrounds.css`: a soft radial accent glow (`.project-stage-bg::before`) using `color-mix(in srgb, var(--project-accent) 18%, transparent)` — `--project-accent` is already set on the ancestor `.project-scene` and inherits down for free, so each project's background automatically tints toward its own accent color with no JS or per-project CSS needed; and a second, looser accent-tinted dot layer (`.project-stage-bg .section-background__pattern::after`) layered onto the existing `ParallaxLayer` pattern child, so it inherits the same mouse/scroll parallax transform as the base grid pattern — extra depth at zero additional JS cost.
+
+Changed:
+- src/pages/ProjectPage.jsx
+- src/styles/section-backgrounds.css
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (73 modules; CSS 36.89KB / 7.87KB gzip; main JS 426.09KB / 140.86KB gzip)
+- Playwright pass against production preview: `.project-stage-bg::before` present with the expected radial-gradient background-image on all 3 featured projects (`synaptic`, `possah`, `velmont`); Home's `#work .section-background` (also `bg-technical`) confirmed to have neither the `project-stage-bg` class nor any `::before` content — isolation holds
+- visual screenshot review (temporary, deleted before commit): Possah's stage background shows a subtle warm red glow, Synaptic's shows a subtle blue glow — each reads as tied to its own project accent, restrained rather than overpowering
+- working-tree cleanliness: PASS — temporary Playwright script and screenshots removed before staging
+
+Git:
+- commit: self (pending, see below)
+- push: pending
+
+Next:
+`R1-T07` — make Home's hero `.bg-open` background livelier (second dot layer + slow ambient drift, off under reduced motion).

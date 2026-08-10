@@ -24,9 +24,11 @@ R1-T04 done: deleted `CursorCompanion.jsx` + `cursor-companion.css` and its `App
 
 R1-T05 done: restructured `ProjectPage.jsx`'s `ProjectScene` from the 55/45 text/stage grid into a single-column stack — hero (unchanged) → full-width `ProjectStage` (now driven by a dedicated `trackRef` on `.project-stage-container`, `min-height: 360vh` desktop-only, decoupled from case-study height so the 5-state scrub never desyncs) → new `CaseStudyPanel.jsx` (collapsed-by-default accordion holding all 7 case-study sections, unchanged content, `ScrollTrigger.refresh()` on toggle) → `ProjectNav`. Verified across all 3 featured projects, desktop/mobile/reduced-motion/keyboard.
 
+R1-T06 done: enriched `ProjectStage`'s `technical`-theme background with a `project-stage-bg` modifier class (passed via `SectionBackground`'s existing `className` prop) — a soft per-project accent glow (`::before`, `color-mix(var(--project-accent) 18%, transparent)`, inherited from `.project-scene`) plus a second, looser accent-tinted dot layer (`::after` on the pattern child, moves with the same parallax transform). Scoped entirely to this instance; confirmed Home's Selected Work section (also `bg-technical`) has neither the class nor any `::before` content.
+
 ## Current task
 
-**R1-T06** — enrich the project-page visual system's background (richer pattern/per-project accent on the `technical` theme instance used by `ProjectStage`'s `SectionBackground`, without touching the shared `.bg-technical` used elsewhere).
+**R1-T07** — make Home's hero `.bg-open` background livelier: a second dot layer at a different scale plus a slow continuous ambient drift, off under reduced motion.
 
 ## Completed tasks
 

@@ -34,7 +34,7 @@ function ProjectScene({ project, prev, next }) {
       style={{ '--project-accent': accent }}
       aria-labelledby="project-title"
     >
-      <SectionBackground theme="technical" />
+      <SectionBackground theme="technical" className="project-stage-bg" />
       <div className="container project-scene__grid">
         <header className="project-hero">
           <ScrollReveal>
