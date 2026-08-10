@@ -865,3 +865,15 @@ Git:
 
 Next:
 `R1-T03` — remove `ScrollProgressIndicator`'s LED dots, keep the track/fill/notch gauge.
+
+## 2026-08-10 16:05 — R1-T02 addendum (still no site code changed)
+
+Action:
+User asked mid-review for more options in blue/white/black, specifically several blue shades. Added 5 more combos to the same Artifact (redeployed to the same URL): "Blueprint Blue" (mid, desaturated blue — new token), "Deep Navy" (darker/more saturated blue), "Sky Cyan" (brighter/lighter blue — three distinct blue shades as requested), "Ice White" (near-white body, needed a thin ink outline added via a new `outline` flag on the SVG generator so it stays legible against the light stage — same idea as the site's existing bordered-card look, not a new visual language), and "Blackout" (true black body, glowing icy-blue eyes). These 5 are explicitly new colors not currently in the site's token set (the site has no blue today), unlike the first 5 which reused existing tokens — noted directly in the artifact's intro copy so the distinction is clear to the user. Total now 10 named combos.
+
+Changed:
+- EXECUTION_LOG.md (this entry)
+(artifact itself redeployed, not a repo file)
+
+Next:
+Continue to R1-T03.
