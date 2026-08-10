@@ -640,4 +640,35 @@ Git:
 - push: SUCCESS
 
 Next:
+P4-T01 — create `CursorCompanion.jsx` + `cursor-companion.css` (Phase 4 is next eligible phase; depends only on P0, already Done).
+
+## 2026-08-10 13:05 — P4-T01
+
+Action:
+Created `src/components/systems/CursorCompanion.jsx`: a fixed-position label pill that lerps toward the raw mouse position (factor 0.15, independent of `InteractionProvider`'s own 0.08-factor lerp, tracked via its own `mousemove` listener + `gsap.ticker` tick) and reads `data-cursor` off whatever element the pointer is over via document-level `mouseenter`/`mouseleave` listeners registered with `capture: true`. Deliberately used `mouseenter`/`mouseleave` rather than `mouseover`/`mouseout`, and checked `event.target.dataset.cursor` directly rather than `event.target.closest('[data-cursor]')`: since `mouseenter`/`mouseleave` fire only on the exact element whose boundary was crossed (no bubble-emulation for descendants), a direct-attribute check means moving across a `data-cursor` element's internal children (e.g. an icon + text inside one link) never fires a spurious leave/re-enter on the parent — `closest()` would have misfired here, since a child's own `mouseleave` event resolves to the same ancestor via `closest()`, clearing the label while the pointer is still inside the parent. Renders `null` entirely (no listeners attached, no DOM node) under `reducedMotion` or `isMobile`, per the design doc and acceptance criteria. Added `src/styles/cursor-companion.css`: `position: fixed`, `pointer-events: none`, `z-index: var(--z-cursor-companion)` (pre-existing token, previously unused), opacity crossfade via `[data-visible]`, pill styled from existing tokens (`--yellow` fill, `--ink` border, `--shadow-sm`, `--font-label`), plus a `display: none` fallback for both the `(max-width: 767px)` and `(prefers-reduced-motion: reduce)` media queries (belt-and-suspenders alongside the JS-level `null` return).
+
+This task only creates the component per its `MASTER_PLAN.md` row — mounting in `App.jsx` is P4-T04 and rolling out `data-cursor` attributes across pages is P4-T03, so neither was done here. To exercise the component before either of those tasks exists, temporarily mounted `<CursorCompanion />` in `App.jsx` and added a single `data-cursor="VIEW"` attribute to `Nav.jsx`'s logo link, ran a Playwright verification pass, then reverted both files back to their exact original content (confirmed via `git diff` showing zero changes) before committing — only the two new files were staged and committed.
+
+Changed:
+- src/components/systems/CursorCompanion.jsx (new)
+- src/styles/cursor-companion.css (new)
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (CSS 33.14KB / 7.04KB gzip; main JS 423.31KB / 140.20KB gzip — CursorCompanion not yet in the bundle since nothing imports it until P4-T04)
+- manual hover pass (temporary mount, Playwright, 1280×900): PASS — pill hidden before hover (`data-visible="false"`), shows "VIEW" over the `data-cursor="VIEW"` element, stays visible and correctly labeled when hovering a nested child of that element (no flicker), hides again on moving away
+- reduced motion (temporary mount, Playwright): PASS — `.cursor-companion` does not exist in the DOM at all (`exists: false`)
+- mobile viewport 375×812 (temporary mount, Playwright): PASS — `.cursor-companion` does not exist in the DOM at all
+- browser console/page errors: PASS (none)
+- working-tree cleanliness: PASS — `App.jsx`/`Nav.jsx` temporary test edits reverted and confirmed via empty `git diff` before staging; only the two new files committed
+
+Git:
+- commit: self (`P4-T01: add cursor companion component`, `753d0c3`)
+- push: SUCCESS
+
+Next:
+P4-T02 — create `ScrollProgressIndicator.jsx` + `scroll-indicator.css` (machine gauge, section notches, LED dots; depends only on P0, already Done; independent of P4-T01).
 Phase 3 is fully Done. Phase 4 (`P4-T01` — `CursorCompanion.jsx`) is the next eligible phase per the dependency graph (depends only on P0, already done); Phase 6 (Typography Motion, depends only on P1) is also eligible in parallel if preferred.
