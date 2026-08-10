@@ -2,7 +2,7 @@
 
 > Machine-readable-ish status snapshot. Updated after every task per `DEVELOPMENT_LOOP.md` §11. If this file and `EXECUTION_LOG.md` ever disagree, `EXECUTION_LOG.md` (append-only, chronological) wins — fix this file to match it.
 
-**Last updated:** 2026-08-10 16:15
+**Last updated:** 2026-08-10 18:55
 **Branch:** `work`
 
 ---
@@ -10,7 +10,7 @@
 ## Current phase
 
 **Phase R2 — User Revision Round 2** (`MASTER_PLAN.md` → Phase R2)
-Status: In Progress
+Status: Done (10/10 tasks). Resuming Phase 6 (`P6-T02`) next.
 
 Phase R1 — User Revision Round (Preview Feedback, 2026-08-10) is Done (10/10 tasks). One follow-up outside that table: `R1-T02`'s robot color pick is still awaiting the user; apply site-wide once chosen.
 
@@ -36,7 +36,9 @@ The user reviewed the R1 preview and gave a second batch of feedback (tame + enl
 
 **R2-T09 done:** About page's `<h1>` now reads "The person behind the projects" instead of repeating `meta.name`; the name renders once, inside `.dev-card-name`.
 
-**Current task: R2-T10** — redesign the zigzag/paper-cut border using the Retro Toy reference the user supplied (`Downloads/Design style exploration and branding/Retro Toy Direction/*.dc.html`).
+**R2-T10 done:** rebuilt `.zigzag`/`.zigzag-dark` around the exact `clip-path` polygon from the user's Retro Toy brand-kit reference (an irregular hand-torn edge, not the old uniform sawtooth), kept on top of an opaque ink backing so R1-T10's contrast-safety fix still holds.
+
+**Phase R2 is fully Done (10/10 tasks).**
 
 **Phase R1 recap:** `R1-T01` approved by the user (2026-08-10). `R1-T02` done: published an Artifact (`PixelRobot — Color Study`), expanded to 10 named color combinations after the user asked for more blue/white/black options — baseline "Signal Red" + Toolbox Yellow, Systems Green, Workshop Brown, Night Ink (existing site tokens) + Blueprint Blue, Deep Navy, Sky Cyan, Ice White, Blackout (new colors, added on request, with an `outline` flag added to the SVG generator so the white option stays legible against the light stage). Human-decision checkpoint (like `P5-T00`) — **still awaiting the user's pick, not applied to any site file.** `R2-T08` will add 4 more options to this same Artifact.
 

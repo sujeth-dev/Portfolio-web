@@ -1384,3 +1384,29 @@ Git:
 
 Next:
 R2-T10 — redesign the paper-cut border using the Retro Toy reference.
+
+## 2026-08-10 18:55 — R2-T10
+
+Action:
+Redesigned the zigzag/"paper-cut" border. The user's original pointer (commit `7653c83`, `docs/FUTURE-ENVIRONMENT-LAYER.md`) turned out not to describe a paper-cut border at all when checked (confirmed via `git show 7653c83` — that commit is the Phase 3 GSAP/Lenis/parallax/robot spec, no mention of "paper," "zigzag," or "torn" anywhere in the diff). Asked the user to clarify; they supplied a real reference instead: `Downloads/Design style exploration and branding/Retro Toy Direction/*.dc.html`, a 5-page brand-kit mockup set. Grepped all 5 files for `clip-path` and found the actual paper-cutout separator — the exact same `clip-path: polygon(...)` string reused verbatim across every page (`Landing Page RT`, `Dashboard RT`, `Component Library RT`, `Retro Toy Artifacts`), confirmed by `Design Rationale RT.dc.html`: "The paper-cutout separator is kept exactly as scoped." It's a single irregular jagged-top shape (`polygon(0 42%,5% 22%,11% 46%,18% 20%,26% 44%,34% 18%,42% 44%,51% 22%,60% 46%,68% 20%,76% 44%,84% 22%,92% 46%,100% 24%,100% 100%,0 100%)`) — not the uniform repeating-triangle sawtooth the site currently has.
+
+Rebuilt `.zigzag` around that exact polygon instead of the old tiled `linear-gradient` sawtooth, while keeping R1-T10's contrast-safety fix (an opaque `var(--ink)` backing layer, since the reference's own usage context — a fixed-width container on a single continuous page background — doesn't need that guarantee the way this site's full-bleed strip between differently-colored sections does). Restructured as two pseudo-elements on `.zigzag` itself: `::before` is the full opaque ink rect (always-visible backing, unchanged in spirit from R1-T10); `::after` is the wash-colored (`var(--bg)`, or `var(--cream)` via `.zigzag-dark`) block clipped to the reference's exact polygon, percentage-based so it stretches correctly to any strip width rather than needing to repeat a fixed-size tile. Added `position: relative` to the base `.zigzag` class (previously only the positioned modifier classes — `.nav__zigzag` etc. — set `position`), since the standalone in-flow usages (`Home.jsx`'s Hero→Work divider, `CaseStudyPanel.jsx`) need their own containing block for the new `inset: 0` pseudo-elements to size against.
+
+Changed:
+- src/index.css (`.zigzag`/`.zigzag-dark` rebuilt around the reference's clip-path polygon)
+- MASTER_PLAN.md (R2-T10 marked Done)
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (CSS 41.16KB / 8.75KB gzip)
+- code review: PASS — confirmed all 6 `zigzag` call sites (`Home.jsx` ×2, `CaseStudyPanel.jsx`, `Nav.jsx`, `Footer.jsx`, `CompactHeader.jsx`) always combine the base `zigzag` class with a modifier, never a bare `zigzag-dark`, so `.zigzag-dark::after`'s color-only override is always paired with base `.zigzag`'s position/size/backing; confirmed the reference's clip-path string was transcribed byte-for-byte via direct grep output, not retyped from memory
+- manual/visual browser check: NOT PERFORMED this session — no browser-automation tool available. Recommend the user confirm visually via `npm run dev` against all 6 locations (Home hero→work, Home top-of-Contact, ProjectPage case-study divider, Nav, CompactHeader, Footer) — R1-T10's log entry has the full location list.
+
+Git:
+- commit: self (pending, see below)
+- push: pending
+
+Next:
+Phase R2 is fully Done (10/10 tasks). Resume `P6-T02` (Typography Motion) next, per `PROGRESS.md`.
