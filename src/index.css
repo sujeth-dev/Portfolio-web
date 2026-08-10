@@ -998,8 +998,8 @@ h1, h2, h3, h4 {
   background: var(--bg-card);
 }
 
-/* ── Case Study Accordion ── */
-.case-study-toggle {
+/* ── Accordion (reused by ProjectPage's case study and Home's Experience) ── */
+.accordion-toggle {
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -1016,12 +1016,12 @@ h1, h2, h3, h4 {
   transition: transform var(--duration) var(--ease-snap), box-shadow var(--duration) var(--ease-snap);
 }
 
-.case-study-toggle:hover {
+.accordion-toggle:hover {
   transform: translate(-2px, -2px);
   box-shadow: 5px 5px 0 var(--ink);
 }
 
-.case-study-panel {
+.accordion-panel {
   display: grid;
   grid-template-rows: 0fr;
   visibility: hidden;
@@ -1029,19 +1029,19 @@ h1, h2, h3, h4 {
   transition: grid-template-rows 320ms var(--ease-smooth), visibility 0s 320ms;
 }
 
-.case-study-panel[data-expanded='true'] {
+.accordion-panel[data-expanded='true'] {
   grid-template-rows: 1fr;
   visibility: visible;
   transition: grid-template-rows 320ms var(--ease-smooth), visibility 0s;
 }
 
-.case-study-panel__inner {
+.accordion-panel__inner {
   overflow: hidden;
   min-height: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .case-study-panel {
+  .accordion-panel {
     transition: none;
   }
 }

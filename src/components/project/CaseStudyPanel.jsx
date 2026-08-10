@@ -1,34 +1,18 @@
-import { useEffect, useRef, useState } from 'react'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useState } from 'react'
 import ScrollReveal from '../common/ScrollReveal'
 import ArchDiagram from './ArchDiagram'
 import VelocityEffects from '../systems/VelocityEffects'
-import { useInteraction } from '../../systems/InteractionContext'
+import { useAccordionRefresh } from '../../hooks/useAccordionRefresh'
 
 export default function CaseStudyPanel({ project }) {
   const [expanded, setExpanded] = useState(false)
-  const { reducedMotion } = useInteraction()
-  const isFirstRender = useRef(true)
-
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false
-      return undefined
-    }
-
-    // Toggling changes the height of everything below this panel (ProjectNav,
-    // any mobile useSectionProgress triggers) — ScrollTrigger only recomputes
-    // on an explicit refresh, not on a CSS-transition-driven height change.
-    const delay = reducedMotion ? 0 : 340
-    const timer = setTimeout(() => ScrollTrigger.refresh(), delay)
-    return () => clearTimeout(timer)
-  }, [expanded, reducedMotion])
+  useAccordionRefresh(expanded)
 
   return (
     <div className="project-case-study">
       <button
         type="button"
-        className="case-study-toggle"
+        className="accordion-toggle"
         onClick={() => setExpanded((value) => !value)}
         aria-expanded={expanded}
         aria-controls="case-study-panel"
@@ -38,12 +22,12 @@ export default function CaseStudyPanel({ project }) {
 
       <div
         id="case-study-panel"
-        className="case-study-panel"
+        className="accordion-panel"
         data-expanded={expanded}
         role="region"
         aria-label={`${project.name} full case study`}
       >
-        <div className="case-study-panel__inner">
+        <div className="accordion-panel__inner">
           <VelocityEffects effects={['skew', 'stretch', 'lag']}>
             <article>
               <div className="zigzag project-scene__divider" aria-hidden="true" />

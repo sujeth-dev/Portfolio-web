@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { meta } from '../data/meta'
 import { getFeatured, getSecondary, getOther } from '../data/projects'
@@ -9,12 +10,16 @@ import AnimatedPixelRobot from '../components/common/AnimatedPixelRobot'
 import ScrollReveal from '../components/common/ScrollReveal'
 import VelocityEffects from '../components/systems/VelocityEffects'
 import { SectionBackground } from '../components/systems/SectionBackground'
+import { useAccordionRefresh } from '../hooks/useAccordionRefresh'
 
 const featured = getFeatured()
 const secondary = getSecondary()
 const other = getOther()
 
 export default function Home() {
+  const [experienceExpanded, setExperienceExpanded] = useState(false)
+  useAccordionRefresh(experienceExpanded)
+
   return (
     <>
       {/* ── Hero ── */}
@@ -207,32 +212,51 @@ export default function Home() {
         <div className="container">
           <ScrollReveal>
             <span className="section-label">Experience</span>
-            <h2 style={{ fontSize: 'clamp(24px, 2.5vw, 32px)', marginBottom: 32 }}>
+            <h2 style={{ fontSize: 'clamp(24px, 2.5vw, 32px)', marginBottom: 20 }}>
               Where I've worked
             </h2>
           </ScrollReveal>
-          <div className="exp-list">
-            {experiences.map((e, i) => (
-              <ScrollReveal key={i} delay={i * 100}>
-                <div className="exp-item">
-                  <div className="exp-meta">
-                    <div className="exp-role">{e.role}</div>
-                    <div className="exp-org">{e.org}</div>
-                    <div className="exp-period">{e.period}</div>
-                    <div style={{ marginTop: 8 }}>
-                      <span className="stamp">{e.type === 'formal' ? 'Role' : 'Venture'}</span>
+          <button
+            type="button"
+            className="accordion-toggle"
+            onClick={() => setExperienceExpanded((value) => !value)}
+            aria-expanded={experienceExpanded}
+            aria-controls="experience-list"
+          >
+            {experienceExpanded ? 'Hide experience' : `View experience (${experiences.length})`}
+          </button>
+          <div
+            id="experience-list"
+            className="accordion-panel"
+            data-expanded={experienceExpanded}
+            role="region"
+            aria-label="Work experience timeline"
+          >
+            <div className="accordion-panel__inner">
+              <div className="exp-list">
+                {experiences.map((e, i) => (
+                  <ScrollReveal key={i} delay={i * 100}>
+                    <div className="exp-item">
+                      <div className="exp-meta">
+                        <div className="exp-role">{e.role}</div>
+                        <div className="exp-org">{e.org}</div>
+                        <div className="exp-period">{e.period}</div>
+                        <div style={{ marginTop: 8 }}>
+                          <span className="stamp">{e.type === 'formal' ? 'Role' : 'Venture'}</span>
+                        </div>
+                      </div>
+                      <div>
+                        <ul className="exp-bullets">
+                          {e.bullets.map((b, j) => (
+                            <li key={j}>{b}</li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <ul className="exp-bullets">
-                      {e.bullets.map((b, j) => (
-                        <li key={j}>{b}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </ScrollReveal>
-            ))}
+                  </ScrollReveal>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>

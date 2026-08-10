@@ -28,9 +28,11 @@ R1-T06 done: enriched `ProjectStage`'s `technical`-theme background with a `proj
 
 R1-T07 done: `.bg-open .section-background__pattern` (Home hero) now layers a second, smaller dot grid (28px tiles vs the original 64px) alongside the original, plus a slow 48s linear `bg-open-drift` keyframe animation shifting `background-position` by exactly one tile width per layer so the loop is seamless. Disabled under reduced motion via a dedicated media query in `section-backgrounds.css`.
 
+R1-T08 done: Home's `#experience` section now starts collapsed (heading + `View experience (N)` toggle only), expanding the full `.exp-list` on click. Extracted the accordion refresh timer from `CaseStudyPanel` into a shared `src/hooks/useAccordionRefresh.js` hook (now used by both) and renamed the CSS classes from `case-study-toggle`/`case-study-panel`/`case-study-panel__inner` to generic `accordion-toggle`/`accordion-panel`/`accordion-panel__inner` in `index.css` and `CaseStudyPanel.jsx`, since the pattern is now shared by two unrelated sections. Verified the rename didn't break `ProjectPage`'s existing case-study accordion.
+
 ## Current task
 
-**R1-T08** — Home's `#experience` section starts collapsed (heading + toggle only), expands the full `.exp-list` on click, via the same accordion idiom as `CaseStudyPanel`.
+**R1-T09** — animate Contact section's `.bg-signal` ring pattern with a slow continuous drift/rotation, off under reduced motion.
 
 ## Completed tasks
 

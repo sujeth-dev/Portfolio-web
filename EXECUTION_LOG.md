@@ -1027,3 +1027,32 @@ Git:
 
 Next:
 `R1-T08` — Home's `#experience` section starts collapsed, expands on interaction, using the same accordion idiom as `CaseStudyPanel` (R1-T05).
+
+## 2026-08-10 17:45 — R1-T08
+
+Action:
+Made Home's `#experience` section start collapsed per the user's "not be completely expanded at the starting... once you click on experience, the whole thing builds on" feedback. Added `experienceExpanded` state to `Home.jsx`, with an `accordion-toggle` button (`View experience (N)` / `Hide experience`, `N` = `experiences.length`) between the heading and an `accordion-panel` wrapping the existing `.exp-list` (unchanged content/stagger).
+
+Reused the exact accordion mechanic built for R1-T05's `CaseStudyPanel` rather than inventing a second one: extracted its `ScrollTrigger.refresh()`-after-toggle timer into a shared hook, `src/hooks/useAccordionRefresh.js` (same reduced-motion-aware delay logic), and renamed the CSS from `case-study-toggle`/`case-study-panel`/`case-study-panel__inner` to generic `accordion-toggle`/`accordion-panel`/`accordion-panel__inner` in `index.css` and `CaseStudyPanel.jsx`, since the class names were misleading now that a second, unrelated section uses them. Re-verified `ProjectPage`'s case-study accordion still works correctly after the rename (both are driven by CSS class, not React component identity, so this was a pure find-and-replace with no behavior risk — confirmed anyway).
+
+Changed:
+- src/pages/Home.jsx
+- src/components/project/CaseStudyPanel.jsx
+- src/index.css
+- src/hooks/useAccordionRefresh.js (new)
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (74 modules; CSS 37.23KB / 7.93KB gzip; main JS 426.56KB / 140.95KB gzip)
+- Playwright pass against production preview: `#experience-list` starts `data-expanded="false"` with ~0px rendered height; clicking the toggle flips to `data-expanded="true"` with real content height (~561px) and all 3 `.exp-item`s present in the DOM throughout (never unmounted, just visually/tab-order collapsed); `ProjectPage`'s `#case-study-panel` (Synaptic) still toggles correctly after the class rename
+- working-tree cleanliness: PASS — temporary Playwright script removed before staging
+
+Git:
+- commit: self (pending, see below)
+- push: pending
+
+Next:
+`R1-T09` — animate Contact section's `.bg-signal` ring pattern with a slow continuous drift, off under reduced motion.
