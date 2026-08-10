@@ -20,7 +20,7 @@ export default function Lab() {
         <div className="lab-grid">
           {labProjects.map((p, i) => (
             <ScrollReveal key={p.slug} delay={i * 100}>
-              <div className="lab-cartridge" data-cursor={p.url ? 'TRY' : 'EXPLORE'}>
+              <div className="lab-cartridge">
                 <div className={`lab-cartridge-stripe ${p.color}`} />
                 <div className="lab-cartridge-name">{p.name}</div>
                 <p className="lab-cartridge-desc">{p.tagline}</p>

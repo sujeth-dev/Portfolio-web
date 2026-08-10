@@ -13,7 +13,6 @@ import { useScrollTop } from './hooks/useScrollTop'
 import { InteractionProvider } from './systems/InteractionProvider'
 import { useInteraction } from './systems/InteractionContext'
 import { getBySlug } from './data/projects'
-import CursorCompanion from './components/systems/CursorCompanion'
 import ScrollProgressIndicator from './components/systems/ScrollProgressIndicator'
 
 function getFeaturedProject(pathname) {
@@ -53,7 +52,6 @@ function AppShell() {
       ) : (
         <Nav />
       )}
-      <CursorCompanion />
       <ScrollProgressIndicator key={location.pathname} />
       <main>
         <Routes>

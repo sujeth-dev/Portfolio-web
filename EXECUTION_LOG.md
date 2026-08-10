@@ -902,3 +902,41 @@ Git:
 
 Next:
 `R1-T04` — delete `CursorCompanion` entirely, add a plain custom retro-pixel CSS cursor, strip the now-dead `data-cursor` attributes from their 5 call sites.
+
+## 2026-08-10 16:35 — R1-T04
+
+Action:
+Deleted `CursorCompanion.jsx` and `cursor-companion.css` entirely, per the user's explicit "no cursor companion needed, remove — just make a cursor" correction to the original plan (which had proposed reworking it into a glyph-swapping follow component). Removed its import and `<CursorCompanion />` mount from `App.jsx`'s `AppShell`. Removed the now-dead `data-cursor="VIEW"/"OPEN"/"TRY"/"EXPLORE"` attributes from all 5 call sites added in P4-T03 (`Work.jsx`, `Lab.jsx`, `ProjectPage.jsx`, `ProjectNav.jsx`, `Nav.jsx` — both desktop and mobile-drawer instances in `Nav.jsx`), since `CursorCompanion` was their only consumer. Removed the now-unused `--z-cursor-companion` token from `interaction-layer.css`.
+
+Replaced it with a plain custom OS cursor via CSS, no React/JS involved: a small pixel-art arrow (SVG polygon, `stroke-linejoin: round` for a chunky retro silhouette) rendered as an inline data-URI in two color variants — ink fill with a cream outline for the default state (reads against both the light page and the dark Contact section) and a yellow fill with an ink outline over interactive elements (`a`, `button`, `[role='button']`, `input[type='submit']`, `.lab-cartridge`, `.project-card`, `.mini-card`) for hover feedback. Both rules are scoped inside `@media (hover: hover) and (pointer: fine)` so touch/mobile devices are unaffected (no `isMobile`/JS check needed — the media feature itself is the correct signal here).
+
+**Caught and fixed a real CSS cascade bug during verification (DEVELOPMENT_LOOP.md §5 FIX, attempt 1 of 3):** an initial Playwright check found `.project-card`'s computed `cursor` was plain `pointer`, not the custom data-URI, even though the selector list explicitly included `.project-card`. Root cause: `index.css` already had several pre-existing `cursor: pointer` declarations (on `.btn`, `.nav-hamburger`, `.project-card`, `.tag`-style buttons) at lines further down the file than the new cursor rules (inserted near the top, right after the reset) — identical specificity (single class selector) means source order decides, and the later declarations were winning. Fixed by prefixing every selector in the hover-cursor rule with a `body` ancestor (`body a, body .project-card, ...`), raising specificity above any plain class/type selector regardless of where it sits in the file, rather than relying on rule ordering (which would be fragile against future edits).
+
+Changed:
+- src/App.jsx
+- src/components/layout/Nav.jsx
+- src/components/project/ProjectNav.jsx
+- src/pages/Lab.jsx
+- src/pages/ProjectPage.jsx
+- src/pages/Work.jsx
+- src/index.css
+- src/styles/interaction-layer.css
+- deleted: src/components/systems/CursorCompanion.jsx, src/styles/cursor-companion.css
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (72 modules, down from 74 — the two deleted files; CSS 35.59KB / 7.69KB gzip; main JS 425.33KB / 140.67KB gzip)
+- Playwright pass against production preview: zero `.cursor-companion` elements in the DOM; `html`'s computed `cursor` resolves to the custom ink-arrow data-URI; `a` elements resolve to the yellow hover variant; `.project-card` resolves to the yellow hover variant (after the specificity fix — failed before it); zero console/page errors on `/work` and after navigating to `/`
+- visual render check (temporary HTML preview, deleted before commit): arrow silhouette reads clearly as a classic pointer with a flared tail against both a light and a dark background, and the yellow hover variant is visually distinct
+- `grep` confirmed zero remaining references to `CursorCompanion`/`cursor-companion` or `data-cursor` anywhere in `src/`
+- working-tree cleanliness: PASS — temporary Playwright/HTML preview scripts removed before staging
+
+Git:
+- commit: self (pending, see below)
+- push: pending
+
+Next:
+`R1-T05` — restructure `ProjectPage.jsx` so `ProjectStage` becomes full-width/primary with its own dedicated scroll-track, and the case study moves into a new collapsed-by-default `CaseStudyPanel` accordion. This is the largest task in the phase; plan already validated against the real code via a Plan sub-agent during the initial triage.

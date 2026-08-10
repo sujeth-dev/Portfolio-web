@@ -52,7 +52,6 @@ function ProjectScene({ project, prev, next }) {
                       className="project-meta-item project-meta-link"
                       target="_blank"
                       rel="noopener noreferrer"
-                      data-cursor="OPEN"
                     >
                       {project.urlLabel} ↗
                     </a>
@@ -66,12 +65,12 @@ function ProjectScene({ project, prev, next }) {
                 {(project.url || project.sourceUrl) && (
                   <div className="project-links-row">
                     {project.url && (
-                      <a href={project.url} className="btn btn-primary" target="_blank" rel="noopener noreferrer" data-cursor="OPEN">
+                      <a href={project.url} className="btn btn-primary" target="_blank" rel="noopener noreferrer">
                         Live Site ↗
                       </a>
                     )}
                     {project.sourceUrl && (
-                      <a href={project.sourceUrl} className="btn btn-secondary" target="_blank" rel="noopener noreferrer" data-cursor="OPEN">
+                      <a href={project.sourceUrl} className="btn btn-secondary" target="_blank" rel="noopener noreferrer">
                         Source Code ↗
                       </a>
                     )}

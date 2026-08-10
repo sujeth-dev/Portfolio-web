@@ -11,7 +11,6 @@ function DirectionLink({ project, direction }) {
       className={`project-nav__direction project-nav__direction--${direction}`}
       style={{ '--project-nav-accent': project.visual?.accent || 'var(--red)' }}
       aria-label={`${isNext ? 'Next project' : 'Previous project'}: ${project.name}`}
-      data-cursor="VIEW"
     >
       <span className="project-nav__label silkscreen">
         {isNext ? 'Next project' : 'Previous'}
@@ -43,7 +42,7 @@ export default function ProjectNav({ prev, next }) {
       aria-label="Project navigation"
     >
       <DirectionLink project={prev} direction="prev" />
-      <Link to="/work" className="project-nav__all silkscreen" data-cursor="VIEW">
+      <Link to="/work" className="project-nav__all silkscreen">
         <span className="project-nav__grid-icon" aria-hidden="true">
           <i />
           <i />

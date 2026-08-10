@@ -20,9 +20,11 @@ The user reviewed the production preview of Phases 0–4 and gave a large batch 
 
 R1-T03 done: removed `ScrollProgressIndicator`'s LED dots (`.scroll-indicator__leds`/`__led` elements and CSS, and the `currentSection`-matching logic in `getSectionMarks` that only existed to drive LED highlighting) — the track/fill/notch gauge itself is unchanged and still tracks scroll position correctly (verified 0→100 `aria-valuenow` across a full scroll on the production preview).
 
+R1-T04 done: deleted `CursorCompanion.jsx` + `cursor-companion.css` and its `AppShell` mount/import entirely; removed the now-dead `data-cursor` attributes from all 5 P4-T03 call sites (`Work.jsx`, `Lab.jsx`, `ProjectPage.jsx`, `ProjectNav.jsx`, `Nav.jsx`); removed the now-unused `--z-cursor-companion` token. Added a plain site-wide custom cursor instead — a pixel-art ink arrow with a cream outline (reads on both the light page and dark Contact section), swapping to a yellow/ink fill over links/buttons/cards, both as inline SVG data-URIs in `src/index.css`, gated behind `(hover: hover) and (pointer: fine)` so touch/mobile is unaffected. Caught and fixed a real cascade bug during verification: the hover-state selector initially lost to pre-existing plain `cursor: pointer` rules on `.project-card`/`.btn`/`.tag` etc. declared later in `index.css` (same specificity, later source wins) — fixed by adding a `body` ancestor to each selector to raise specificity above those rules regardless of source order.
+
 ## Current task
 
-**R1-T04** — delete `CursorCompanion.jsx` + `cursor-companion.css` and its `AppShell` mount entirely; add a plain custom retro-pixel CSS `cursor` (data-URI SVG) site-wide instead; remove the now-dead `data-cursor` attributes from `Work.jsx`, `Lab.jsx`, `ProjectPage.jsx`, `ProjectNav.jsx`, `Nav.jsx`.
+**R1-T05** — restructure `ProjectPage.jsx`: `ProjectStage` becomes full-width/primary (own dedicated scroll-track, decoupled from case-study height), case study becomes a new collapsed-by-default `CaseStudyPanel` accordion.
 
 ## Completed tasks
 
