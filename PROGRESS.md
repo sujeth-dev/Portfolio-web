@@ -2,7 +2,7 @@
 
 > Machine-readable-ish status snapshot. Updated after every task per `DEVELOPMENT_LOOP.md` §11. If this file and `EXECUTION_LOG.md` ever disagree, `EXECUTION_LOG.md` (append-only, chronological) wins — fix this file to match it.
 
-**Last updated:** 2026-08-10 10:33
+**Last updated:** 2026-08-10 10:37
 **Branch:** `work`
 
 ---
@@ -14,7 +14,7 @@ Status: In Progress
 
 ## Current task
 
-**P2-T01** — Rewrite `src/components/common/ScrollReveal.jsx` internals to GSAP ScrollTrigger while preserving the existing external API.
+**P2-T02** — Create `src/components/systems/VelocityEffects.jsx` and `src/styles/velocity-effects.css` with restrained skew, stretch, and lag effects that settle when scrolling stops.
 Dependency Phase 1 is complete.
 
 ## Completed tasks
@@ -31,6 +31,7 @@ Dependency Phase 1 is complete.
 - **P1-T06** — Added previous/all-work/next project navigation with an enlarged accent preview for the next case study, responsive stacking, and visible keyboard focus.
 - **P1-T07** — Restructured featured case studies into the 55/45 scrolling-content/sticky-stage scene, wired the compact header and project navigation, added the 200px mobile stage fallback, and connected all five scroll states.
 - **P1-T08** — Centralized route-aware header selection in App so featured project routes render only CompactHeader while all other routes retain the full Nav; completed the Phase 1 regression gate.
+- **P2-T01** — Migrated ScrollReveal internals from IntersectionObserver/CSS transitions to one-shot GSAP ScrollTriggers while preserving every existing prop and call site, including delay and reduced-motion behavior.
 
 (Prerequisite work — PixelRobot rollout, card-grid fixes — was already completed on `main`/`work` before this plan existed: commits `5209461` and `1475eb7`. See `EXECUTION_LOG.md` P0-T00 entry for the baseline this plan starts from.)
 
@@ -42,7 +43,7 @@ None currently active.
 
 ## Next action
 
-Start `P2-T01`: migrate ScrollReveal internals to GSAP ScrollTrigger without changing its props or any call site, then run visual regressions on every consuming page.
+Start `P2-T02`: build the reusable restrained velocity-effects wrapper and stylesheet, including full reduced-motion neutralization and settling behavior.
 
 ## Repository baseline at plan creation (2026-08-09)
 

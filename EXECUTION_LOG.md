@@ -373,3 +373,31 @@ Git:
 
 Next:
 P2-T01 — migrate ScrollReveal internals to GSAP ScrollTrigger while preserving its public API and call sites.
+
+## 2026-08-10 10:37 — P2-T01
+
+Action:
+Replaced ScrollReveal's IntersectionObserver/CSS-transition internals with a one-shot GSAP ScrollTrigger animation while preserving the existing children, className, and millisecond delay API. Reused the interaction layer's active-animation marker for bounded will-change and made reduced motion render immediately without creating a trigger.
+
+Changed:
+- src/components/common/ScrollReveal.jsx
+- src/index.css
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (CSS 30.42KB / 6.54KB gzip; main JS 418.99KB / 138.82KB gzip)
+- call-site compatibility: PASS (all existing Home, Work, Lab, About, and ProjectPage usages unchanged; 52 mounted instances exercised)
+- reveal lifecycle: PASS (off-screen hidden; triggers on entry; delays preserved; settles once; stays visible when revisited)
+- reduced motion: PASS (all reveals immediately visible, settled, and inactive on every consuming page)
+- cleanup review: PASS (GSAP context reverts on dependency change/unmount; active marker cleared)
+- browser runtime exceptions: PASS (none)
+
+Git:
+- commit: self (`P2-T01: migrate ScrollReveal to GSAP`)
+- push: SUCCESS
+
+Next:
+P2-T02 — create the reusable VelocityEffects component and restrained velocity-effects stylesheet.
