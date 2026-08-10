@@ -12,7 +12,7 @@ export default function About() {
             <ScrollReveal>
               <span className="section-label">About</span>
               <h1 style={{ fontSize: 'clamp(32px, 4vw, 48px)', marginBottom: 24 }}>
-                {meta.name}
+                The person behind the projects
               </h1>
             </ScrollReveal>
 

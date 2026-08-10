@@ -1360,3 +1360,27 @@ Git:
 
 Next:
 R2-T09 — fix About page duplicate name.
+
+## 2026-08-10 18:40 — R2-T09
+
+Action:
+Fixed About page's duplicate name. `meta.name` previously rendered twice: a standalone page `<h1>` (`About.jsx:14-16`) and inside the sticky dev card's `.dev-card-name` (`About.jsx:69`). Replaced the standalone `<h1>`'s text with a short contextual phrase ("The person behind the projects") instead, matching the established eyebrow+heading pattern already used on `Work.jsx` (`section-label` "Work" + h1 "All Projects") and `Lab.jsx` (`section-label` "Lab" + h1 "Experiments") — kept the `section-label` "About" eyebrow as-is, only the h1 content changed. `meta.name` now renders exactly once, inside `.dev-card-name`.
+
+Changed:
+- src/pages/About.jsx
+- MASTER_PLAN.md (R2-T09 marked Done)
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS
+- code review: PASS — grepped `About.jsx` for `meta.name`, exactly one remaining reference (`.dev-card-name`); confirmed the new h1 text matches the site's existing eyebrow+contextual-heading convention rather than inventing a new pattern.
+- manual/visual browser check: NOT PERFORMED this session — no browser-automation tool available. Recommend the user confirm visually via `npm run dev` on `/about`.
+
+Git:
+- commit: self (pending, see below)
+- push: pending
+
+Next:
+R2-T10 — redesign the paper-cut border using the Retro Toy reference.
