@@ -1121,3 +1121,33 @@ Git:
 
 Next:
 Resume `P6-T01` (Typography Motion) — the task `PROGRESS.md` pointed to before Phase R1 was inserted, unchanged in scope, depends only on P1 (already Done).
+
+## 2026-08-10 18:35 — P6-T01
+
+Action:
+Resumed the standing DEVELOPMENT_LOOP cycle at Phase 6 now that Phase R1 is Done, per `PROGRESS.md`'s "Current task." Created `src/components/systems/TypographyMotion.jsx` + `src/styles/typography-motion.css` per design doc §2's spec (`{ text, as, effect }` props, `effect` one of `slide-in`/`mask-reveal`/`parallax-drift`, all ScrollTrigger-scrub-driven, immediate render under reduced motion).
+
+`slide-in` and `mask-reveal` share one mechanism: `useScrollEngine` (the existing ScrollTrigger wrapper) drives a `--motion-progress` CSS custom property (0→1 as the heading scrolls from 85% down the viewport to 40%), which CSS then reads via `calc()` — `slide-in` interpolates `translateX(-48px → 0)` + `opacity(0 → 1)`, `mask-reveal` interpolates `clip-path: inset(0 100%→0% 0 0)` (reveals left-to-right). `parallax-drift` doesn't reuse this mechanism at all — instead of building a second scroll-tracking system, it calls the *existing* `useParallax` hook directly with `scrollStrength: 0.03, mouseStrength: 0, axis: 'y'`, matching the design doc's "slight translateY at 0.03x scroll speed" precisely and reusing `useParallax`'s own already-correct reduced-motion/mobile no-op logic rather than duplicating it.
+
+**A small React-hooks-rules-driven design decision worth recording:** since `effect` determines which of two different scroll-tracking hooks (`useScrollEngine` vs `useParallax`) should actually drive the element, and hooks can't be called conditionally, the component calls *both* unconditionally every render but only attaches the DOM ref to *one* of them (`revealRef` for slide-in/mask-reveal, `driftRef` for parallax-drift) depending on `effect`. Whichever hook's ref never gets attached sees a permanently-null element and no-ops harmlessly (both `useScrollEngine` and `useParallax` already guard on `if (!element) return`), so no wasted `ScrollTrigger`/GSAP tween ever gets created for the unused mechanism — confirmed this holds by reading both hooks' existing guard clauses, not assumed.
+
+Changed:
+- src/components/systems/TypographyMotion.jsx (new)
+- src/styles/typography-motion.css (new)
+- MASTER_PLAN.md (P6-T01 marked Done; added a scope note flagging that P6-T02's "Home hero mask-reveal" target no longer exists as text since R1-T01 replaced the hero name with an animated robot — decided during PLAN, not silently discovered later)
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS with the component unused anywhere yet (74 modules, identical hashes to the pre-P6-T01 build — correctly tree-shaken since nothing imports it until P6-T02)
+- Playwright pass against a **temporary** mount in `Home.jsx` (three instances, one per effect, reverted before commit — confirmed via `git diff --stat -- src/pages/Home.jsx` showing zero net change): all three render as semantic `<h2>` elements (no `<div>` substitution); at initial page load (element not yet scrolled into its reveal window) `slide-in` shows `translateX(-48px)` + `opacity: 0` and `mask-reveal` shows `clip-path: inset(0 100% 0 0)` — both genuinely start hidden, not just visually similar to hidden; after scrolling, both resolve to the fully-revealed state (`transform: none`-equivalent identity matrix, `opacity: 1`, `clip-path: inset(0 0% 0 0)`); `parallax-drift` shows a nonzero `translateY` (6px) after scrolling, confirming the reused `useParallax` mechanism is live; under `reducedMotion: 'reduce'` emulation, all three render their final/neutral state immediately at page load with no scroll needed (`transform: none`, `opacity: 1`, `clip-path: none` for the reveal effects; `transform: none` for drift, confirming `useParallax`'s own reduced-motion clear-props path fired)
+- zero console/page errors
+- working-tree cleanliness: PASS — temporary Playwright script and the temporary `Home.jsx` mount both removed/reverted before staging
+
+Git:
+- commit: self (pending, see below)
+- push: pending
+
+Next:
+`P6-T02` — apply `TypographyMotion` to section titles and selected oversized headings: `slide-in` on the Skills heading (unaffected by the R1 changes, proceeds as originally planned), plus a replacement target for the stale "Home hero mask-reveal" (see the scope note in `MASTER_PLAN.md`'s Phase 6 section — to be decided during that task's PLAN step, not guessed here).

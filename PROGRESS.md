@@ -9,8 +9,10 @@
 
 ## Current phase
 
-**Phase R1 — User Revision Round (Preview Feedback, 2026-08-10)** (`MASTER_PLAN.md` → Phase R1)
-Status: Done — all 10 tasks complete. One follow-up outside the table: `R1-T02`'s robot color pick is still awaiting the user.
+**Phase 6 — Typography Motion** (`MASTER_PLAN.md` → Phase 6)
+Status: In Progress
+
+Phase R1 — User Revision Round (Preview Feedback, 2026-08-10) is Done (10/10 tasks). One follow-up outside that table: `R1-T02`'s robot color pick is still awaiting the user; apply site-wide once chosen.
 
 The user reviewed the production preview of Phases 0–4 and gave a large batch of feedback (logo/robot treatment, removing two Phase 4 patterns they disliked, a ProjectPage visual-primary restructure, background/animation polish, an Experience collapse behavior, a missing paper-cut border). This phase was inserted ahead of Phase 6 to address it — see `MASTER_PLAN.md`'s Phase R1 table for the 10 tasks. `P6-T01` (Typography Motion) is deferred, not abandoned; resumes after Phase R1.
 
@@ -34,11 +36,15 @@ R1-T09 done: Contact section's `.bg-signal` now has a second, independently-anim
 
 R1-T10 done (last task in Phase R1): fixed the zigzag/"paper-cut" border and extended it to `Nav`, `CompactHeader`, and `Footer`. Found and fixed **two independent bugs**, not one: (1) `.zigzag`/`.zigzag-dark` painted their "teeth" using the exact same color as whatever they were erasing to (`var(--bg)` vs `var(--bg)`, and separately `var(--bg-dark)` vs `var(--ink)` — the latter pair being the literal same hex value, `#221E1C`), so both were rendering with zero contrast; fixed by giving the strip its own opaque `var(--ink)` backing (light variant) and `var(--cream)`-on-`var(--ink)` (dark variant) instead of relying on erasing to whatever's behind it. (2) Separately, `.zigzag-dark` had never had its own `width`/`height` declared, and `Home.jsx`'s Contact section rendered it as a standalone `className="zigzag-dark"` rather than combined with the base `.zigzag` class — so it was collapsing to `height: 0` regardless of the color fix. Fixed by rendering `className="zigzag zigzag-dark"` (proper base+modifier pairing). Extended the same visual treatment to `Nav` (bottom edge, replacing its flat `border-bottom`), `CompactHeader` (bottom edge, replacing its flat `border-bottom`; repositioned its accent-color underline pseudo-element from `bottom:-2px` to `bottom:-26px` so it renders below the new zigzag instead of being hidden under it), and `Footer` (top edge, replacing its flat `border-top`). All verified visible via Playwright screenshots at all 6 locations (Home hero→work, Home top-of-Contact, ProjectPage case-study divider, Nav, CompactHeader, Footer) plus a mobile (375px) pass on Nav.
 
-**Phase R1 is now fully Done** (10/10 tasks). One follow-up remains outside the task table: apply the user's eventual robot-color pick from `R1-T02`'s Artifact site-wide, once they choose. `P6-T01` (Typography Motion) resumes next.
+**Phase R1 is fully Done** (10/10 tasks). One follow-up remains outside the task table: apply the user's eventual robot-color pick from `R1-T02`'s Artifact site-wide, once they choose.
+
+**P6-T01 done:** created `src/components/systems/TypographyMotion.jsx` + `src/styles/typography-motion.css`. Props `{ text, as, effect }` per design doc §2 (`as` defaults `h2`, `effect` one of `slide-in`/`mask-reveal`/`parallax-drift`). `slide-in`/`mask-reveal` use `useScrollEngine` driving a `--motion-progress` CSS custom property (translateX+opacity for slide-in, `clip-path: inset()` for mask-reveal); `parallax-drift` reuses the existing `useParallax` hook directly (`scrollStrength: 0.03`, `mouseStrength: 0`, matching design doc's "translateY at 0.03x scroll speed") rather than building a second scroll-tracking mechanism — DRY, and `useParallax` already has its own correct reduced-motion no-op built in. Only one of two refs is ever attached to the rendered element depending on `effect`, so the unused hook naturally no-ops (its ref stays null) rather than wasting a ScrollTrigger. Reduced motion forces `progress = 1` at the component level for the reveal effects, with a CSS media-query fallback as a belt-and-suspenders safety net. Verified via a temporary mount in `Home.jsx` (all 3 effects + reduced motion), reverted before commit (`git diff --stat` confirmed zero net change).
+
+**Scope note recorded during PLAN:** P6-T02's originally-planned "Home hero mask-reveal" target no longer exists as text — `R1-T01` replaced the hero name with an animated robot icon. Noted in `MASTER_PLAN.md`'s Phase 6 section; P6-T02 will pick a different target when it runs, not guessed here.
 
 ## Current task
 
-Resume `P6-T01`: create `src/components/systems/TypographyMotion.jsx` + `src/styles/typography-motion.css` (`slide-in`/`mask-reveal`/`parallax-drift` effects per design doc §2, ScrollTrigger scrub, immediate render under reduced motion). Depends only on P1, already Done.
+**P6-T02** — apply `TypographyMotion` to section titles and selected oversized headings (Skills heading `slide-in` as originally planned; hero target substituted per the scope note above — decide and record the specific substitution during execution).
 
 ## Completed tasks
 
@@ -80,7 +86,7 @@ None currently active.
 
 ## Next action
 
-Phase R1 is Done. Start `P6-T01`: create `src/components/systems/TypographyMotion.jsx` + `src/styles/typography-motion.css` (`slide-in`/`mask-reveal`/`parallax-drift` effects per design doc §2, ScrollTrigger scrub, immediate render under reduced motion). Depends only on P1, already Done. Phase 5 stays untouched (see Blockers note). Separately, once the user picks a color from `R1-T02`'s Artifact, apply it site-wide to `PixelRobot.jsx` as a small standalone follow-up task before or alongside Phase 6 work.
+Start `P6-T02`: apply `TypographyMotion` to the Skills heading (`slide-in`, as originally planned) and pick a replacement target for the stale "Home hero mask-reveal" (see scope note above). Depends on `P6-T01`, already Done. Phase 5 stays untouched (see Blockers note). Separately, once the user picks a color from `R1-T02`'s Artifact, apply it site-wide to `PixelRobot.jsx` as a small standalone follow-up task.
 
 ## Repository baseline at plan creation (2026-08-09)
 

@@ -192,10 +192,12 @@ This means **mobile needs its own real system, not a disabled fallback.** The pl
 
 | ID | Task | Depends on | Status |
 |---|---|---|---|
-| P6-T01 | Create `src/components/systems/TypographyMotion.jsx` + `src/styles/typography-motion.css` (`slide-in`, `mask-reveal`, `parallax-drift` effects, all via ScrollTrigger scrub, immediate render under reduced motion) | P1 | Not Started |
+| P6-T01 | Create `src/components/systems/TypographyMotion.jsx` + `src/styles/typography-motion.css` (`slide-in`, `mask-reveal`, `parallax-drift` effects, all via ScrollTrigger scrub, immediate render under reduced motion) | P1 | Done |
 | P6-T02 | Apply to hero name, section titles, and the selected oversized headings named in design doc §5 (Home hero mask-reveal, Skills heading slide-in) | P6-T01 | Not Started |
 
 **Acceptance criteria:** Headings animate on scroll; body copy is unaffected; reduced motion renders immediately with no animation; semantic heading elements preserved (no `<div>` substitutions).
+
+**Scope note (adjusted 2026-08-10, `DEVELOPMENT_LOOP.md` §11):** P6-T02's "Home hero mask-reveal" target is stale. `R1-T01` (Phase R1) replaced Home's `<h1 className="hero-name">{meta.name}</h1>` with an animated robot mascot (`AnimatedPixelRobot`, wrapped in a `sr-only` span for the accessible name) — there is no visible hero name text left to apply a text-reveal effect to. P6-T02 will apply `mask-reveal` to a different oversized heading instead (candidates: the hero's `hero-desc` intro line, or `.project-name` on ProjectPage) and `slide-in` to the Skills heading as originally planned; the exact substitution will be decided and recorded when P6-T02 is executed, not guessed here.
 
 **Required tests:** `npm test`, `npm run build`, manual scroll-through of affected headings, reduced-motion check, screen-reader spot check that heading semantics are intact.
 
