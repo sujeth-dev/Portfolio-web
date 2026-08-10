@@ -50,11 +50,12 @@ export default function Work() {
             const hasPage = p.tier === 'featured'
             const Wrapper = hasPage ? Link : 'a'
             const wrapperProps = hasPage
-              ? { to: `/work/${p.slug}` }
+              ? { to: `/work/${p.slug}`, 'data-cursor': 'VIEW' }
               : {
                   href: p.url || p.sourceUrl || '#',
                   target: '_blank',
                   rel: 'noopener noreferrer',
+                  'data-cursor': 'OPEN',
                 }
 
             return (
