@@ -92,6 +92,37 @@
   opacity: 0.8;
 }
 
+/* A second, independently-animated ring layer on the parent (not the
+   GSAP-parallaxed __pattern child, whose transform this must not fight)
+   — a slow outward pulse, like a signal ping, so the circles read as
+   moving rather than a static print. */
+.bg-signal::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 253, 245, 0.07) 0,
+    rgba(255, 253, 245, 0.07) 1px,
+    transparent 1px,
+    transparent 48px
+  );
+  transform-origin: 50% 50%;
+  animation: bg-signal-pulse 12s ease-in-out infinite;
+}
+
+@keyframes bg-signal-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.18); opacity: 0.1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-signal::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
 /* ── Project page stage background (enrichment) ── */
 /* A `.bg-technical` instance scoped to ProjectStage only, via the
    `project-stage-bg` className passed from ProjectPage — layers a

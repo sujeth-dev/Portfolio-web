@@ -1056,3 +1056,27 @@ Git:
 
 Next:
 `R1-T09` — animate Contact section's `.bg-signal` ring pattern with a slow continuous drift, off under reduced motion.
+
+## 2026-08-10 17:55 — R1-T09
+
+Action:
+Animated the Contact section's background circles per the user's "I want the circles to be moving slowly" feedback on a section they'd already called "very, very beautiful." Rather than adding a CSS animation directly to `.bg-signal .section-background__pattern` (which would fight `useParallax`'s GSAP-driven inline `transform` on that same element — the exact class of bug this codebase already avoided once, per P3-T03's log entry — GSAP re-writes that element's `transform` every frame via `gsap.set`, which would fight or get fought by a class-based `@keyframes` animating the same property), added a second, independent ring layer as a `::after` pseudo-element on `.bg-signal` itself (the parent `.section-background` div, which only gets a plain React-driven `opacity` inline style, no GSAP transform). This new layer duplicates the existing repeating-radial-gradient ring pattern at lower opacity and animates its own `transform: scale()` + `opacity` in a slow 12s ease-in-out loop (`bg-signal-pulse`), reading as an outward "signal ping" — thematically apt for a section already styled as a signal/antenna motif. The original static ring layer (`__pattern` child) is completely unchanged, so nothing about the base look moved, only this added layer.
+
+Changed:
+- src/styles/section-backgrounds.css
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (74 modules; CSS 37.62KB / 7.99KB gzip; main JS 426.56KB / 140.95KB gzip)
+- Playwright pass against production preview: `.section-dark .bg-signal`'s computed `::after` has `animation-name: bg-signal-pulse` and real `content` under normal motion; under `reducedMotion: 'reduce'` emulation, `animation-name` is `none` and `opacity` is `0`
+- zero console/page errors
+
+Git:
+- commit: self (pending, see below)
+- push: pending
+
+Next:
+`R1-T10` — fix the zigzag/paper-cut border (currently invisible due to a zero-contrast color match against neighboring sections) and extend the same treatment to `Nav`/`CompactHeader` and `Footer`. Last task in Phase R1.

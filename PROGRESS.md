@@ -30,9 +30,11 @@ R1-T07 done: `.bg-open .section-background__pattern` (Home hero) now layers a se
 
 R1-T08 done: Home's `#experience` section now starts collapsed (heading + `View experience (N)` toggle only), expanding the full `.exp-list` on click. Extracted the accordion refresh timer from `CaseStudyPanel` into a shared `src/hooks/useAccordionRefresh.js` hook (now used by both) and renamed the CSS classes from `case-study-toggle`/`case-study-panel`/`case-study-panel__inner` to generic `accordion-toggle`/`accordion-panel`/`accordion-panel__inner` in `index.css` and `CaseStudyPanel.jsx`, since the pattern is now shared by two unrelated sections. Verified the rename didn't break `ProjectPage`'s existing case-study accordion.
 
+R1-T09 done: Contact section's `.bg-signal` now has a second, independently-animated ring layer (`::after` on the `.section-background` element itself, not the GSAP-parallaxed `__pattern` child — avoids fighting `useParallax`'s inline transform, same technique as R1-T06) that slowly scales up and fades (`bg-signal-pulse`, 12s ease-in-out, scale 1→1.18 / opacity 0.5→0.1) like an outward signal ping. The original static ring layer is untouched. Disabled under reduced motion.
+
 ## Current task
 
-**R1-T09** — animate Contact section's `.bg-signal` ring pattern with a slow continuous drift/rotation, off under reduced motion.
+**R1-T10** — fix the zigzag/paper-cut border (currently invisible — same-color zero-contrast bug) and extend it to `Nav`/`CompactHeader` and `Footer`.
 
 ## Completed tasks
 
