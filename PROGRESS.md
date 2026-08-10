@@ -28,7 +28,9 @@ The user reviewed the R1 preview and gave a second batch of feedback (tame + enl
 
 **R2-T05 done:** `.projects-grid`/`.secondary-grid` now use explicit 1/2/3-column breakpoints (640px/960px) instead of `auto-fill`; `.project-card-tease`/`.mini-card-desc` clamped to 3/2 lines so row heights stay consistent.
 
-**Current task: R2-T06** — fix the Contact "Let's build something" ripple (enable on mobile, replace the synchronized pulse with a real expanding-ring ripple).
+**R2-T06 done:** Contact section's ripple now shows on mobile (new opt-in `mobileOpacity` prop on `SectionBackground`, defaulted to `0` for every other caller) and uses two phase-offset expanding-and-fading ring layers instead of one synchronized pulse, at higher alpha.
+
+**Current task: R2-T07** — add curated micro-interactions to `AnimatedPixelRobot` (idle look-around, AFK/sleep + Zzz, CRT glitch, cursor-tracking eyes, hover head-bop, click expression cycling).
 
 **Phase R1 recap:** `R1-T01` approved by the user (2026-08-10). `R1-T02` done: published an Artifact (`PixelRobot — Color Study`), expanded to 10 named color combinations after the user asked for more blue/white/black options — baseline "Signal Red" + Toolbox Yellow, Systems Green, Workshop Brown, Night Ink (existing site tokens) + Blueprint Blue, Deep Navy, Sky Cyan, Ice White, Blackout (new colors, added on request, with an `outline` flag added to the SVG generator so the white option stays legible against the light stage). Human-decision checkpoint (like `P5-T00`) — **still awaiting the user's pick, not applied to any site file.** `R2-T08` will add 4 more options to this same Artifact.
 

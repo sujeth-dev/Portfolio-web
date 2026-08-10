@@ -258,7 +258,7 @@ export default function Home() {
 
       {/* ── Contact ── */}
       <section className="section-dark interaction-layer">
-        <SectionBackground theme="signal" />
+        <SectionBackground theme="signal" mobileOpacity={0.6} />
         <div className="zigzag zigzag-dark" aria-hidden="true" />
         <div className="container">
           <div className="contact-section">

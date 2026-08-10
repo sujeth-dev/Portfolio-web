@@ -1275,3 +1275,29 @@ Git:
 
 Next:
 R2-T06 — fix the Contact "Let's build something" ripple.
+
+## 2026-08-10 18:05 — R2-T06
+
+Action:
+Fixed both problems with the Contact section's background circle. (1) Mobile: added an opt-in `mobileOpacity` prop to `SectionBackground` (default `0`, so every existing caller — Home hero, Selected Work, Skills, ProjectPage — keeps its exact current mobile-disabled behavior unchanged) and passed `mobileOpacity={0.6}` only on the Contact section's `<SectionBackground theme="signal" />` call in `Home.jsx`. The static base ring layer (which lives on the `ParallaxLayer`/`.section-background__pattern` child, itself still skipped on mobile per the site's perf budget) stays desktop-only, but the animated ripple layer (which lives directly on `.bg-signal`'s own `::before`/`::after`, not that child) now renders on mobile too. (2) Motion: replaced the single `bg-signal-pulse` keyframe — one repeating-ring pattern uniformly scaling 1→1.18 and fading in place, a synchronized "breathing," not a ripple — with two phase-offset layers (`::before` + `::after`, `animation-delay: -2.5s` on the second) each independently growing from `scale(0.3)`/`opacity 0.7` out to `scale(2)`/`opacity 0` over 5s: a new ripple is always emerging as the last one fades, closer to the requested "rock dropped in water" than one uniform pulse. Raised the ring alpha `0.07`/`0.08` → `0.14` for the visibility-on-laptop half of the complaint, per the user's own suggested fix.
+
+Changed:
+- src/components/systems/SectionBackground.jsx (`mobileOpacity` prop)
+- src/pages/Home.jsx (Contact section opts in via `mobileOpacity={0.6}`)
+- src/styles/section-backgrounds.css (`bg-signal-pulse` → `bg-signal-ripple`, two-phase)
+- MASTER_PLAN.md (R2-T06 marked Done)
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (CSS 39.08KB / 8.30KB gzip)
+- code review: PASS — confirmed every other `<SectionBackground>` call site omits `mobileOpacity`, so its new default (`0`) reproduces the exact prior `isMobile ? 0 : ...` expression byte-for-byte for those callers; confirmed `.bg-signal`'s own base rule (`background: var(--bg-dark)`) and its static-pattern child rule are untouched
+- manual/visual browser check: NOT PERFORMED this session — no browser-automation tool available. Recommend the user confirm visually via `npm run dev` at a mobile viewport and on a laptop-sized viewport on the Contact section.
+
+Git:
+- commit: self (pending, see below)
+- push: pending
+
+Next:
+R2-T07 — add curated micro-interactions to AnimatedPixelRobot.

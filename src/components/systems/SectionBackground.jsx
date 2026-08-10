@@ -13,13 +13,13 @@ function crossfadeOpacity(progress, isInView) {
   return 1
 }
 
-export function SectionBackground({ theme, intensity = 1, className = '' }) {
+export function SectionBackground({ theme, intensity = 1, className = '', mobileOpacity = 0 }) {
   const { reducedMotion, isMobile } = useInteraction()
   const sectionRef = useRef(null)
   const { progress, isInView } = useSectionProgress(sectionRef)
 
   const opacity =
-    (isMobile ? 0 : reducedMotion ? 1 : crossfadeOpacity(progress, isInView)) * intensity
+    (isMobile ? mobileOpacity : reducedMotion ? 1 : crossfadeOpacity(progress, isInView)) * intensity
 
   return (
     <div

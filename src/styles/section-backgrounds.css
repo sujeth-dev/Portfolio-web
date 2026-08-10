@@ -96,31 +96,39 @@
   opacity: 0.8;
 }
 
-/* A second, independently-animated ring layer on the parent (not the
-   GSAP-parallaxed __pattern child, whose transform this must not fight)
-   — a slow outward pulse, like a signal ping, so the circles read as
-   moving rather than a static print. */
+/* A rock-dropped-in-water ripple on the parent (not the GSAP-parallaxed
+   __pattern child, whose transform this must not fight): each of two
+   layers grows outward from the center and fades as it expands, offset
+   half a cycle from the other, so a new ripple is always emerging as the
+   last one fades — distinct rings born and dying, not one pattern
+   breathing in place. */
+.bg-signal::before,
 .bg-signal::after {
   content: '';
   position: absolute;
   inset: 0;
   background-image: repeating-radial-gradient(
     circle at 50% 50%,
-    rgba(255, 253, 245, 0.07) 0,
-    rgba(255, 253, 245, 0.07) 1px,
-    transparent 1px,
+    rgba(255, 253, 245, 0.14) 0,
+    rgba(255, 253, 245, 0.14) 1.5px,
+    transparent 1.5px,
     transparent 48px
   );
   transform-origin: 50% 50%;
-  animation: bg-signal-pulse 12s ease-in-out infinite;
+  animation: bg-signal-ripple 5s ease-out infinite;
 }
 
-@keyframes bg-signal-pulse {
-  0%, 100% { transform: scale(1); opacity: 0.5; }
-  50% { transform: scale(1.18); opacity: 0.1; }
+.bg-signal::after {
+  animation-delay: -2.5s;
+}
+
+@keyframes bg-signal-ripple {
+  0% { transform: scale(0.3); opacity: 0.7; }
+  100% { transform: scale(2); opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .bg-signal::before,
   .bg-signal::after {
     animation: none;
     opacity: 0;
