@@ -859,24 +859,36 @@ h1, h2, h3, h4 {
 
 .project-scene__grid {
   display: grid;
-  grid-template-columns: minmax(0, 11fr) minmax(0, 9fr);
+  grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
-    'content stage'
-    'nav nav';
-  column-gap: clamp(24px, 4vw, 48px);
-  align-items: start;
-}
-
-.project-scroll-content {
-  grid-area: content;
-  min-width: 0;
+    'hero'
+    'stage'
+    'study'
+    'nav';
+  row-gap: clamp(24px, 4vw, 48px);
 }
 
 .project-stage-container {
   grid-area: stage;
   min-width: 0;
-  align-self: stretch;
-  padding-top: clamp(32px, 6vw, 72px);
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  .project-stage-container {
+    min-height: 360vh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-stage-container {
+    min-height: 0;
+  }
+}
+
+.project-case-study {
+  grid-area: study;
+  min-width: 0;
 }
 
 .project-scene__nav {
@@ -885,7 +897,8 @@ h1, h2, h3, h4 {
 }
 
 .project-hero {
-  padding: clamp(32px, 6vw, 72px) 0 clamp(24px, 4vw, 44px);
+  grid-area: hero;
+  padding: clamp(32px, 6vw, 72px) 0 0;
 }
 
 .project-scene__eyebrow {
@@ -985,19 +998,55 @@ h1, h2, h3, h4 {
   background: var(--bg-card);
 }
 
+/* ── Case Study Accordion ── */
+.case-study-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border: var(--border-md);
+  background: var(--bg-card);
+  color: var(--ink);
+  font-family: var(--font-label);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--duration) var(--ease-snap), box-shadow var(--duration) var(--ease-snap);
+}
+
+.case-study-toggle:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 var(--ink);
+}
+
+.case-study-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  margin-top: 20px;
+  transition: grid-template-rows 320ms var(--ease-smooth), visibility 0s 320ms;
+}
+
+.case-study-panel[data-expanded='true'] {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition: grid-template-rows 320ms var(--ease-smooth), visibility 0s;
+}
+
+.case-study-panel__inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .case-study-panel {
+    transition: none;
+  }
+}
+
 @media (max-width: 767px) {
-  .project-scene__grid {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas:
-      'stage'
-      'content'
-      'nav';
-  }
-
-  .project-stage-container {
-    padding-top: 16px;
-  }
-
   .project-hero {
     padding-top: 28px;
   }

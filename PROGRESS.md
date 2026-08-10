@@ -22,9 +22,11 @@ R1-T03 done: removed `ScrollProgressIndicator`'s LED dots (`.scroll-indicator__l
 
 R1-T04 done: deleted `CursorCompanion.jsx` + `cursor-companion.css` and its `AppShell` mount/import entirely; removed the now-dead `data-cursor` attributes from all 5 P4-T03 call sites (`Work.jsx`, `Lab.jsx`, `ProjectPage.jsx`, `ProjectNav.jsx`, `Nav.jsx`); removed the now-unused `--z-cursor-companion` token. Added a plain site-wide custom cursor instead — a pixel-art ink arrow with a cream outline (reads on both the light page and dark Contact section), swapping to a yellow/ink fill over links/buttons/cards, both as inline SVG data-URIs in `src/index.css`, gated behind `(hover: hover) and (pointer: fine)` so touch/mobile is unaffected. Caught and fixed a real cascade bug during verification: the hover-state selector initially lost to pre-existing plain `cursor: pointer` rules on `.project-card`/`.btn`/`.tag` etc. declared later in `index.css` (same specificity, later source wins) — fixed by adding a `body` ancestor to each selector to raise specificity above those rules regardless of source order.
 
+R1-T05 done: restructured `ProjectPage.jsx`'s `ProjectScene` from the 55/45 text/stage grid into a single-column stack — hero (unchanged) → full-width `ProjectStage` (now driven by a dedicated `trackRef` on `.project-stage-container`, `min-height: 360vh` desktop-only, decoupled from case-study height so the 5-state scrub never desyncs) → new `CaseStudyPanel.jsx` (collapsed-by-default accordion holding all 7 case-study sections, unchanged content, `ScrollTrigger.refresh()` on toggle) → `ProjectNav`. Verified across all 3 featured projects, desktop/mobile/reduced-motion/keyboard.
+
 ## Current task
 
-**R1-T05** — restructure `ProjectPage.jsx`: `ProjectStage` becomes full-width/primary (own dedicated scroll-track, decoupled from case-study height), case study becomes a new collapsed-by-default `CaseStudyPanel` accordion.
+**R1-T06** — enrich the project-page visual system's background (richer pattern/per-project accent on the `technical` theme instance used by `ProjectStage`'s `SectionBackground`, without touching the shared `.bg-technical` used elsewhere).
 
 ## Completed tasks
 

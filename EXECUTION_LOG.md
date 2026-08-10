@@ -940,3 +940,41 @@ Git:
 
 Next:
 `R1-T05` — restructure `ProjectPage.jsx` so `ProjectStage` becomes full-width/primary with its own dedicated scroll-track, and the case study moves into a new collapsed-by-default `CaseStudyPanel` accordion. This is the largest task in the phase; plan already validated against the real code via a Plan sub-agent during the initial triage.
+
+## 2026-08-10 17:05 — R1-T05
+
+Action:
+Restructured `ProjectPage.jsx`'s `ProjectScene` per the user's "visual system should be primary, case study secondary/collapsible" feedback, using the approach a Plan sub-agent validated against the real code during the initial triage. Collapsed the old `.project-scene__grid` (11fr/9fr two-column split: 55% scrolling case-study text / 45% sticky stage) into a single-column stack with `grid-template-areas: 'hero' 'stage' 'study' 'nav'`: hero (unchanged content, now its own grid area instead of being nested inside the text column) → `ProjectStage` full container width → new `CaseStudyPanel` accordion → `ProjectNav` (unchanged).
+
+**The key technical problem, solved as planned:** the sticky stage's scroll-driven 5-state mechanic (`useScrollEngine`, scrub-driven) previously got its scroll runway "for free" from the long case-study text column being taller than the stage. Once that text became a collapsed accordion, the stage would have almost no scroll distance to move through its 5 states. Fixed by pointing `useScrollEngine` at a new dedicated `trackRef` on `.project-stage-container` (not the whole `<section>`), and giving that container an explicit `min-height: 360vh` scoped to `@media (min-width: 768px)` only — independent of whether the accordion below it is open or closed. Reset to `min-height: 0` under `prefers-reduced-motion: reduce` (no scrub happening there, so a multi-viewport-tall empty track would just be dead scroll space) and left unset on mobile (`MobileProjectStage` doesn't consume the `scrollProgress` prop at all — confirmed by reading `ProjectStage.jsx`'s `isMobile` branch — so no mobile-specific min-height logic was needed).
+
+Created `src/components/project/CaseStudyPanel.jsx`: moved the zigzag divider + all 7 conditional case-study sections (Problem/What I Built/Highlights/Architecture/Decisions/Result/Reflection) in unchanged, wrapped in a `useState`-backed toggle (`aria-expanded`/`aria-controls`, mirroring the idiom already used by `Nav.jsx`'s hamburger), collapsed by default. The collapse mechanic uses a `grid-template-rows: 0fr → 1fr` transition + a `visibility` flip delayed to match (so collapsed content is removed from the tab order, not just visually hidden — verified this holds, see below) rather than `height: 0`/`max-height` tricks, which don't animate cleanly against intrinsic content height. Kept `VelocityEffects(skew/stretch/lag)` wrapping the case-study's inner content (previously wrapped the whole text column) — optional per the plan, kept for behavior continuity. Added a `useEffect` on the `expanded` state that calls `ScrollTrigger.refresh()` after a delay (340ms, matched to the CSS transition duration; 0ms under reduced motion, where there's no transition to wait out) — necessary because toggling shifts the height of everything below the panel (`ProjectNav`'s `ScrollReveal` trigger, any mobile `useSectionProgress` triggers), and GSAP only recomputes trigger positions on an explicit refresh, not on an arbitrary CSS-transition-driven height change.
+
+No changes were needed to `ProjectStage.jsx`, `useScrollEngine.js`, `useSectionProgress.js`, `CompactHeader.jsx`, or `ProjectNav.jsx` — confirmed per the plan's expectation.
+
+**Caught and fixed a test-harness bug during verification, not a product bug (consistent with this session's established discipline of not trusting the first anomaly):** an initial Playwright pass sampling the stage's `data-state` at 5 scroll points showed `['identity','identity','results','results','results']` — looked like the stage was skipping straight from state 1 to state 5. Before assuming a real regression, recomputed the scroll math: the test had captured the track's `boundingBox()` once *before* scrolling and kept adding that now-stale viewport-relative `y` to a moving `window.scrollY` on each iteration, compounding drift. Rewrote the check using absolute page-space coordinates matching `useScrollEngine`'s actual trigger config (`start: 'top 44px'`, `end: 'bottom bottom'`) — re-ran, and all 5 states (`identity → problem → architecture → engineering → results`) triggered correctly and in order across all 3 featured projects.
+
+Changed:
+- src/pages/ProjectPage.jsx
+- src/components/project/CaseStudyPanel.jsx (new)
+- src/index.css
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (73 modules; CSS 36.42KB / 7.80KB gzip; main JS 426.06KB / 140.85KB gzip)
+- Playwright pass against production preview across `synaptic`/`possah`/`velmont`: stage renders full container width (equal to hero width, confirming single-column layout); case-study panel starts collapsed (`data-expanded="false"`, ~0px rendered height); all 5 stage states trigger correctly in order across the dedicated scroll track (after the test-math fix above); toggling the accordion flips `aria-expanded`/`data-expanded` and grows the panel to real content height (~1450px on Synaptic); `ProjectNav` remains reachable by scrolling to the bottom with the panel open (confirms no broken layout/overflow)
+- reduced-motion pass: stage renders the final "results" state immediately; `.project-stage-container`'s `min-height` computes to `0px` (no dead empty scroll space)
+- mobile (375px) pass: `MobileProjectStage` still renders (`.project-stage--mobile` present); DOM order confirmed hero before stage before case study before nav
+- keyboard pass: `.case-study-toggle` is focusable (`tabIndex: 0`); Tab from the toggle lands on `ProjectNav`'s "All work" link in both the collapsed and expanded state — correct in both cases, since the case-study body (headings/paragraphs/lists/an inline SVG diagram) contains no interactive elements to begin with, confirmed against the actual project data fields rather than assumed
+- visual screenshot review (temporary, deleted before commit): top-of-page view confirms the stage renders large and dominant directly below the hero, exactly matching the "visual system primary" goal; scrolled/expanded view confirms case-study text, `ProjectNav`, and the footer all still render correctly below it
+- working-tree cleanliness: PASS — temporary Playwright scripts and screenshots removed before staging
+
+Git:
+- commit: self (pending, see below)
+- push: pending
+
+Next:
+`R1-T06` — enrich the project-page visual system's background (richer pattern/per-project accent on the `technical` theme instance `ProjectStage`'s `SectionBackground` uses), scoped so the shared `.bg-technical` used elsewhere on the site is untouched.
