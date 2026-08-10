@@ -108,7 +108,7 @@ This means **mobile needs its own real system, not a disabled fallback.** The pl
 |---|---|---|---|
 | P3-T01 | Create `src/hooks/useParallax.js` (layer 1/2/3 strengths per design doc §2C table; no-op on reduced-motion/mobile) | P1 | Done |
 | P3-T02 | Create `src/hooks/useSectionProgress.js` (thin ScrollTrigger wrapper for theme crossfade) | P1 | Done |
-| P3-T03 | Create `src/components/systems/ParallaxLayer.jsx` + `src/components/systems/SectionBackground.jsx` | P3-T01, P3-T02 | Not Started |
+| P3-T03 | Create `src/components/systems/ParallaxLayer.jsx` + `src/components/systems/SectionBackground.jsx` | P3-T01, P3-T02 | Done |
 | P3-T04 | Create `src/styles/section-backgrounds.css` with all 5 themes: `.bg-open`, `.bg-technical`, `.bg-messy`, `.bg-warm`, `.bg-signal` | P3-T03 | Not Started |
 | P3-T05 | Add backgrounds to project pages first (validate), then Home page sections per design doc §5 table | P3-T04 | Not Started |
 | P3-T06 | Build the mobile scroll-driven `ProjectStage`: non-sticky, inline layout (no split/pin), state transitions (identity → problem → architecture → engineering → results) driven by `useSectionProgress` scroll position instead of desktop's pin+scrub; lighter parallax (single layer or none per perf budget) via `useParallax`'s mobile path; replaces the static 200px illustration strip from P1-T07. Update `docs/FUTURE-ENVIRONMENT-LAYER.md` mobile section to match. | P3-T02, P3-T01, P1-T07 | Not Started |

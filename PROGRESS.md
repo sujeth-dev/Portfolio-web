@@ -2,7 +2,7 @@
 
 > Machine-readable-ish status snapshot. Updated after every task per `DEVELOPMENT_LOOP.md` §11. If this file and `EXECUTION_LOG.md` ever disagree, `EXECUTION_LOG.md` (append-only, chronological) wins — fix this file to match it.
 
-**Last updated:** 2026-08-10 11:05
+**Last updated:** 2026-08-10 11:12
 **Branch:** `work`
 
 ---
@@ -14,8 +14,8 @@ Status: In Progress
 
 ## Current task
 
-**P3-T03** — Create `src/components/systems/ParallaxLayer.jsx` + `src/components/systems/SectionBackground.jsx`.
-Dependencies P3-T01, P3-T02 are both complete.
+**P3-T04** — Create `src/styles/section-backgrounds.css` with all 5 themes: `.bg-open`, `.bg-technical`, `.bg-messy`, `.bg-warm`, `.bg-signal`.
+Dependency P3-T03 is complete.
 
 ## Completed tasks
 
@@ -36,6 +36,7 @@ Dependencies P3-T01, P3-T02 are both complete.
 - **P2-T03** — Applied combined restrained velocity response to the project narrative and lag-only response to all four Home skill-group cards; confirmed the planned Thoughts target has no current Home section or call site.
 - **P3-T01** — Added `useParallax.js`: layer 1/2/3 mouse/scroll strengths per design doc §2C, GSAP-driven `translate3d`-equivalent offset via `gsap.set`, no-op with transform cleared on reduced-motion/mobile.
 - **P3-T02** — Added `useSectionProgress.js`: thin ScrollTrigger wrapper per design doc §2E returning `{ progress, isInView }`, for the background system's theme crossfade.
+- **P3-T03** — Added `ParallaxLayer.jsx` (layer-indexed wrapper applying `useParallax`) and `SectionBackground.jsx` (per-section themed container that crossfades opacity via `useSectionProgress`, stays static under reduced motion, and disables its visual output — while keeping its scroll-tracking ref mounted — on mobile). Added minimal `.section-background` base positioning to `interaction-layer.css`; the 5 theme fills remain P3-T04's scope.
 
 (Prerequisite work — PixelRobot rollout, card-grid fixes — was already completed on `main`/`work` before this plan existed: commits `5209461` and `1475eb7`. See `EXECUTION_LOG.md` P0-T00 entry for the baseline this plan starts from.)
 
@@ -47,7 +48,7 @@ None currently active.
 
 ## Next action
 
-Start `P3-T03`: create `ParallaxLayer.jsx` and `SectionBackground.jsx`, consuming `useParallax` and `useSectionProgress`.
+Start `P3-T04`: create `src/styles/section-backgrounds.css` with the 5 theme classes and mouse-responsive transforms consumed by `SectionBackground`.
 
 ## Repository baseline at plan creation (2026-08-09)
 

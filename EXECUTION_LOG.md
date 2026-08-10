@@ -509,3 +509,31 @@ Git:
 
 Next:
 P3-T03 — create `ParallaxLayer.jsx` and `SectionBackground.jsx`.
+
+## 2026-08-10 11:12 — P3-T03
+
+Action:
+Created `ParallaxLayer.jsx`, a thin `layer`-indexed wrapper that attaches `useParallax` to a ref and maps layer 1/2/3 to the existing `--z-bg`/`--z-env`/`--z-fg` stacking tokens, reusing the `.parallax-layer` positioning class already defined in `interaction-layer.css`. Created `SectionBackground.jsx`, a per-section themed container: it always mounts its ref-bearing div (so `useSectionProgress` keeps working correctly across responsive breakpoint changes, avoiding a stale-closure hook-never-reattaches bug), crossfades opacity across its own scroll pass using `useSectionProgress`'s progress/isInView, forces static full opacity under reduced motion, and suppresses its theme class, pattern layer, and opacity (rather than unmounting) on mobile per the design doc's §9 "section backgrounds disabled on mobile" rule. Added a minimal `.section-background` base-positioning rule (and its reduced-motion override) to `interaction-layer.css`, since that file is explicitly scoped for base system/positioning styles; left all 5 `.bg-*` theme fills for P3-T04 as planned.
+
+Changed:
+- src/components/systems/ParallaxLayer.jsx
+- src/components/systems/SectionBackground.jsx
+- src/styles/interaction-layer.css
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (JS bundle unchanged — neither component consumed yet; CSS 30.95KB / 6.65KB gzip, +0.15KB from the new base rule)
+- direct component bundle check: PASS (`esbuild`, browser ESM, both components)
+- props/behavior review vs §3 spec: PASS (ParallaxLayer: `{ layer, className, style, children }`, correct z-index, pointer-events none via existing class; SectionBackground: `{ theme }`, layer-1 parallax pattern, crossfade via `useSectionProgress`)
+- reduced-motion/mobile review: PASS (reduced motion → opacity 1 static, no transition; mobile → opacity 0, no theme class, no pattern layer, ref still mounted)
+- task-specific manual/visual checks: not applicable until P3-T05 mounts `SectionBackground` on real pages
+
+Git:
+- commit: self (`P3-T03: add parallax layer and section background`)
+- push: SUCCESS
+
+Next:
+P3-T04 — create `src/styles/section-backgrounds.css` with all 5 themes.

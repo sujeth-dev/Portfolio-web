@@ -32,6 +32,15 @@
   transform: translate3d(0, 0, 0);
 }
 
+.section-background {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-bg);
+  pointer-events: none;
+  contain: layout style paint;
+  transition: opacity 0.6s ease;
+}
+
 [data-interaction-active='true'] {
   will-change: transform, opacity;
 }
@@ -52,6 +61,7 @@
   }
 
   .parallax-layer,
+  .section-background,
   [data-interaction-active='true'] {
     animation: none !important;
     transition: none !important;
