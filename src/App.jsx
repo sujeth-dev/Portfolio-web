@@ -11,7 +11,10 @@ import About from './pages/About'
 import NotFound from './pages/NotFound'
 import { useScrollTop } from './hooks/useScrollTop'
 import { InteractionProvider } from './systems/InteractionProvider'
+import { useInteraction } from './systems/InteractionContext'
 import { getBySlug } from './data/projects'
+import CursorCompanion from './components/systems/CursorCompanion'
+import ScrollProgressIndicator from './components/systems/ScrollProgressIndicator'
 
 function getFeaturedProject(pathname) {
   if (!pathname.startsWith('/work/')) return null
@@ -30,17 +33,18 @@ function getPageTitle(pathname) {
   return 'Page Not Found — Sujeth A S'
 }
 
-export default function App() {
+function AppShell() {
   const location = useLocation()
   const activeProject = getFeaturedProject(location.pathname)
-  useScrollTop(location.pathname)
+  const { lenisRef } = useInteraction()
+  useScrollTop(location.pathname, lenisRef.current)
 
   useEffect(() => {
     document.title = getPageTitle(location.pathname)
   }, [location.pathname])
 
   return (
-    <InteractionProvider>
+    <>
       {activeProject ? (
         <CompactHeader
           breadcrumb={`WORK / ${activeProject.name.toUpperCase()}`}
@@ -49,6 +53,8 @@ export default function App() {
       ) : (
         <Nav />
       )}
+      <CursorCompanion />
+      <ScrollProgressIndicator key={location.pathname} />
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -60,6 +66,14 @@ export default function App() {
         </Routes>
       </main>
       <Footer />
+    </>
+  )
+}
+
+export default function App() {
+  return (
+    <InteractionProvider>
+      <AppShell />
     </InteractionProvider>
   )
 }
