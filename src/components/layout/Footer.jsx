@@ -5,6 +5,7 @@ import { meta } from '../../data/meta'
 export default function Footer() {
   return (
     <footer className="footer">
+      <div className="zigzag footer__zigzag" aria-hidden="true" />
       <div className="footer-inner">
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <PixelRobot size={20} />

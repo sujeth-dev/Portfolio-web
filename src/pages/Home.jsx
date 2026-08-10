@@ -297,7 +297,7 @@ export default function Home() {
       {/* ── Contact ── */}
       <section className="section-dark interaction-layer">
         <SectionBackground theme="signal" />
-        <div className="zigzag-dark" />
+        <div className="zigzag zigzag-dark" aria-hidden="true" />
         <div className="container">
           <div className="contact-section">
             <ScrollReveal>

@@ -290,25 +290,54 @@ h1, h2, h3, h4 {
   opacity: 0.85;
 }
 
-/* ── Zigzag Separator ── */
+/* ── Zigzag Separator (paper-cut border) ── */
+/* Previously alternated a wash color against `transparent`, letting whatever
+   sat behind the strip show through the gaps. That only reads as a torn
+   edge if the surrounding sections happen to differ in color from the
+   wash — several call sites sit between two sections that are both
+   `var(--bg)`, so the strip was rendering with zero contrast (invisible).
+   Fixed by giving the strip its own opaque ink backing instead of relying
+   on page context: the wash color now paints the "teeth," ink fills the
+   gaps between them, so the torn edge is always visible regardless of
+   what's on either side. */
 .zigzag {
   width: 100%;
   height: 24px;
   background:
     linear-gradient(135deg, var(--bg) 33.33%, transparent 33.33%) 0 0,
-    linear-gradient(225deg, var(--bg) 33.33%, transparent 33.33%) 0 0;
-  background-size: 24px 24px;
+    linear-gradient(225deg, var(--bg) 33.33%, transparent 33.33%) 0 0,
+    var(--ink);
+  background-size: 24px 24px, 24px 24px, 100% 100%;
   background-position: top;
   background-repeat: repeat-x;
 }
 
 .zigzag-dark {
   background:
-    linear-gradient(135deg, var(--bg-dark) 33.33%, transparent 33.33%) 0 0,
-    linear-gradient(225deg, var(--bg-dark) 33.33%, transparent 33.33%) 0 0;
-  background-size: 24px 24px;
+    linear-gradient(135deg, var(--cream) 33.33%, transparent 33.33%) 0 0,
+    linear-gradient(225deg, var(--cream) 33.33%, transparent 33.33%) 0 0,
+    var(--ink);
+  background-size: 24px 24px, 24px 24px, 100% 100%;
   background-position: top;
   background-repeat: repeat-x;
+}
+
+/* Positioned variants overlaying the sticky header / static footer edges,
+   replacing their old flat `border-bottom`/`border-top`. */
+.nav__zigzag,
+.compact-header__zigzag {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -24px;
+  z-index: 1;
+}
+
+.footer__zigzag {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -24px;
 }
 
 /* ── LED Indicator ── */
@@ -345,7 +374,6 @@ h1, h2, h3, h4 {
   top: 0;
   z-index: 100;
   background: var(--bg);
-  border-bottom: var(--border-md);
   padding: 0 clamp(16px, 4vw, 48px);
 }
 
@@ -816,7 +844,7 @@ h1, h2, h3, h4 {
 
 /* ── Footer ── */
 .footer {
-  border-top: var(--border-md);
+  position: relative;
   padding: 32px clamp(16px, 4vw, 48px);
 }
 

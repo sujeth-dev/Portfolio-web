@@ -103,6 +103,7 @@ export default function Nav() {
             <span style={open ? { transform: 'rotate(-45deg) translate(4px, -4px)' } : {}} />
           </button>
         </div>
+        <div className="zigzag nav__zigzag" aria-hidden="true" />
       </nav>
 
       <div id="mobile-navigation" className={`mobile-menu${open ? ' open' : ''}`} aria-hidden={!open}>

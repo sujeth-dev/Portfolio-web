@@ -1080,3 +1080,44 @@ Git:
 
 Next:
 `R1-T10` — fix the zigzag/paper-cut border (currently invisible due to a zero-contrast color match against neighboring sections) and extend the same treatment to `Nav`/`CompactHeader` and `Footer`. Last task in Phase R1.
+
+## 2026-08-10 18:15 — R1-T10 (Phase R1 complete)
+
+Action:
+Fixed the "paper-cut" (zigzag) border and extended it to `Nav`, `CompactHeader`, and `Footer`, per the user's feedback that it "used to be there" between sections and should also appear in the header/footer. This was the last task in Phase R1.
+
+**Found and fixed two independent, compounding bugs, not one — caught by verifying each of the 6 target locations individually rather than assuming a single fix covered all of them (DEVELOPMENT_LOOP.md §5 FIX discipline, two genuinely separate root causes):**
+
+1. **Zero-contrast color bug (root cause identified during the original Phase R1 triage, fixed here):** `.zigzag`/`.zigzag-dark` painted "teeth" by alternating a wash color against literal `transparent`, letting whatever sat behind the strip show through the gaps. This only reads as a torn edge if the strip's wash color differs from whatever's actually behind it — which wasn't true at any of the original call sites: `.zigzag` sat between two `var(--bg)` sections (Home hero → Selected Work), and separately `.zigzag-dark` used `var(--bg-dark)` against a `var(--ink)` erase target, and those two tokens are the exact same hex value (`#221E1C`) in `index.css`'s `:root` block. Both were rendering with zero contrast — fully invisible, not styled-wrong. Fixed by giving the strip its own opaque backing instead of relying on page context: `.zigzag` now layers `var(--bg)` teeth over a `var(--ink)` base (`background: linear-gradient(...), linear-gradient(...), var(--ink)`, three comma-separated layers — the last being a plain color is valid CSS `background` shorthand syntax, resolving to `background-image: none` for that layer and `background-color: var(--ink)` for the box); `.zigzag-dark` uses `var(--cream)` teeth over the same `var(--ink)` base (switched from `var(--bg-dark)`, which — being identical to `--ink` — would have re-created the exact same invisibility bug in the new design).
+
+2. **A second, previously-undiscovered bug found while verifying the Contact section specifically:** `.zigzag-dark` never had its own `width`/`height` declared in CSS (only background-related properties) — the original design intent was for it to be combined with the base `.zigzag` class (which has `width: 100%; height: 24px`), but `Home.jsx`'s Contact section rendered it standalone (`className="zigzag-dark"` only). Direct DOM inspection during verification showed `getBoundingClientRect().height === 0` even after the color fix — the element was present and correctly styled, just permanently zero-height, so nothing could ever render regardless of the color contrast. Fixed by changing the JSX to `className="zigzag zigzag-dark"` (proper base+modifier class pairing, matching how modifier classes are used elsewhere in this codebase, e.g. `.badge`/`.badge-live`).
+
+Extended the fixed, contrast-safe pattern to three new locations (not restorations — the design doc never had these): `Nav` (`.nav__zigzag`, absolutely positioned at the sticky header's bottom edge, replacing its flat `border-bottom`), `CompactHeader` (`.compact-header__zigzag`, same treatment, also replacing its flat `border-bottom`), and `Footer` (`.footer__zigzag`, positioned at the top edge, replacing its flat `border-top`, which required adding `position: relative` to `.footer` since it had no positioning context before). `CompactHeader`'s existing accent-color underline pseudo-element (`::after`, previously at `bottom: -2px`) had to be repositioned to `bottom: -26px` — it would otherwise sit inside the new 24px-tall zigzag strip's vertical range and render underneath it (zigzag has `z-index: 1`, the underline had no explicit z-index), hiding the accent color entirely; moved it to render just below the torn edge instead.
+
+Changed:
+- src/index.css
+- src/styles/compact-header.css
+- src/components/layout/Nav.jsx
+- src/components/layout/CompactHeader.jsx
+- src/components/layout/Footer.jsx
+- src/pages/Home.jsx
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (74 modules; CSS 37.76KB / 8.03KB gzip; main JS 426.82KB / 140.99KB gzip)
+- Playwright + screenshot verification against the production preview at all 6 locations: Home hero→Selected Work divider (visible ink/cream zigzag), Home top-of-Contact divider (visible cream/ink zigzag, confirmed only after finding and fixing bug #2 above — a first-pass screenshot after only the color fix still showed a flat boundary, which is what led to the `getBoundingClientRect()` check that caught the height:0 issue), ProjectPage's case-study divider (same `.zigzag` class already verified via 3 other locations, confirmed present), `Nav` (visible, sticky, persists on scroll), `CompactHeader` (visible, accent underline correctly repositioned below it, confirmed via screenshot showing both elements distinctly), `Footer` (visible at page bottom)
+- mobile (375px) pass: `.nav__zigzag` renders correctly at the same 24px height, visually confirmed via screenshot
+- zero console/page errors across all checks
+- working-tree cleanliness: PASS — temporary Playwright scripts and screenshots removed before staging
+
+Git:
+- commit: self (pending, see below)
+- push: pending
+
+**Phase R1 is now fully Done (10/10 tasks).** One follow-up remains outside the task table: once the user picks a color from `R1-T02`'s still-open Artifact, apply it site-wide to `PixelRobot.jsx`'s hard-coded hex fills as a small standalone task.
+
+Next:
+Resume `P6-T01` (Typography Motion) — the task `PROGRESS.md` pointed to before Phase R1 was inserted, unchanged in scope, depends only on P1 (already Done).

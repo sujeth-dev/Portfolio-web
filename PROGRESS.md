@@ -10,7 +10,7 @@
 ## Current phase
 
 **Phase R1 — User Revision Round (Preview Feedback, 2026-08-10)** (`MASTER_PLAN.md` → Phase R1)
-Status: In Progress
+Status: Done — all 10 tasks complete. One follow-up outside the table: `R1-T02`'s robot color pick is still awaiting the user.
 
 The user reviewed the production preview of Phases 0–4 and gave a large batch of feedback (logo/robot treatment, removing two Phase 4 patterns they disliked, a ProjectPage visual-primary restructure, background/animation polish, an Experience collapse behavior, a missing paper-cut border). This phase was inserted ahead of Phase 6 to address it — see `MASTER_PLAN.md`'s Phase R1 table for the 10 tasks. `P6-T01` (Typography Motion) is deferred, not abandoned; resumes after Phase R1.
 
@@ -32,9 +32,13 @@ R1-T08 done: Home's `#experience` section now starts collapsed (heading + `View 
 
 R1-T09 done: Contact section's `.bg-signal` now has a second, independently-animated ring layer (`::after` on the `.section-background` element itself, not the GSAP-parallaxed `__pattern` child — avoids fighting `useParallax`'s inline transform, same technique as R1-T06) that slowly scales up and fades (`bg-signal-pulse`, 12s ease-in-out, scale 1→1.18 / opacity 0.5→0.1) like an outward signal ping. The original static ring layer is untouched. Disabled under reduced motion.
 
+R1-T10 done (last task in Phase R1): fixed the zigzag/"paper-cut" border and extended it to `Nav`, `CompactHeader`, and `Footer`. Found and fixed **two independent bugs**, not one: (1) `.zigzag`/`.zigzag-dark` painted their "teeth" using the exact same color as whatever they were erasing to (`var(--bg)` vs `var(--bg)`, and separately `var(--bg-dark)` vs `var(--ink)` — the latter pair being the literal same hex value, `#221E1C`), so both were rendering with zero contrast; fixed by giving the strip its own opaque `var(--ink)` backing (light variant) and `var(--cream)`-on-`var(--ink)` (dark variant) instead of relying on erasing to whatever's behind it. (2) Separately, `.zigzag-dark` had never had its own `width`/`height` declared, and `Home.jsx`'s Contact section rendered it as a standalone `className="zigzag-dark"` rather than combined with the base `.zigzag` class — so it was collapsing to `height: 0` regardless of the color fix. Fixed by rendering `className="zigzag zigzag-dark"` (proper base+modifier pairing). Extended the same visual treatment to `Nav` (bottom edge, replacing its flat `border-bottom`), `CompactHeader` (bottom edge, replacing its flat `border-bottom`; repositioned its accent-color underline pseudo-element from `bottom:-2px` to `bottom:-26px` so it renders below the new zigzag instead of being hidden under it), and `Footer` (top edge, replacing its flat `border-top`). All verified visible via Playwright screenshots at all 6 locations (Home hero→work, Home top-of-Contact, ProjectPage case-study divider, Nav, CompactHeader, Footer) plus a mobile (375px) pass on Nav.
+
+**Phase R1 is now fully Done** (10/10 tasks). One follow-up remains outside the task table: apply the user's eventual robot-color pick from `R1-T02`'s Artifact site-wide, once they choose. `P6-T01` (Typography Motion) resumes next.
+
 ## Current task
 
-**R1-T10** — fix the zigzag/paper-cut border (currently invisible — same-color zero-contrast bug) and extend it to `Nav`/`CompactHeader` and `Footer`.
+Resume `P6-T01`: create `src/components/systems/TypographyMotion.jsx` + `src/styles/typography-motion.css` (`slide-in`/`mask-reveal`/`parallax-drift` effects per design doc §2, ScrollTrigger scrub, immediate render under reduced motion). Depends only on P1, already Done.
 
 ## Completed tasks
 
@@ -76,7 +80,7 @@ None currently active.
 
 ## Next action
 
-Start `R1-T01` (see Current task above). After it clears its human-approval checkpoint, proceed to `R1-T02` (robot color recommendations, publish-and-move-on) then `R1-T03`..`R1-T10` in the order recorded in `MASTER_PLAN.md`'s Phase R1 table. `P6-T01` (Typography Motion, unchanged scope) resumes once Phase R1 is Done. Phase 5 stays untouched (see Blockers note).
+Phase R1 is Done. Start `P6-T01`: create `src/components/systems/TypographyMotion.jsx` + `src/styles/typography-motion.css` (`slide-in`/`mask-reveal`/`parallax-drift` effects per design doc §2, ScrollTrigger scrub, immediate render under reduced motion). Depends only on P1, already Done. Phase 5 stays untouched (see Blockers note). Separately, once the user picks a color from `R1-T02`'s Artifact, apply it site-wide to `PixelRobot.jsx` as a small standalone follow-up task before or alongside Phase 6 work.
 
 ## Repository baseline at plan creation (2026-08-09)
 

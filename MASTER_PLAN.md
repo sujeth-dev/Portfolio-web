@@ -144,7 +144,7 @@ This means **mobile needs its own real system, not a disabled fallback.** The pl
 
 **Goal:** Address a batch of feedback the user gave after reviewing the production preview of Phases 0–4, before continuing to Phase 6. Recorded per `DEVELOPMENT_LOOP.md` §11 ("this file is allowed to evolve"). Full triage context, investigation findings, and the Plan-agent validation for R1-T05 live in the approved plan at the time this phase was added; summarized here for execution.
 **Depends on:** P0–P4 done (all satisfied). Independent of Phase 6 — this phase is simply prioritized ahead of it in execution order per the user's explicit request.
-**Status:** In Progress
+**Status:** All 10 tasks Done. One follow-up remains outside this table: `R1-T02`'s robot color-combination Artifact is still awaiting the user's pick — a site-wide palette swap will be a small follow-up task once they choose. Phase 6 resumes next.
 
 | ID | Task | Depends on | Status |
 |---|---|---|---|
@@ -157,7 +157,7 @@ This means **mobile needs its own real system, not a disabled fallback.** The pl
 | R1-T07 | Make Home hero's `.bg-open` background livelier: add a second dot layer at a different scale + a slow continuous ambient `@keyframes` drift, off under reduced motion. | — | Done |
 | R1-T08 | Home's `#experience` section starts collapsed (heading + toggle only) and expands the full `.exp-list` on click, via the same accordion idiom as R1-T05. | — | Done |
 | R1-T09 | Animate Contact section's `.bg-signal` ring pattern with a slow continuous drift/rotation, off under reduced motion. | — | Done |
-| R1-T10 | Fix the zigzag/"paper-cut" border (currently invisible — `.zigzag`/`.zigzag-dark` alternate `var(--bg)` against sections that are also `var(--bg)`, a zero-contrast no-op) so it reads as a visible torn edge regardless of neighboring section color; extend the same treatment to `Nav`/`CompactHeader` (bottom edge) and `Footer` (top edge). | — | Not Started |
+| R1-T10 | Fix the zigzag/"paper-cut" border (currently invisible — `.zigzag`/`.zigzag-dark` alternate `var(--bg)` against sections that are also `var(--bg)`, a zero-contrast no-op) so it reads as a visible torn edge regardless of neighboring section color; extend the same treatment to `Nav`/`CompactHeader` (bottom edge) and `Footer` (top edge). | — | Done |
 
 **Acceptance criteria (phase-level):** All ten tasks' individual acceptance criteria met; no regression to Phases 0–4's existing acceptance criteria; `npm test`/`npm run build` clean throughout; reduced-motion and mobile (375px) regressions checked wherever a task touches animation/layout (R1-T01, T05–T10).
 

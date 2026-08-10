@@ -32,6 +32,7 @@ export default function CompactHeader({
           Project file
         </span>
       </div>
+      <div className="zigzag compact-header__zigzag" aria-hidden="true" />
     </header>
   )
 }
