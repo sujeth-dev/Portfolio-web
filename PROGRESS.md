@@ -2,7 +2,7 @@
 
 > Machine-readable-ish status snapshot. Updated after every task per `DEVELOPMENT_LOOP.md` §11. If this file and `EXECUTION_LOG.md` ever disagree, `EXECUTION_LOG.md` (append-only, chronological) wins — fix this file to match it.
 
-**Last updated:** 2026-08-10 14:05
+**Last updated:** 2026-08-10 14:40
 **Branch:** `work`
 
 ---
@@ -10,12 +10,12 @@
 ## Current phase
 
 **Phase 4 — Cursor Companion + Scroll Progress** (`MASTER_PLAN.md` → Phase 4)
-Status: In Progress
+Status: Done
 
 ## Current task
 
-**P4-T04** — Mount `CursorCompanion` + `ScrollProgressIndicator` in `src/App.jsx`.
-Dependencies P4-T01 and P4-T02 are both complete. This is Phase 4's last task — after it, re-check the phase's combined acceptance criteria. (Phase 6, P1-only dependency, remains eligible in parallel — see MASTER_PLAN.md's phase dependency graph.)
+**P6-T01** — Create `src/components/systems/TypographyMotion.jsx` + `src/styles/typography-motion.css`.
+Dependency P1 is complete. Phase 5 is intentionally skipped for now: `P5-T00` is explicitly named in `DEVELOPMENT_LOOP.md` §2 as a task this loop must never guess on, even though a robot decision is already recorded (see Blockers below) — it stays untouched pending explicit human sign-off, not silently executed.
 
 ## Completed tasks
 
@@ -43,6 +43,7 @@ Dependencies P4-T01 and P4-T02 are both complete. This is Phase 4's last task �
 - **P4-T01** — Added `CursorCompanion.jsx` + `cursor-companion.css`: a fixed-position label pill lerping toward the mouse (factor 0.15, own independent tracking) that shows the hovered element's `data-cursor` value. Used document-level `mouseenter`/`mouseleave` (capture phase) with a direct `dataset.cursor` check rather than `closest()`, so hovering a nested child inside a `data-cursor` element doesn't flicker the label — `mouseleave` on a child would resolve to the same ancestor via `closest()` and incorrectly clear it. Renders nothing (not just hidden) on mobile or under reduced motion. Verified via a temporary mount in `App.jsx`/`Nav.jsx` (reverted before commit, confirmed via empty `git diff`) plus Playwright hover/reduced-motion/mobile checks; mounting the component for real is P4-T04 and rolling out `data-cursor` attributes site-wide is P4-T03.
 - **P4-T02** — Added `ScrollProgressIndicator.jsx` + `scroll-indicator.css`: a fixed right-side Retro Toy gauge (`role="progressbar"` + `aria-label`/`aria-valuemin`/`aria-valuemax`/`aria-valuenow`) with one tick notch and one LED dot per detected page section, positioned by scroll-top fraction. Robot marker deferred to P5-T03 per this plan. Renders nothing (not just hidden) under mobile/reduced-motion, matching `CursorCompanion`'s pattern — justified further since `InteractionProvider` permanently zeroes `scrollProgress` under reduced motion, so a "live" gauge there would be misleading. **Caught and fixed a real bug during verification**: initial section-id generation appended an index suffix for React-key uniqueness, which silently broke matching against `InteractionProvider`'s own (suffix-free) `currentSection` value for any section lacking a stable `id` — the active LED was `undefined` the whole time despite the track/fill rendering correctly. Fixed by computing the match-id with the exact same fallback chain as `InteractionProvider` and using a separate suffixed value only for the React `key`. Caught via direct DOM inspection (Playwright), not a screenshot, which would have looked identical either way.
 - **P4-T03** — Rolled out `data-cursor` attributes: `VIEW` on internal case-study/navigation links (Work featured cards, ProjectNav prev/next/all-work), `OPEN` on everything opening an external destination (Work secondary/other cards, ProjectPage live-site/source/meta links, Nav resume/GitHub/LinkedIn), `TRY`/`EXPLORE` split on Lab cartridges by whether the entry has a live `url`. `PLAY` deliberately left unused — no embedded/playable content exists on the site today. Design doc only explicitly named `VIEW` (Work cards) and `TRY`/`EXPLORE` (Lab); the rest are documented judgment calls. **Caught a false-positive during verification, not a real bug**: an initial hover test using manual mouse coordinates reported several cards/links as unlabeled; a direct DOM attribute audit proved every `data-cursor` value was actually correct — the real issue was off-screen elements and `mouse.move()` not auto-scrolling. Fixed the test (switched to `.hover()`, which does), not the product.
+- **P4-T04** — Mounted both `CursorCompanion` and `ScrollProgressIndicator` for real, inside a new `AppShell` component rendered as `InteractionProvider`'s child (so it can consume `useInteraction()`, which `App` itself cannot — it's the one instantiating the provider). `ScrollProgressIndicator` is `key={location.pathname}`-ed so it recomputes section marks on every route change. **Caught and fixed a real, pre-existing bug**, only surfaced because this is the first task to exercise a live UI consumer of `scrollProgress` across an actual client-side route change: `useScrollTop`'s native `window.scrollTo(0, 0)` doesn't inform Lenis's internal scroll state, so Lenis's own `raf()` loop was snapping the page back to its last virtual position on the very next frame — the gauge stayed stuck at the previous page's scroll percentage. Fixed by giving `useScrollTop` the live Lenis instance and calling `lenis.scrollTo(0, { immediate: true })` when one exists (verified synchronous via `lenis.mjs` source), falling back to native `scrollTo` under reduced motion where no Lenis instance is ever created. Phase 4's full combined acceptance criteria block re-verified against a production build afterward — all 5 items pass. **Phase 4 is now fully Done.**
 
 (Prerequisite work — PixelRobot rollout, card-grid fixes — was already completed on `main`/`work` before this plan existed: commits `5209461` and `1475eb7`. See `EXECUTION_LOG.md` P0-T00 entry for the baseline this plan starts from.)
 
@@ -56,7 +57,7 @@ None currently active.
 
 ## Next action
 
-Start `P4-T04`: mount `CursorCompanion` + `ScrollProgressIndicator` in `src/App.jsx` for real (depends on `P4-T01`/`P4-T02`, both Done). This is Phase 4's last task — after mounting, re-verify the phase's combined acceptance criteria block against actual live UI (cursor labels over every `data-cursor` element and nowhere else, gauge tracking + LED activation, both hidden below 768px/reduced motion, ARIA present) before marking Phase 4 Done.
+Start `P6-T01`: create `src/components/systems/TypographyMotion.jsx` + `src/styles/typography-motion.css` (`slide-in`/`mask-reveal`/`parallax-drift` effects per design doc §2, ScrollTrigger scrub, immediate render under reduced motion). Depends only on P1, already Done. Phase 5 stays untouched (see Current task note).
 
 ## Repository baseline at plan creation (2026-08-09)
 

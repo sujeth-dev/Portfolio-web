@@ -740,4 +740,43 @@ Git:
 
 Next:
 P4-T04 — mount `CursorCompanion` + `ScrollProgressIndicator` in `src/App.jsx` (depends on P4-T01 and P4-T02, both Done). This is the last task in Phase 4 — after it, re-check Phase 4's combined acceptance criteria block.
+
+## 2026-08-10 14:40 — P4-T04
+
+Action:
+Mounted both `CursorCompanion` and `ScrollProgressIndicator` for real. `App` itself renders `<InteractionProvider>`, so it cannot call `useInteraction()` on its own context — split its body into a new internal `AppShell` component rendered as `InteractionProvider`'s child, which does the actual rendering (header selection, both new systems, `<Routes>`, `Footer`) and can consume the context. `ScrollProgressIndicator` is given `key={location.pathname}` so it fully remounts (and recomputes its section marks) on every client-side route change, rather than staying keyed to whatever page first mounted it.
+
+**Caught and fixed a real, pre-existing bug during verification (DEVELOPMENT_LOOP.md §5 FIX, attempt 1 of 3, genuinely new root cause), only surfaced because this task is the first to actually exercise the interaction system across a live client-side route change with a real UI consumer of `scrollProgress`:** after navigating from a fully-scrolled Home to `/work`, the gauge stayed stuck at 100% instead of resetting toward 0. Root cause: `useScrollTop` (existing since before this plan, `src/hooks/useScrollTop.js`) calls native `window.scrollTo(0, 0)` directly on route change. Lenis (active since P0-T02) doesn't know about that jump — its own `raf()` loop, run every frame via `InteractionProvider`'s `gsap.ticker` tick, was reading its own stale internal `animatedScroll`/`targetScroll` and reapplying it via its own `wrapper.scrollTo()` on the very next frame, snapping the page back to wherever Lenis last thought it was. Confirmed via direct `window.scrollY` polling across a route change (constant non-zero value for many frames, never reaching 0) before assuming the bug was in `ScrollProgressIndicator` itself. Fixed by giving `useScrollTop` a second parameter for the live Lenis instance, calling `lenis.scrollTo(0, { immediate: true })` when one exists (confirmed via reading `node_modules/lenis/dist/lenis.mjs` that `immediate: true` applies `setScroll` synchronously, no animation) and falling back to plain `window.scrollTo(0, 0)` when not (reduced motion, where `InteractionProvider` never creates a Lenis instance at all — so the fallback is exactly correct there, not just harmless). `useScrollTop` couldn't reach `lenisRef` from where it was previously called (inside `App`, outside the provider), which is what motivated the `AppShell` split above — it wasn't scope creep, the fix required it structurally.
+
+Also worth recording: this fix's dev-server verification initially looked broken (window.scrollY only settling after ~500ms, several polling samples showing the stale value), which read like the fix hadn't worked. Before concluding that, re-ran the identical check against a production build (`vite preview`) instead of the Vite dev server, where the reset completed within a single 100ms poll — confirming the delay was dev-server module-count/unminified-JS overhead from Work.jsx mounting 9 `ScrollReveal`/`ScrollTrigger` instances at once, not a flaw in the fix itself. All Phase 4 acceptance verification below was performed against the production build for this reason.
+
+Re-checked Phase 4's combined acceptance criteria block (`MASTER_PLAN.md` line 137) against the live, fully-mounted app:
+- "Cursor companion appears with the correct label over every `data-cursor` element and nowhere else" — PASS (verified across all four pages in P4-T03; re-confirmed here on live Home)
+- "scroll gauge tracks position" — PASS (0 at top, 100 at bottom of Home; correctly resets after client-side navigation to a different page, per the fix above)
+- "LED dots activate per section" — PASS (P4-T02, re-confirmed: `led count: 1` on `/work`, correctly matching Work.jsx's single `<section>`)
+- "both hidden below 768px and under reduced motion" — PASS (both components entirely absent from the DOM, not just CSS-hidden, in both states)
+- "`ScrollProgressIndicator` has `aria-label` + `aria-valuenow`" — PASS (`role="progressbar"`, `aria-label="Page scroll progress"`, `aria-valuenow` present and numerically correct)
+
+All five criteria satisfied. Phase 4 marked Done.
+
+Changed:
+- src/App.jsx
+- src/hooks/useScrollTop.js
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (CSS 34.84KB / 7.29KB gzip; main JS 426.14KB / 140.90KB gzip)
+- Phase 4 combined acceptance criteria: PASS, all 5 (detailed above), verified against a production build (`vite preview`) via Playwright — mount check, hover-label check, scroll-tracking check pre/post navigation, mobile (375px) absence check, reduced-motion absence check
+- scroll-reset regression check: PASS — reduced-motion route navigation still resets to `scrollY: 0` via the native fallback path (unaffected by the Lenis-path fix)
+- browser console/page errors: PASS (none)
+
+Git:
+- commit: self (`P4-T04: mount cursor companion and scroll progress indicator`, `c5f8740`)
+- push: SUCCESS
+
+Next:
+Phase 4 is fully Done. Phase 5 is NOT next: even though a robot decision is already recorded (`MASTER_PLAN.md` line 24, 2026-08-09), `P5-T00` is explicitly named in `DEVELOPMENT_LOOP.md` §2 as a task this loop must never guess on — treat it as blocker handling (§6), not silent proceeding, regardless of a decision existing elsewhere. Leaving Phase 5 alone. Phase 6 (Typography Motion, depends only on P1, already Done) has no such gate — starting there. `P6-T01`: create `TypographyMotion.jsx` + `typography-motion.css`.
 Phase 3 is fully Done. Phase 4 (`P4-T01` — `CursorCompanion.jsx`) is the next eligible phase per the dependency graph (depends only on P0, already done); Phase 6 (Typography Motion, depends only on P1) is also eligible in parallel if preferred.
