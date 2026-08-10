@@ -702,4 +702,42 @@ Git:
 
 Next:
 P4-T03 — add `data-cursor="VIEW|OPEN|PLAY|TRY|EXPLORE"` attributes to interactive elements across Work, Lab, ProjectPage, Nav (depends on P4-T01, Done).
+
+## 2026-08-10 14:05 — P4-T03
+
+Action:
+Rolled out `data-cursor` attributes per the design doc's explicit assignments plus judgment calls for the parts it left unspecified (§5 names `VIEW` on Work project cards and `TRY`/`EXPLORE` on Lab cartridges, but never assigns `OPEN` or `PLAY` to a concrete location, and never mentions ProjectPage or Nav specifics at all despite `MASTER_PLAN.md`'s P4-T03 row listing both). Decisions made and applied:
+- **Work.jsx** (`project-card`): featured-tier cards (internal `Link` to a case study) get `VIEW`; secondary/other-tier cards (external `<a target="_blank">`) get `OPEN` — the design doc's literal "VIEW on project cards" wording covers the case-study cards; `OPEN` was the natural unused vocabulary word for "opens an external destination."
+- **Lab.jsx** (`lab-cartridge`, the whole cartridge div, not the inner "View ↗" link): `TRY` if the entry has a live `url` (something to actually go try), `EXPLORE` if not (concept-only entry with nothing to launch — e.g. AirDraw, `url: null`). No field in the data model names this distinction explicitly; this is a documented interpretive choice, not a spec-literal one.
+- **ProjectPage.jsx**: all three external CTA links (`project-meta-link`, "Live Site ↗", "Source Code ↗") get `OPEN`.
+- **ProjectNav.jsx**: prev/next `DirectionLink`s and the "All work" link all get `VIEW`, consistent with Work page's case-study convention (all three navigate to more internal case-study content).
+- **Nav.jsx**: `OPEN` on Resume, GitHub, and LinkedIn links (desktop nav bar and mobile drawer duplicates) — all open an external destination in a new tab. Deliberately did **not** add `data-cursor` to the four in-app nav links (Home/Work/Lab/About) or the hamburger toggle — none of the five vocabulary words fit plain in-app navigation or a UI control, and the design doc never assigns cursor labels to ordinary nav links anywhere.
+- `PLAY` is left unused: no element on the current site is an embedded/playable demo (Lab entries only link out); forcing it onto something would be inventing content rather than labeling it. Documented rather than silently ignored.
+
+**Caught and fixed a false-positive test failure during verification (DEVELOPMENT_LOOP.md §5 FIX, attempt 1 of 3 — root cause was the test harness, not the product):** an initial Playwright pass using manual `mouse.move()` to each card's `boundingBox()` coordinates reported the 6 non-featured Work cards and both ProjectNav links showing no label at all. Before assuming a real bug, checked the underlying DOM directly (`getAttribute('data-cursor')` on all 9 `.project-card`s) — every attribute was present and correct, `VIEW`/`OPEN` exactly as intended. Root cause: those elements were below the fold (grid overflow / bottom-of-page nav), so `boundingBox()` returned viewport-relative coordinates outside the actual visible canvas, and `mouse.move()` (unlike `.hover()`) does not auto-scroll. Rewrote the check to use Playwright's `elementHandle.hover()` (which scrolls the target into view first) after an initial full scroll-through to let `ScrollReveal` un-hide each element (a bare `.hover()` on a still-`opacity:0` `ScrollReveal` child times out, correctly, since it's genuinely not interactable yet). Re-ran: 19/19 checks passed except one expected non-match (`.project-nav__direction--prev` not present on Synaptic, since it's the first featured project and has no previous — confirmed correct by separately checking the prev-link on Possah, which does have a previous project, and it passed).
+
+Changed:
+- src/components/layout/Nav.jsx
+- src/components/project/ProjectNav.jsx
+- src/pages/Lab.jsx
+- src/pages/ProjectPage.jsx
+- src/pages/Work.jsx
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (CSS 33.14KB / 7.04KB gzip; main JS 423.62KB / 140.26KB gzip)
+- manual hover pass (temporary `CursorCompanion` mount in `App.jsx`, reverted before commit, Playwright, 1280×900): PASS — 20/20 checks correct across Work (9 cards), Lab (2 cartridges), ProjectPage (3 external CTAs + 2 ProjectNav directions on Possah, All-work link on Synaptic), and Nav (GitHub/LinkedIn/Resume) after fixing the off-screen-hover test-harness bug
+- direct DOM attribute audit (no hover simulation): PASS — all 9 Work cards, both Lab cartridges, both ProjectNav direction links, and all Nav external links carry the intended `data-cursor` value
+- browser console/page errors: PASS (none)
+- working-tree cleanliness: PASS — `App.jsx` temporary mount reverted, confirmed via empty `git diff --stat` before staging; only the five intended files committed
+
+Git:
+- commit: self (`P4-T03: add data-cursor attributes across Work, Lab, ProjectPage, Nav`, `6e9f5ea`)
+- push: SUCCESS
+
+Next:
+P4-T04 — mount `CursorCompanion` + `ScrollProgressIndicator` in `src/App.jsx` (depends on P4-T01 and P4-T02, both Done). This is the last task in Phase 4 — after it, re-check Phase 4's combined acceptance criteria block.
 Phase 3 is fully Done. Phase 4 (`P4-T01` — `CursorCompanion.jsx`) is the next eligible phase per the dependency graph (depends only on P0, already done); Phase 6 (Typography Motion, depends only on P1) is also eligible in parallel if preferred.

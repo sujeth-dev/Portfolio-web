@@ -131,7 +131,7 @@ This means **mobile needs its own real system, not a disabled fallback.** The pl
 |---|---|---|---|
 | P4-T01 | Create `src/components/systems/CursorCompanion.jsx` + `src/styles/cursor-companion.css` (delegated mouseenter/mouseleave, `data-cursor` label pill, hidden on mobile/reduced-motion) | P0 | Done |
 | P4-T02 | Create `src/components/systems/ScrollProgressIndicator.jsx` + `src/styles/scroll-indicator.css` (machine gauge, section notches, LED dots; robot marker deferred — see P5 open question) | P0 | Done |
-| P4-T03 | Add `data-cursor="VIEW\|OPEN\|PLAY\|TRY\|EXPLORE"` attributes to interactive elements across Work, Lab, ProjectPage, Nav | P4-T01 | Not Started |
+| P4-T03 | Add `data-cursor="VIEW\|OPEN\|PLAY\|TRY\|EXPLORE"` attributes to interactive elements across Work, Lab, ProjectPage, Nav | P4-T01 | Done |
 | P4-T04 | Mount `CursorCompanion` + `ScrollProgressIndicator` in `src/App.jsx` | P4-T01, P4-T02 | Not Started |
 
 **Acceptance criteria:** Cursor companion appears with the correct label over every `data-cursor` element and nowhere else; scroll gauge tracks position and LED dots activate per section; both hidden below 768px and under reduced motion; `ScrollProgressIndicator` has `aria-label` + `aria-valuenow`.
