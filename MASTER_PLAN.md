@@ -107,7 +107,7 @@ This means **mobile needs its own real system, not a disabled fallback.** The pl
 | ID | Task | Depends on | Status |
 |---|---|---|---|
 | P3-T01 | Create `src/hooks/useParallax.js` (layer 1/2/3 strengths per design doc §2C table; no-op on reduced-motion/mobile) | P1 | Done |
-| P3-T02 | Create `src/hooks/useSectionProgress.js` (thin ScrollTrigger wrapper for theme crossfade) | P1 | Not Started |
+| P3-T02 | Create `src/hooks/useSectionProgress.js` (thin ScrollTrigger wrapper for theme crossfade) | P1 | Done |
 | P3-T03 | Create `src/components/systems/ParallaxLayer.jsx` + `src/components/systems/SectionBackground.jsx` | P3-T01, P3-T02 | Not Started |
 | P3-T04 | Create `src/styles/section-backgrounds.css` with all 5 themes: `.bg-open`, `.bg-technical`, `.bg-messy`, `.bg-warm`, `.bg-signal` | P3-T03 | Not Started |
 | P3-T05 | Add backgrounds to project pages first (validate), then Home page sections per design doc §5 table | P3-T04 | Not Started |

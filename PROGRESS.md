@@ -2,7 +2,7 @@
 
 > Machine-readable-ish status snapshot. Updated after every task per `DEVELOPMENT_LOOP.md` §11. If this file and `EXECUTION_LOG.md` ever disagree, `EXECUTION_LOG.md` (append-only, chronological) wins — fix this file to match it.
 
-**Last updated:** 2026-08-10 11:00
+**Last updated:** 2026-08-10 11:05
 **Branch:** `work`
 
 ---
@@ -14,8 +14,8 @@ Status: In Progress
 
 ## Current task
 
-**P3-T02** — Create `src/hooks/useSectionProgress.js`, a thin ScrollTrigger wrapper for theme crossfade.
-Dependency P1 is complete.
+**P3-T03** — Create `src/components/systems/ParallaxLayer.jsx` + `src/components/systems/SectionBackground.jsx`.
+Dependencies P3-T01, P3-T02 are both complete.
 
 ## Completed tasks
 
@@ -35,6 +35,7 @@ Dependency P1 is complete.
 - **P2-T02** — Added the reusable VelocityEffects wrapper with capped skew/stretch/lag transforms, a 20ms lag response, bounded will-change activation, exact settling, and reduced-motion neutralization.
 - **P2-T03** — Applied combined restrained velocity response to the project narrative and lag-only response to all four Home skill-group cards; confirmed the planned Thoughts target has no current Home section or call site.
 - **P3-T01** — Added `useParallax.js`: layer 1/2/3 mouse/scroll strengths per design doc §2C, GSAP-driven `translate3d`-equivalent offset via `gsap.set`, no-op with transform cleared on reduced-motion/mobile.
+- **P3-T02** — Added `useSectionProgress.js`: thin ScrollTrigger wrapper per design doc §2E returning `{ progress, isInView }`, for the background system's theme crossfade.
 
 (Prerequisite work — PixelRobot rollout, card-grid fixes — was already completed on `main`/`work` before this plan existed: commits `5209461` and `1475eb7`. See `EXECUTION_LOG.md` P0-T00 entry for the baseline this plan starts from.)
 
@@ -46,7 +47,7 @@ None currently active.
 
 ## Next action
 
-Start `P3-T02`: implement `useSectionProgress.js` as a thin ScrollTrigger wrapper for theme crossfade, per design doc §2E.
+Start `P3-T03`: create `ParallaxLayer.jsx` and `SectionBackground.jsx`, consuming `useParallax` and `useSectionProgress`.
 
 ## Repository baseline at plan creation (2026-08-09)
 

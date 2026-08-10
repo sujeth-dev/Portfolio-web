@@ -483,3 +483,29 @@ Git:
 
 Next:
 P3-T02 — create `useSectionProgress.js` as a thin ScrollTrigger wrapper for theme crossfade.
+
+## 2026-08-10 11:05 — P3-T02
+
+Action:
+Created the §2E `useSectionProgress` hook: a thin ScrollTrigger wrapper tracking a single element's own pass through the viewport (`top bottom` → `bottom top`, scrubbed) and returning `{ progress, isInView }`, matching the design doc's exact signature and return shape for the background system's future theme crossfade.
+
+Changed:
+- src/hooks/useSectionProgress.js
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (unchanged bundle — hook not yet consumed)
+- direct hook bundle check: PASS (`esbuild`, browser ESM)
+- §2E signature/return-shape review: PASS
+- cleanup review: PASS (trigger.kill + gsap.context revert on unmount/ref change)
+- task-specific manual checks: not applicable until P3-T03 (`SectionBackground`) consumes the hook
+
+Git:
+- commit: self (`P3-T02: add section progress hook`)
+- push: SUCCESS
+
+Next:
+P3-T03 — create `ParallaxLayer.jsx` and `SectionBackground.jsx`.
