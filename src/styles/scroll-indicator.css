@@ -12,10 +12,9 @@
 
 .scroll-indicator__track {
   position: relative;
-  width: 6px;
-  height: 160px;
-  background: var(--cream);
-  border: 2px solid var(--ink);
+  width: 2px;
+  height: 140px;
+  background: var(--border);
 }
 
 .scroll-indicator__fill {
@@ -25,15 +24,6 @@
   width: 100%;
   background: var(--yellow);
   transition: height 0.1s linear;
-}
-
-.scroll-indicator__notch {
-  position: absolute;
-  left: -2px;
-  width: 10px;
-  height: 2px;
-  background: var(--ink);
-  transform: translateY(-50%);
 }
 
 @media (max-width: 767px) {

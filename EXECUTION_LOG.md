@@ -1226,3 +1226,28 @@ Git:
 
 Next:
 R2-T03 — simplify ScrollProgressIndicator to a single minimal line.
+
+## 2026-08-10 17:45 — R2-T03
+
+Action:
+Simplified `ScrollProgressIndicator` to a single minimal line per the user's "single stick, nothing else — no dash" instruction. Removed the per-section `.scroll-indicator__notch` marks entirely, along with the `getSectionMarks()` function, its `marks` state, and the resize-effect that recomputed them (the component is now render-only — no `useEffect`/`useState` left). Reduced `.scroll-indicator__track` from a 6px bordered/filled box (`background: var(--cream); border: 2px solid var(--ink)`) to a bare 2px line (`background: var(--border)`, no border, height 160px→140px) so it reads as a thin premium stick rather than a boxed gauge. The `__fill` progress bar (yellow, rises with scroll) is unchanged — the user's phrasing ("also fine") allowed for keeping the progress behavior, just stripped of the box/notch chrome.
+
+Changed:
+- src/components/systems/ScrollProgressIndicator.jsx
+- src/styles/scroll-indicator.css
+- MASTER_PLAN.md (R2-T03 marked Done)
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (CSS 38.67KB / 8.25KB gzip, net decrease from removing the notch rule)
+- code review: PASS — grepped the full `src/` tree for `scroll-indicator__notch` and `getSectionMarks`, zero remaining references anywhere
+- manual/visual browser check: NOT PERFORMED this session — no browser-automation tool available. Recommend the user confirm visually via `npm run dev` (indicator is hidden below 768px and under reduced motion, matching its existing behavior — unchanged by this task).
+
+Git:
+- commit: self (pending, see below)
+- push: pending
+
+Next:
+R2-T05 — make Selected Work grid symmetric across breakpoints.
