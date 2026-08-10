@@ -2,7 +2,7 @@
 
 > Machine-readable-ish status snapshot. Updated after every task per `DEVELOPMENT_LOOP.md` §11. If this file and `EXECUTION_LOG.md` ever disagree, `EXECUTION_LOG.md` (append-only, chronological) wins — fix this file to match it.
 
-**Last updated:** 2026-08-10 15:10
+**Last updated:** 2026-08-10 16:15
 **Branch:** `work`
 
 ---
@@ -16,9 +16,13 @@ The user reviewed the production preview of Phases 0–4 and gave a large batch 
 
 ## Current task
 
-**R1-T01 approved by the user (2026-08-10).** R1-T02 also done: published an Artifact (`PixelRobot — Color Study`) presenting 5 named color combinations (baseline "Signal Red" + 4 alternatives — Toolbox Yellow, Systems Green, Workshop Brown, Night Ink) rendered with the real `PixelRobot` SVG geometry against both the site's light (`--bg`) and dark (`--bg-dark`) backgrounds, at nav and hero scale, using only colors that already exist as tokens in `src/index.css`. This is a human-decision checkpoint (like `P5-T00`) — **awaiting the user's pick, not applied to any site file yet.** Per the plan, not blocking the rest of the loop on it — proceeding to `R1-T03`.
+**R1-T01 approved by the user (2026-08-10).** R1-T02 done: published an Artifact (`PixelRobot — Color Study`), expanded to 10 named color combinations after the user asked for more blue/white/black options — baseline "Signal Red" + Toolbox Yellow, Systems Green, Workshop Brown, Night Ink (existing site tokens) + Blueprint Blue, Deep Navy, Sky Cyan, Ice White, Blackout (new colors, added on request, with an `outline` flag added to the SVG generator so the white option stays legible against the light stage). Human-decision checkpoint (like `P5-T00`) — **still awaiting the user's pick, not applied to any site file.** Per the plan, not blocking the loop on it.
 
-**Current task: R1-T03** — remove `ScrollProgressIndicator`'s LED dots (`.scroll-indicator__leds`/`__led` and the `currentSection`-matching logic driving them), keeping the track/fill/notch gauge itself.
+R1-T03 done: removed `ScrollProgressIndicator`'s LED dots (`.scroll-indicator__leds`/`__led` elements and CSS, and the `currentSection`-matching logic in `getSectionMarks` that only existed to drive LED highlighting) — the track/fill/notch gauge itself is unchanged and still tracks scroll position correctly (verified 0→100 `aria-valuenow` across a full scroll on the production preview).
+
+## Current task
+
+**R1-T04** — delete `CursorCompanion.jsx` + `cursor-companion.css` and its `AppShell` mount entirely; add a plain custom retro-pixel CSS `cursor` (data-URI SVG) site-wide instead; remove the now-dead `data-cursor` attributes from `Work.jsx`, `Lab.jsx`, `ProjectPage.jsx`, `ProjectNav.jsx`, `Nav.jsx`.
 
 ## Completed tasks
 

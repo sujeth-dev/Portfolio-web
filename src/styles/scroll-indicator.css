@@ -36,29 +36,6 @@
   transform: translateY(-50%);
 }
 
-.scroll-indicator__leds {
-  position: relative;
-  width: 6px;
-  height: 160px;
-}
-
-.scroll-indicator__led {
-  position: absolute;
-  left: 0;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--cream);
-  border: 1.5px solid var(--ink);
-  transform: translateY(-50%);
-  transition: background 0.2s ease, box-shadow 0.2s ease;
-}
-
-.scroll-indicator__led[data-active='true'] {
-  background: var(--green);
-  box-shadow: 0 0 6px var(--green);
-}
-
 @media (max-width: 767px) {
   .scroll-indicator {
     display: none;

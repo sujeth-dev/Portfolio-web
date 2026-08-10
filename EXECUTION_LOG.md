@@ -877,3 +877,28 @@ Changed:
 
 Next:
 Continue to R1-T03.
+
+## 2026-08-10 16:15 — R1-T03
+
+Action:
+Removed `ScrollProgressIndicator`'s LED dots per the user's "it'll not work" feedback. Deleted the `.scroll-indicator__leds` wrapper and its per-section `.scroll-indicator__led` spans from `ScrollProgressIndicator.jsx`, along with the `currentSection` destructure from `useInteraction()` (its only consumer was the removed `data-active={mark.id === currentSection}` check) and the inline comment in `getSectionMarks` explaining the now-gone match-against-`InteractionProvider` requirement. `getSectionMarks` itself is kept — its `position` values still drive the tick notches on the track, which the user didn't flag as broken. Removed the corresponding `.scroll-indicator__leds`/`.scroll-indicator__led`/`[data-active='true']` rules from `scroll-indicator.css`; the remaining track/fill/notch CSS is untouched.
+
+Changed:
+- src/components/systems/ScrollProgressIndicator.jsx
+- src/styles/scroll-indicator.css
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (CSS 35.50KB / 7.48KB gzip; main JS 426.71KB / 141.00KB gzip)
+- Playwright pass against production preview (`/work/synaptic`, port 4173): zero `.scroll-indicator__led`/`__leds` elements in the DOM; track still present with 8 notches; `aria-valuenow` reads 0 at top of page and 100 after scrolling to the bottom; fill height tracks the track height correctly (156px/160px near full scroll); zero console/page errors
+- working-tree cleanliness: PASS — temporary Playwright script removed before staging
+
+Git:
+- commit: self (pending, see below)
+- push: pending
+
+Next:
+`R1-T04` — delete `CursorCompanion` entirely, add a plain custom retro-pixel CSS cursor, strip the now-dead `data-cursor` attributes from their 5 call sites.
