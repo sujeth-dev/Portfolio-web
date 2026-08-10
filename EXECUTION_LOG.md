@@ -671,4 +671,35 @@ Git:
 
 Next:
 P4-T02 — create `ScrollProgressIndicator.jsx` + `scroll-indicator.css` (machine gauge, section notches, LED dots; depends only on P0, already Done; independent of P4-T01).
+
+## 2026-08-10 13:35 — P4-T02
+
+Action:
+Created `src/components/systems/ScrollProgressIndicator.jsx`: a fixed-right, vertically-centered Retro Toy gauge (`role="progressbar"`, `aria-label="Page scroll progress"`, `aria-valuemin`/`aria-valuemax`/`aria-valuenow` driven by `useInteraction().scrollProgress`). It discovers the current page's sections via `document.querySelectorAll('[data-section], main section')` — the same selector `InteractionProvider` already uses internally for `currentSection` — and renders one tick-mark notch plus one LED dot per section, positioned proportionally along the track by each section's scroll-top fraction of total document height. The LED for whichever section matches `currentSection` lights up (`--green` fill + glow). Per `MASTER_PLAN.md`'s P4-T02 row (overriding the design doc's mention of a robot marker), no robot is included — that's deferred to P5-T03. Renders `null` (fully unmounted, not just CSS-hidden) under `reducedMotion` or `isMobile`, matching `CursorCompanion`'s pattern and justified functionally too: `InteractionProvider` zeroes `scrollProgress` to 0 permanently under reduced motion, so rendering a "live" gauge in that state would be actively misleading, not just decorative.
+
+**Caught and fixed a real bug during verification (DEVELOPMENT_LOOP.md §5 FIX, attempt 1 of 3, new root cause):** the first implementation generated each section's matching id as `` `${classList[0] || 'section'}-${index}` `` to guarantee unique React keys, but `InteractionProvider`'s own `currentSection` resolution has no such index suffix (`dataset.section || id || classList[0] || 'section'`). Any section without a stable `id` (4 of Home's 6 sections) therefore never matched, and the "active LED" was silently `undefined` the entire time — direct DOM inspection via Playwright (checking `.scroll-indicator__led[data-active="true"]` after both initial load and a full scroll-through) caught this; a screenshot alone would not have, since the gauge track and fill height rendered correctly regardless. Fixed by computing the match-id with the exact same fallback chain (no suffix) and using a separate `` `${id}-${index}` `` value only for the React `key` prop. Re-verified: active LED now correctly reports `~2%` near the top (hero) and `100%` after scrolling to the bottom (final section), matching `currentSection` at each point.
+
+Changed:
+- src/components/systems/ScrollProgressIndicator.jsx (new)
+- src/styles/scroll-indicator.css (new)
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6, re-run after the fix)
+- build: PASS (CSS 34.23KB / 7.21KB gzip; main JS 424.61KB / 140.53KB gzip while temporarily mounted for verification — not part of the actual committed bundle since nothing imports it until P4-T04)
+- manual scroll pass (temporary mount, Playwright, 1280×900, Home page): PASS — `role="progressbar"` + `aria-label`/`aria-valuemin`/`aria-valuemax`/`aria-valuenow` all present and correct (0 at top, 100 at bottom), 6 sections detected (matches Home.jsx's 6 `<section>` elements), active LED tracks scroll position correctly after the fix
+- reduced motion (temporary mount, Playwright): PASS — `.scroll-indicator` does not exist in the DOM at all
+- mobile viewport 375×812 (temporary mount, Playwright): PASS — `.scroll-indicator` does not exist in the DOM at all
+- browser console/page errors: PASS (none)
+- screen-reader spot check: no `axe-core` in `node_modules`; performed a manual ARIA-structure audit instead (role/label/value attributes confirmed present and semantically correct above; decorative notch/LED `<span>`s carry no interactive semantics and need none, being plain children of the labelled `progressbar` container)
+- working-tree cleanliness: PASS — `App.jsx` temporary test mount reverted and confirmed via empty `git diff --stat` before staging; only the two new files committed
+
+Git:
+- commit: self (`P4-T02: add scroll progress indicator component`, `5702a4a`)
+- push: SUCCESS
+
+Next:
+P4-T03 — add `data-cursor="VIEW|OPEN|PLAY|TRY|EXPLORE"` attributes to interactive elements across Work, Lab, ProjectPage, Nav (depends on P4-T01, Done).
 Phase 3 is fully Done. Phase 4 (`P4-T01` — `CursorCompanion.jsx`) is the next eligible phase per the dependency graph (depends only on P0, already done); Phase 6 (Typography Motion, depends only on P1) is also eligible in parallel if preferred.
