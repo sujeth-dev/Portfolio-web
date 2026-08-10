@@ -16,7 +16,9 @@ The user reviewed the production preview of Phases 0–4 and gave a large batch 
 
 ## Current task
 
-**R1-T01 built and verified, awaiting user approval before R1-T02 starts.** Replaced `Home.jsx`'s `<h1 className="hero-name">{meta.name}</h1>` with a new `AnimatedPixelRobot` component (`src/components/common/AnimatedPixelRobot.jsx` + `src/styles/animated-pixel-robot.css`) — same silhouette/palette as `PixelRobot`, wrapped in `<h1 className="hero-name-wrap"><span className="sr-only">{meta.name}</span><AnimatedPixelRobot /></h1>` so the page keeps a real, screen-reader-visible `<h1>` with the name while sighted users see the animated mascot (blink + bob/tilt idle loop, frozen under reduced motion via a new `.sr-only` utility added to `src/index.css`). `Nav.jsx` logo confirmed unchanged. Verified via Playwright against the production preview: sr-only h1 text correct, old `.hero-name` gone, animations running normally and `none` under `reducedMotion: 'reduce'`, Nav robot/text untouched, no console errors, mobile (375px) robot centered. `npm test` 6/6, `npm run build` clean. **Per the user's explicit request, this is a stop-and-show checkpoint — do not start R1-T02 until they've seen and approved it.**
+**R1-T01 approved by the user (2026-08-10).** R1-T02 also done: published an Artifact (`PixelRobot — Color Study`) presenting 5 named color combinations (baseline "Signal Red" + 4 alternatives — Toolbox Yellow, Systems Green, Workshop Brown, Night Ink) rendered with the real `PixelRobot` SVG geometry against both the site's light (`--bg`) and dark (`--bg-dark`) backgrounds, at nav and hero scale, using only colors that already exist as tokens in `src/index.css`. This is a human-decision checkpoint (like `P5-T00`) — **awaiting the user's pick, not applied to any site file yet.** Per the plan, not blocking the rest of the loop on it — proceeding to `R1-T03`.
+
+**Current task: R1-T03** — remove `ScrollProgressIndicator`'s LED dots (`.scroll-indicator__leds`/`__led` and the `currentSection`-matching logic driving them), keeping the track/fill/notch gauge itself.
 
 ## Completed tasks
 

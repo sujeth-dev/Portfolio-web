@@ -840,3 +840,28 @@ Git:
 
 Next:
 **Stop and present this task's result to the user for explicit approval before starting R1-T02**, per their request to see the hero-robot change first. Do not proceed automatically.
+
+## 2026-08-10 15:55 — R1-T01 approved; R1-T02
+
+Action:
+User reviewed the R1-T01 preview (animated hero robot) and replied "continue" — treated as approval. Marked `R1-T01` `Done` in `MASTER_PLAN.md`.
+
+Built `R1-T02`: published a self-contained Artifact ("PixelRobot — Color Study") presenting 5 named color-combination options for the mascot — the current live combo ("Signal Red", `#E2402D`/`#F5EEDC`/`#221E1C`) as a labeled baseline, plus 4 alternatives built only from color tokens that already exist in `src/index.css` rather than inventing new hex values: "Toolbox Yellow" (`--yellow` body, ties to existing CTA/gauge-fill color), "Systems Green" (`--green`, ties to the "all systems online" LED), "Workshop Brown" (`--muted`, quieter, yellow-eye accent), and "Night Ink" (inverted — ink body, yellow eyes, red base accent). Each combo renders the exact same 5-rect SVG geometry as `PixelRobot.jsx` (via a small inline JS generator in the artifact, not copy-pasted markup) at nav scale (26px) and hero scale (96px), against both the site's real light background and its dark Contact-section background, plus a hex swatch strip per role (body/eyes/base). Artifact page itself follows the site's own Retro Toy visual language (hard-shadow bordered cards, cream/ink palette) so the comparison reads as "recommendations for this site," not a generic mockup; system-font stacks were used instead of the site's actual Google Fonts (Silkscreen/Inter Tight/JetBrains Mono) since the Artifact sandbox's CSP blocks external font CDNs — cosmetic-only, doesn't affect the color comparison this artifact exists for.
+
+This is a human-decision checkpoint, same category as `P5-T00` — no site file was touched, nothing applied. Recorded as awaiting the user's pick and moving on to `R1-T03`, per `DEVELOPMENT_LOOP.md` §7's allowance to switch to independent unblocked work rather than stall the whole loop on one pending decision.
+
+Changed:
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+(no site source files changed by R1-T02; the artifact itself is a separate, non-repository deliverable)
+
+Validation:
+- N/A — no site code changed; artifact publish confirmed successful (URL returned).
+
+Git:
+- commit: self (pending, see below)
+- push: pending
+
+Next:
+`R1-T03` — remove `ScrollProgressIndicator`'s LED dots, keep the track/fill/notch gauge.
