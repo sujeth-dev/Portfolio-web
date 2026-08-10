@@ -1301,3 +1301,39 @@ Git:
 
 Next:
 R2-T07 — add curated micro-interactions to AnimatedPixelRobot.
+
+## 2026-08-10 18:20 — R2-T07
+
+Action:
+Made `AnimatedPixelRobot` stateful (it was previously a prop-less, event-less decorative SVG — only a CSS `apr-drift` body loop and `apr-blink` eye loop) and added six micro-interactions from the user's curated wishlist, all built on infrastructure already in this codebase rather than new mechanisms:
+
+- **Cursor-tracking / idle look-around** — merged into one mechanism instead of two competing ones: on `(hover: hover) and (pointer: fine)` devices, wrapped each eye rect in a `.animated-pixel-robot__eye-look` `<g>` that continuously reads the already-lerped global `--mouse-x-norm`/`--mouse-y-norm` CSS custom properties via a live `calc()` (no new JS, no `useMouseProximity` call — the values InteractionProvider already writes every frame are enough); on `(hover: none)` (touch) devices, that same wrapper instead runs a timer-based `apr-look` idle-glance keyframe. Nesting the look-transform on a wrapping `<g>`, separate from the eye `<rect>`'s own blink `scaleY` transform, was necessary — two `animation`/transform declarations on the *same* element don't compose in CSS, the later one just wins each frame, so blink and look/track needed different elements to coexist. Reduced motion needs no special-casing here: `--mouse-x-norm`/`--mouse-y-norm` are already forced to `0` under reduced motion by the existing global rule in `interaction-layer.css`, so the tracking `calc()` naturally evaluates to zero offset with zero new code.
+- **AFK / sleep mode** — a `useEffect` mouse/scroll-idle timer (45s, matching the user's spec) toggles `isAsleep` state, gated off entirely under `reducedMotion || isMobile` (matching the codebase's existing convention for ambient effects like `useMouseProximity`/`useParallax`). Asleep, the eyes settle into the blink animation's own squished `scaleY(0.15)` pose (reads as closed, reusing geometry rather than adding new shapes) and two small SVG `<text>` "z"s fade-and-float upward on a staggered loop.
+- **CRT glitch** — a `steps(1)` keyframe (`apr-glitch`) applied to the root `<svg>` itself (not the body `<g>`, which already owns its own `apr-drift` transform — same same-element-transform-conflict reasoning as look/blink) giving a ~1-frame position+hue jump twice every 9s cycle.
+- **Hover head-bop** — pure CSS, no JS: `.animated-pixel-robot:hover .animated-pixel-robot__body { animation: apr-drift ..., apr-bop 0.4s ease-out; }` — a freshly-applied `animation` value restarts on every new `:hover`, so it naturally replays on each hover without any state.
+- **Click expression cycling** — an `onClick` handler cycles `expression` through `happy → surprised → wink → dizzy`, each a CSS class (`.is-happy` etc.) overriding the eye rects' transform (three are static poses; `dizzy` spins), auto-reverting to `null` (normal) after 1.8s via a cleared/reset `setTimeout`. Deliberately did not gate this behind `reducedMotion` in JS — the existing blanket `*, *::before, *::after { animation-duration: 0.01ms !important }` catch-all already neutralizes `is-dizzy`'s spin, and the three static poses aren't motion, so no extra guard was needed.
+
+Explicitly out of scope, as recorded in `MASTER_PLAN.md`'s R2-T07 row: audio bleeps, theme toggle, status-color tie-in, form-focus glance, copy-feedback checkmarks, scroll-rail buddy, section costumes, Konami code, draggable physics, speech bubbles.
+
+Added `.animated-pixel-robot` to the site's existing custom-cursor pointer-swap selector list (`index.css`) so hovering the now-clickable mascot shows the same yellow cursor as every other interactive element, instead of a bare `cursor:pointer` that would clash with the site's custom cursor system.
+
+Changed:
+- src/components/common/AnimatedPixelRobot.jsx (stateful: AFK timer, click-cycling, eye-look wrapper group)
+- src/styles/animated-pixel-robot.css (glitch, bop, look/track, sleep, zzz, expression classes)
+- src/index.css (added `.animated-pixel-robot` to the custom-cursor pointer selector list)
+- MASTER_PLAN.md (R2-T07 marked Done)
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (CSS 41.33KB / 8.74KB gzip; JS 426.59KB / 140.89KB gzip — small increase from the new component state/handlers)
+- code review: PASS — confirmed `AnimatedPixelRobot` has exactly one call site (`Home.jsx`'s hero), so no other page is affected; confirmed the reduced-motion block at the bottom of `animated-pixel-robot.css` forces `animation: none !important; transform: none !important` on every new element class added (`__eye-look`, `__zzz`), matching the file's pre-existing pattern for `__body`/`__eye`; confirmed `PixelRobot.jsx` (the separate, non-animated component used in Nav/Footer/cards/About) was not touched.
+- manual/visual browser check: NOT PERFORMED this session — no browser-automation tool available. Recommend the user confirm visually via `npm run dev`: hover (bop), click repeatedly (expression cycle), leave the mouse idle 45s (sleep + Zzz), move the mouse near the hero (eye tracking), and a reduced-motion toggle pass.
+
+Git:
+- commit: self (pending, see below)
+- push: pending
+
+Next:
+R2-T08 — add 4 new color options to the PixelRobot color-study Artifact.
