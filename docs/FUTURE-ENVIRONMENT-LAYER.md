@@ -188,7 +188,7 @@ Thin wrapper over ScrollTrigger. Used by the background system to blend between 
   - **Synaptic** (`knowledge-machine`): SVG knowledge graph nodes pulsing, edges drawing, BKT bars
   - **Possah** (`payment-terminal`): terminal screen, receipt printer animation, Razorpay flow
   - **Velmont** (`blueprint`): blueprint grid, construction lines, wireframe building
-- Mobile: 200px illustration strip above scrolling content, no stickiness
+- Mobile (< 768px, updated 2026-08-10 per P3-T06): non-sticky, stacked in normal flow above the scrolling content — no split layout, no pin. Renders all 5 states as separate inline panels, each independently revealed via `useSectionProgress` as it scrolls into view (not the desktop single-instance crossfade driven by one continuous `scrollProgress`). Shares panel content with desktop (`ProjectMonogram`, problem bars, `ArchDiagram`/node-map fallback, terminal, result mark) rather than mounting the lazy per-project SVG scenes, per the mobile performance budget. Carries one subthreshold `ParallaxLayer` (layer 1, `mobileScale: 0.3`) as its only motion, an explicit opt-in exception to the layer being fully disabled on mobile elsewhere (see §9).
 
 **`src/components/project/ProjectNav.jsx`**
 - Props: `{ prev, next }`
@@ -309,7 +309,7 @@ Each project page is ONE coherent visual composition that unfolds through scroll
 - 0.6-0.8: Engineering highlights visualized (code-like elements, terminal outputs)
 - 0.8-1.0: Final state, CTA elements, links
 
-**Mobile (< 768px):** Stage becomes `position: relative`, 200px illustration above content.
+**Mobile (< 768px, updated 2026-08-10 per P3-T06):** `ProjectStage` is `position: relative` (non-sticky) and renders above the scrolling content, but is no longer a static 200px strip. It's a genuine scroll-driven mini-story: all 5 states stack in normal document flow as separate panels, each fading and sliding in on its own as the user scrolls it into view (via `useSectionProgress`, not the desktop pin+scrub). The user scrolls through identity → problem → architecture → engineering → results before reaching the case-study text below, rather than glimpsing one frozen state before the strip scrolls away.
 
 **Robot:** Appears twice -- near "The Problem" heading (inspect, 32px) and near "Next Project" (wave, 28px).
 
@@ -485,7 +485,7 @@ Each phase is independently deployable. **Project pages are the proving ground**
 4. Mouse handler throttled to GSAP ticker (not raw mousemove)
 5. ~15-20 ScrollTrigger instances on Home, ~8 per project page
 6. CSS `contain: layout style paint` on parallax containers
-7. Mobile (< 768px): parallax, cursor companion, scroll indicator, and section backgrounds all disabled
+7. Mobile (< 768px): parallax, cursor companion, scroll indicator, and section backgrounds all disabled, with one named exception (updated 2026-08-10 per P3-T06): the mobile `ProjectStage`'s single background `ParallaxLayer` (layer 1) opts into a reduced-strength mobile path (`mobileScale: 0.3`) via `useParallax`, instead of the hook's default full no-op on mobile. Everything else in this rule is unchanged.
 
 **Loading:**
 - GSAP/Lenis imported top-level (needed immediately)

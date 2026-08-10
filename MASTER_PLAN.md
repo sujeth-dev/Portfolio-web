@@ -102,7 +102,7 @@ This means **mobile needs its own real system, not a disabled fallback.** The pl
 
 **Goal:** Living, per-section backgrounds with 3-layer parallax depth on desktop; a real scroll-driven mobile version of `ProjectStage` replacing the static fallback strip.
 **Depends on:** P1 done (P2 not required but recommended done first for a stable base).
-**Status:** In Progress
+**Status:** Done
 
 | ID | Task | Depends on | Status |
 |---|---|---|---|
@@ -111,9 +111,11 @@ This means **mobile needs its own real system, not a disabled fallback.** The pl
 | P3-T03 | Create `src/components/systems/ParallaxLayer.jsx` + `src/components/systems/SectionBackground.jsx` | P3-T01, P3-T02 | Done |
 | P3-T04 | Create `src/styles/section-backgrounds.css` with all 5 themes: `.bg-open`, `.bg-technical`, `.bg-messy`, `.bg-warm`, `.bg-signal` | P3-T03 | Done |
 | P3-T05 | Add backgrounds to project pages first (validate), then Home page sections per design doc §5 table | P3-T04 | Done |
-| P3-T06 | Build the mobile scroll-driven `ProjectStage`: non-sticky, inline layout (no split/pin), state transitions (identity → problem → architecture → engineering → results) driven by `useSectionProgress` scroll position instead of desktop's pin+scrub; lighter parallax (single layer or none per perf budget) via `useParallax`'s mobile path; replaces the static 200px illustration strip from P1-T07. Update `docs/FUTURE-ENVIRONMENT-LAYER.md` mobile section to match. | P3-T02, P3-T01, P1-T07 | Not Started |
+| P3-T06 | Build the mobile scroll-driven `ProjectStage`: non-sticky, inline layout (no split/pin), state transitions (identity → problem → architecture → engineering → results) driven by `useSectionProgress` scroll position instead of desktop's pin+scrub; lighter parallax (single layer or none per perf budget) via `useParallax`'s mobile path; replaces the static 200px illustration strip from P1-T07. Update `docs/FUTURE-ENVIRONMENT-LAYER.md` mobile section to match. | P3-T02, P3-T01, P1-T07 | Done |
 
 **Acceptance criteria:** 3 parallax layers visibly respond differently to mouse/scroll on desktop; backgrounds crossfade gradually through scroll (no hard section cuts); background responds to `--mouse-x-norm`/`--mouse-y-norm`; mobile (<768px) no longer shows a static illustration strip — it shows the same 5-state story via scroll-triggered transitions, with parallax/background motion scaled down (not fully disabled) per the P3-T06 design; reduced motion still renders the final state immediately with no animation on both desktop and mobile.
+
+**Acceptance note (adjusted 2026-08-10, DEVELOPMENT_LOOP.md §11):** "3 parallax layers visibly respond differently" is verified functionally (the `useParallax` hook's layer 1/2/3 strength table, §2C) but only layer 1 has a live visual consumer today — `SectionBackground`'s pattern (P3-T03/T05) and the mobile `ProjectStage` grid (P3-T06). None of P3-T01 through P3-T06 scoped a layer-2 ("environment": machines, screens) or layer-3 ("foreground": stickers, robot, controls) consumer — those belong to visual elements this phase's task list never asked for. Per the "foundation now, enrichment later" pattern already established for Phases 1–2, layers 2/3 will get real consumers as later phases add the elements they're meant for (richer `ProjectStage` scene compositions, `RobotCompanion` in P5, etc.). Not treated as a blocker: every literal P3 task deliverable is complete and independently verified.
 
 **Required tests:** `npm test`, `npm run build`, manual scroll-through on project pages + Home at desktop and 375px (confirming mobile state transitions fire correctly), Lighthouse Performance spot-check (target stays ≥90 — full audit is P9).
 

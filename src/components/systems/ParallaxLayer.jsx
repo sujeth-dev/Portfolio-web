@@ -7,9 +7,9 @@ const LAYER_Z_INDEX = {
   3: 'var(--z-fg)',
 }
 
-export function ParallaxLayer({ layer = 1, className = '', style, children }) {
+export function ParallaxLayer({ layer = 1, mobileScale = 0, className = '', style, children }) {
   const ref = useRef(null)
-  useParallax(ref, { layer })
+  useParallax(ref, { layer, mobileScale })
 
   return (
     <div

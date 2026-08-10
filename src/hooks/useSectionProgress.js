@@ -9,7 +9,7 @@ const initialState = {
   isInView: false,
 }
 
-export function useSectionProgress(sectionRef) {
+export function useSectionProgress(sectionRef, { once = false } = {}) {
   const [state, setState] = useState(initialState)
 
   useEffect(() => {
@@ -18,16 +18,21 @@ export function useSectionProgress(sectionRef) {
 
     let trigger
     const context = gsap.context(() => {
-      const setInView = (isInView) =>
-        setState((previous) =>
-          previous.isInView === isInView ? previous : { ...previous, isInView },
-        )
+      const setInView = (isInView) => {
+        setState((previous) => {
+          if (once && previous.isInView) return previous
+          return previous.isInView === isInView ? previous : { ...previous, isInView }
+        })
+        if (once && isInView) {
+          trigger?.kill()
+        }
+      }
 
       trigger = ScrollTrigger.create({
         trigger: element,
         start: 'top bottom',
         end: 'bottom top',
-        scrub: true,
+        scrub: !once,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           setState((previous) =>
@@ -47,7 +52,7 @@ export function useSectionProgress(sectionRef) {
       trigger?.kill()
       context.revert()
     }
-  }, [sectionRef])
+  }, [sectionRef, once])
 
   return state
 }

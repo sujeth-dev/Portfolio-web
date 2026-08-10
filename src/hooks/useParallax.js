@@ -15,7 +15,7 @@ const SCROLL_AMPLITUDE = 400
 
 export function useParallax(
   elementRef,
-  { layer = 1, mouseStrength, scrollStrength, axis = 'both' } = {},
+  { layer = 1, mouseStrength, scrollStrength, axis = 'both', mobileScale = 0 } = {},
 ) {
   const { mouseX, mouseY, reducedMotion, isMobile } = useInteraction()
   const mouse = useRef({ x: mouseX, y: mouseY })
@@ -31,11 +31,12 @@ export function useParallax(
     const element = elementRef?.current
     if (!element) return undefined
 
-    if (reducedMotion || isMobile) {
+    if (reducedMotion || (isMobile && mobileScale <= 0)) {
       gsap.set(element, { clearProps: 'transform' })
       return undefined
     }
 
+    const scale = isMobile ? mobileScale : 1
     const scroll = { offset: 0 }
     let trigger
     const context = gsap.context(() => {
@@ -46,17 +47,17 @@ export function useParallax(
         scrub: true,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
-          scroll.offset = (self.progress - 0.5) * SCROLL_AMPLITUDE * resolvedScrollStrength
+          scroll.offset = (self.progress - 0.5) * SCROLL_AMPLITUDE * resolvedScrollStrength * scale
         },
       })
     }, element)
 
     const tick = () => {
       const x = useX
-        ? (mouse.current.x - 0.5) * window.innerWidth * resolvedMouseStrength
+        ? (mouse.current.x - 0.5) * window.innerWidth * resolvedMouseStrength * scale
         : 0
       const y =
-        (useY ? (mouse.current.y - 0.5) * window.innerHeight * resolvedMouseStrength : 0) +
+        (useY ? (mouse.current.y - 0.5) * window.innerHeight * resolvedMouseStrength * scale : 0) +
         (useY ? scroll.offset : 0)
 
       gsap.set(element, { x, y })
@@ -74,6 +75,7 @@ export function useParallax(
     elementRef,
     reducedMotion,
     isMobile,
+    mobileScale,
     useX,
     useY,
     resolvedMouseStrength,

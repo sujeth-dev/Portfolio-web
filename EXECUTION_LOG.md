@@ -595,3 +595,49 @@ Git:
 
 Next:
 P3-T06 — build the mobile scroll-driven ProjectStage (non-sticky, inline, five-state), replacing the interim 200px strip. Also resolve, as part of that task, whether `useParallax`'s current hard no-op on `isMobile` (P3-T01) needs an opt-in "mobile path" to satisfy this task's "lighter parallax... via useParallax's mobile path" wording.
+
+## 2026-08-10 12:35 — P3-T06
+
+Action:
+Replaced the interim static 200px mobile `ProjectStage` strip with a genuine scroll-driven five-state story. `ProjectStage` now checks `isMobile` and branches entirely to a new `MobileProjectStage`, which stacks all 5 states (identity → problem → architecture → engineering → results) as separate panels in normal document flow — non-sticky, no split/pin, matching the task's explicit layout requirement. Each panel independently reveals via its own `useSectionProgress(panelRef, { once: true })` call as it scrolls into view, rather than the desktop single-instance crossfade driven by one continuous `scrollProgress` prop. Extracted the existing per-state panel markup (monogram, problem bars, `ArchDiagram`/node-map fallback, terminal, result mark) into a shared `PanelBody` helper so desktop and mobile render identical content with zero duplication; desktop's own rendering path is otherwise untouched. Deliberately did not mount the lazy per-project SVG scenes (Synaptic/Possah/Velmont) on mobile, matching the design doc's mobile performance budget. Added one `ParallaxLayer(layer=1, mobileScale=0.3)` as the mobile stage's only motion.
+
+That single parallax layer required resolving the open question flagged in the P3-T05 log entry: `useParallax` (P3-T01) hard no-ops on `isMobile` with no exception, but this task's wording ("lighter parallax... via `useParallax`'s mobile path") implies an opt-in path should exist. Extended `useParallax`/`ParallaxLayer` with a `mobileScale` option (default `0`, preserving the exact prior no-op for every existing caller — `SectionBackground`'s pattern layer never passes it) that scales both mouse and scroll strength on mobile instead of skipping entirely. Documented this as an explicit, named exception in `docs/FUTURE-ENVIRONMENT-LAYER.md` §9 rather than silently contradicting its general "parallax... disabled on mobile" rule. Also updated that doc's §3 (`ProjectStage.jsx` spec) and §5 (Project Pages mobile behavior), both of which described the now-removed static strip.
+
+Verification surfaced a real performance regression, caught and fixed before commit (DEVELOPMENT_LOOP.md §5 FIX):
+- First implementation gave each `MobileStagePanel` a plain, continuously-scrubbed `useSectionProgress` call. A mobile-throttled Lighthouse run (default CLI preset: mobile form factor, 4x CPU slowdown) against the Synaptic project page scored Performance 64.
+- To determine whether this was a genuine regression or a pre-existing condition, checked out the last pre-Phase-3 commit (`5b70d5e`) into a disposable `git worktree`, built and served it, and ran the identical Lighthouse check: baseline Performance was 82. This confirmed a real ~18-point regression from this task's own code, traced to Total Blocking Time ballooning from 90ms to 680ms — five concurrently-scrubbing `ScrollTrigger` instances (each with an `onUpdate`-driven `setState` on every ~0.001 progress delta) on one page, on top of the project page's pre-existing ScrollReveal/useScrollEngine triggers.
+- Fix: added an `once` option to `useSectionProgress` (P3-T02's hook) that disables `scrub` entirely for one-shot reveal use, used by `MobileStagePanel`. Re-measured: Performance 83, materially recovering the baseline.
+- While verifying the fix's visual correctness (scroll down through all 5 panels, then back up — panels should stay revealed, matching typical one-shot reveal UX and avoiding a flicker-on-scroll-up), direct DOM inspection (`data-revealed` attributes + `scrollY` at each step) caught a second bug: GSAP's native `ScrollTrigger` `once: true` option does **not** suppress `onLeave`/`onLeaveBack` as its name suggests — panels were un-revealing again as soon as they scrolled out of view, contradicting the intended "reveal once and stay" behavior. Fixed by adding an explicit state latch in `useSectionProgress` itself (once `previous.isInView` is `true` under `once` mode, further `setInView` calls are ignored) plus a manual `trigger.kill()` right after the first true reveal — verified correct via the same DOM-inspection script through a full down-then-up scroll sequence, and via direct screenshot after that sequence. Final Lighthouse re-check after this correctness fix: Performance 84 (no regression from the latch), Accessibility 100.
+- This whole loop (build → Lighthouse spot-check → root-cause via baseline worktree comparison → fix → re-verify both performance and correctness with real Playwright scroll automation and direct DOM state inspection, not just visual screenshots) is the reason this task's log entry is long: a screenshot-only check would have shown "content displays" in both the broken and fixed versions, since the bug only manifested across a scroll-down-then-up sequence.
+
+Also re-checked Phase 3's combined acceptance-criteria block (this repo's convention checks it once after a phase's last task) against actual UI state: "3 parallax layers visibly respond differently" is functionally true in the hook but layers 2/3 have no live consumer yet, since no P3 task asked for one. Adjusted `MASTER_PLAN.md`'s Phase 3 acceptance-criteria block directly (permitted per DEVELOPMENT_LOOP.md §11) with an explicit note rather than silently claiming full compliance or treating it as a blocker — every literal task deliverable in P3-T01–T06 is independently complete and verified.
+
+Changed:
+- src/hooks/useParallax.js
+- src/hooks/useSectionProgress.js
+- src/components/systems/ParallaxLayer.jsx
+- src/components/project/ProjectStage.jsx
+- src/styles/project-stage.css
+- docs/FUTURE-ENVIRONMENT-LAYER.md
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6, re-run after every fix iteration)
+- build: PASS (CSS 33.14KB / 7.04KB gzip; main JS 423.31KB / 140.20KB gzip)
+- browser console/page errors: PASS (none, across every Playwright pass)
+- desktop (1280×900) regression: PASS — Synaptic project page sticky stage, five-state crossfade, and per-project SVG scenes render identically to pre-P3-T06 behavior
+- mobile (375×812) scroll-through, all 3 featured projects: PASS — Synaptic, Possah, Velmont each show a genuine 5-panel scroll story with correct accent colors, correct architecture content (`ArchDiagram` for Synaptic/Possah, node-map fallback for Velmont), dashed panel separators, and the subtle parallax grid
+- reveal-latch correctness (scroll down 5 steps, then up 5 steps back to top): PASS — verified via direct DOM inspection (`data-revealed` + `scrollY` per step) and a final screenshot; all panels remain revealed throughout
+- reduced motion: PASS — full `fullPage` screenshot renders every mobile panel and all text content immediately, confirming both `ScrollReveal` and the new mobile panels skip animation entirely
+- Lighthouse mobile spot-check (Synaptic project page, default CLI preset — mobile, 4x CPU, throttled network): Performance 84 vs. an 82 pre-Phase-3 baseline (net improvement, not a regression); Accessibility 100
+- Lighthouse desktop-preset spot-check: Performance 90, Accessibility 95
+- z-index/stacking review: PASS (`.project-stage--mobile` gets `position: relative; isolation: isolate;`, containing the `ParallaxLayer`'s negative z-index locally)
+
+Git:
+- commit: self (`P3-T06: add mobile scroll-driven project stage`)
+- push: SUCCESS
+
+Next:
+Phase 3 is fully Done. Phase 4 (`P4-T01` — `CursorCompanion.jsx`) is the next eligible phase per the dependency graph (depends only on P0, already done); Phase 6 (Typography Motion, depends only on P1) is also eligible in parallel if preferred.

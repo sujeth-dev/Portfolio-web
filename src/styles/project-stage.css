@@ -334,57 +334,91 @@
 }
 
 @media (max-width: 767px) {
-  .project-stage {
+  .project-stage--mobile {
     position: relative;
     top: auto;
-    min-height: 200px;
-    height: 200px;
-    grid-template-rows: 30px minmax(0, 1fr);
+    isolation: isolate;
+    min-height: 0;
+    height: auto;
+    display: block;
     box-shadow: var(--shadow-sm);
   }
 
-  .project-stage__viewport {
-    min-height: 0;
+  .project-stage--mobile .project-stage__topbar {
+    height: 30px;
   }
 
-  .project-stage__panel {
-    padding: 16px 20px;
-    gap: 7px;
+  .project-stage--mobile .project-stage__grid {
+    opacity: 0.3;
   }
 
-  .project-stage__monogram {
+  .project-stage__mobile-stack {
+    position: relative;
+    z-index: var(--z-content);
+  }
+
+  .project-stage__mobile-panel {
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 24px 20px;
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
+    transition:
+      opacity 420ms var(--ease-smooth),
+      transform 420ms var(--ease-smooth);
+  }
+
+  .project-stage__mobile-panel:not(:last-child) {
+    border-bottom: 2px dashed var(--border);
+  }
+
+  .project-stage__mobile-panel[data-revealed='true'] {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  .project-stage__mobile-panel-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .project-stage__mobile-panel .project-stage__monogram {
     width: 54px;
     border-width: 2px;
     font-size: 20px;
   }
 
-  .project-stage__project-name,
-  .project-stage__panel > strong {
+  .project-stage__mobile-panel .project-stage__project-name,
+  .project-stage__mobile-panel-body > strong {
     font-size: 18px;
   }
 
-  .project-stage__project-tagline,
-  .project-stage__summary {
-    -webkit-line-clamp: 1;
-    font-size: 11px;
+  .project-stage__mobile-panel .project-stage__project-tagline,
+  .project-stage__mobile-panel .project-stage__summary {
+    -webkit-line-clamp: 2;
+    font-size: 12px;
+    max-width: none;
   }
 
-  .project-stage__problem-signal,
-  .project-stage__node-map,
-  .project-stage__panel--architecture .arch-box,
-  .project-stage__terminal {
-    max-height: 92px;
+  .project-stage__mobile-panel .project-stage__problem-signal,
+  .project-stage__mobile-panel .project-stage__node-map,
+  .project-stage__mobile-panel .arch-box,
+  .project-stage__mobile-panel .project-stage__terminal {
+    max-height: 130px;
   }
 
-  .project-stage__result-mark {
+  .project-stage__mobile-panel .project-stage__result-mark {
     width: 54px;
     height: 54px;
     border-width: 2px;
     font-size: 22px;
-  }
-
-  .project-stage__rail {
-    display: none;
   }
 }
 
@@ -393,7 +427,8 @@
     transform: none;
   }
 
-  .project-stage__panel {
+  .project-stage__panel,
+  .project-stage__mobile-panel {
     transition: none;
   }
 }
