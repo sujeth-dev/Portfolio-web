@@ -89,7 +89,7 @@ This means **mobile needs its own real system, not a disabled fallback.** The pl
 | ID | Task | Depends on | Status |
 |---|---|---|---|
 | P2-T01 | Rewrite `src/components/common/ScrollReveal.jsx` internals to GSAP ScrollTrigger, preserving its existing external props/API so no call sites change | P1 | Done |
-| P2-T02 | Create `src/components/systems/VelocityEffects.jsx` + `src/styles/velocity-effects.css` (skew ≤2deg, stretch ≤1.01 scaleY, 20ms lag — all lerp to 0 on scroll stop) | P1 | Not Started |
+| P2-T02 | Create `src/components/systems/VelocityEffects.jsx` + `src/styles/velocity-effects.css` (skew ≤2deg, stretch ≤1.01 scaleY, 20ms lag — all lerp to 0 on scroll stop) | P1 | Done |
 | P2-T03 | Apply `VelocityEffects` to project pages and a small, named subset of Home sections (per design doc §5 Homepage table: Skills group cards, Thoughts cards) | P2-T02 | Not Started |
 
 **Acceptance criteria:** Every existing `ScrollReveal` call site behaves identically (no prop changes needed); velocity effects are visually subtle and fully settle within ~300ms of scroll stopping; reduced motion disables velocity effects entirely.

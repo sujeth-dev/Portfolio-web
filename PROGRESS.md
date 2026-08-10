@@ -2,7 +2,7 @@
 
 > Machine-readable-ish status snapshot. Updated after every task per `DEVELOPMENT_LOOP.md` §11. If this file and `EXECUTION_LOG.md` ever disagree, `EXECUTION_LOG.md` (append-only, chronological) wins — fix this file to match it.
 
-**Last updated:** 2026-08-10 10:37
+**Last updated:** 2026-08-10 10:41
 **Branch:** `work`
 
 ---
@@ -14,8 +14,8 @@ Status: In Progress
 
 ## Current task
 
-**P2-T02** — Create `src/components/systems/VelocityEffects.jsx` and `src/styles/velocity-effects.css` with restrained skew, stretch, and lag effects that settle when scrolling stops.
-Dependency Phase 1 is complete.
+**P2-T03** — Apply VelocityEffects to project pages and the named Home Skills and Thoughts card groups.
+Dependency P2-T02 is complete.
 
 ## Completed tasks
 
@@ -32,6 +32,7 @@ Dependency Phase 1 is complete.
 - **P1-T07** — Restructured featured case studies into the 55/45 scrolling-content/sticky-stage scene, wired the compact header and project navigation, added the 200px mobile stage fallback, and connected all five scroll states.
 - **P1-T08** — Centralized route-aware header selection in App so featured project routes render only CompactHeader while all other routes retain the full Nav; completed the Phase 1 regression gate.
 - **P2-T01** — Migrated ScrollReveal internals from IntersectionObserver/CSS transitions to one-shot GSAP ScrollTriggers while preserving every existing prop and call site, including delay and reduced-motion behavior.
+- **P2-T02** — Added the reusable VelocityEffects wrapper with capped skew/stretch/lag transforms, a 20ms lag response, bounded will-change activation, exact settling, and reduced-motion neutralization.
 
 (Prerequisite work — PixelRobot rollout, card-grid fixes — was already completed on `main`/`work` before this plan existed: commits `5209461` and `1475eb7`. See `EXECUTION_LOG.md` P0-T00 entry for the baseline this plan starts from.)
 
@@ -43,7 +44,7 @@ None currently active.
 
 ## Next action
 
-Start `P2-T02`: build the reusable restrained velocity-effects wrapper and stylesheet, including full reduced-motion neutralization and settling behavior.
+Start `P2-T03`: apply VelocityEffects to the project-page narrative and only the named Home Skills and Thoughts cards, then visually verify subtlety and settling.
 
 ## Repository baseline at plan creation (2026-08-09)
 

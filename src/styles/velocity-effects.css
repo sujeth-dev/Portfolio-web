@@ -1,0 +1,19 @@
+.velocity-effects {
+  --velocity-skew: 0deg;
+  --velocity-stretch: 1;
+  --velocity-lag: 0px;
+  transform:
+    translate3d(0, var(--velocity-lag), 0)
+    skewY(var(--velocity-skew))
+    scaleY(var(--velocity-stretch));
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .velocity-effects {
+    --velocity-skew: 0deg !important;
+    --velocity-stretch: 1 !important;
+    --velocity-lag: 0px !important;
+    transform: none !important;
+  }
+}

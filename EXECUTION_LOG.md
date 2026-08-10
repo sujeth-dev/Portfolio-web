@@ -401,3 +401,30 @@ Git:
 
 Next:
 P2-T02 — create the reusable VelocityEffects component and restrained velocity-effects stylesheet.
+
+## 2026-08-10 10:41 — P2-T02
+
+Action:
+Created the reusable VelocityEffects wrapper and stylesheet. It maps the provider's shared velocity to independently selectable skew, stretch, and translated-lag effects, caps every value, applies the specified 20ms lag response, marks will-change only while tweening, and eases exactly back to neutral after scrolling stops.
+
+Changed:
+- src/components/systems/VelocityEffects.jsx
+- src/styles/velocity-effects.css
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (final tree; temporary mounted build also PASS with component and CSS included)
+- runtime caps: PASS (observed max 1.9084deg skew, 1.009542 scaleY, 7.6336px lag; all below specified limits)
+- settling: PASS (skew 0deg, scaleY 1, lag 0px, active marker false within 300ms after scroll stopped)
+- reduced motion: PASS (neutral variables, transform none, active marker false during wheel input)
+- cleanup review: PASS (in-flight GSAP tweens killed on updates and unmount)
+
+Git:
+- commit: self (`P2-T02: add velocity effects`)
+- push: SUCCESS
+
+Next:
+P2-T03 — apply VelocityEffects to project pages and the named Home Skills and Thoughts card groups.
