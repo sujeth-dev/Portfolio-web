@@ -1433,3 +1433,26 @@ Git:
 
 Next:
 Resume `P6-T02` (Typography Motion), per `PROGRESS.md`.
+
+## 2026-08-10 19:35 — R2-T10 (follow-up: extend to every section boundary)
+
+Action:
+The user clarified that the border should appear "after each main division" — Home only had the zigzag at 2 of its 6 section boundaries (Hero→Work, and Currently→Contact via `zigzag-dark`). Added `<div className="zigzag" />` at the 3 previously-bare boundaries: Work→Skills, Skills→Experience, Experience→Currently — same plain-in-flow-divider pattern already used for Hero→Work. Also audited the codebase for any redundant flat `border-top`/`border-bottom` line that might double up with a zigzag at the same seam (the user's "remove the line if both present" instruction) — found none: `.section`/`.section-dark` have no border of their own, `Home.jsx` has zero inline `borderTop`/`borderBottom` styles, and the only other divider in the codebase (`.project-scene__divider` in `CaseStudyPanel.jsx`) is a margin-only modifier already combined with `zigzag`, not a separate line. So nothing needed removing — just needed adding at the missing seams.
+
+Verified for real this time, not just build-passing: ran `npm run dev`, drove headless Chromium against it. First attempt used a `fullPage: true` screenshot and showed most content missing between sections — this is the exact same capture artifact this project's own `EXECUTION_LOG.md` already documented once (P3-T05, 2026-08-10 11:40): an instant fullPage viewport resize never fires real scroll events, so `ScrollReveal`'s GSAP `ScrollTrigger`s (which start every element at `opacity:0` until scrolled into view) never activate. Re-verified correctly using real `page.mouse.wheel` scroll steps instead, which showed all content and all 7 zigzag instances (Nav + 5 section boundaries + Footer) rendering correctly with zero console/page errors. Also incidentally noticed the "stale screenshot" the user had been pointing at doesn't just lack the R2 UI changes — its Skills section shows 5 groups including a `BACKEND` group with `JWT`/`OAuth`/`Payment Gateways` that don't exist in the current `src/data/skills.js` (4 groups: BUILD/SYSTEMS/EXPLORE/SHIP) at all, confirming yet again that the deployment being compared against is old on the *content* level too, not just the UI — nothing to fix on this end, just further confirmation of the branch mismatch already identified.
+
+Changed:
+- src/pages/Home.jsx (3 new `<div className="zigzag" />` dividers)
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (CSS 41.16KB / 8.74KB gzip)
+- Playwright against `npm run dev`: `.zigzag` count on Home = 7 (Nav, Hero→Work, Work→Skills, Skills→Experience, Experience→Currently, Currently→Contact, Footer); zero console/page errors; real-scroll screenshots visually confirm all 5 section-boundary dividers plus Nav and Footer render the ink-dominant torn edge consistently, and confirm all section content (project cards, skill groups, experience toggle, currently grid, contact ripple) genuinely renders — the earlier fullPage capture's "missing content" was the documented capture artifact, not a real regression.
+
+Git:
+- commit: self (pending, see below)
+- push: pending
+
+Next:
+Resume `P6-T02` (Typography Motion), per `PROGRESS.md`.

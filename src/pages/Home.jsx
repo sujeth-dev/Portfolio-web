@@ -140,6 +140,8 @@ export default function Home() {
         </div>
       </section>
 
+      <div className="zigzag" />
+
       {/* ── Skills Toolbox ── */}
       <section className="section interaction-layer" style={{ background: 'var(--cream)' }}>
         <SectionBackground theme="technical" intensity={0.35} />
@@ -168,6 +170,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <div className="zigzag" />
 
       {/* ── Experience ── */}
       <section className="section" id="experience">
@@ -222,6 +226,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <div className="zigzag" />
 
       {/* ── Currently ── */}
       <section className="section" style={{ background: 'var(--cream)' }}>
