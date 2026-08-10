@@ -148,7 +148,7 @@ This means **mobile needs its own real system, not a disabled fallback.** The pl
 
 | ID | Task | Depends on | Status |
 |---|---|---|---|
-| R1-T01 | Home hero: replace `<h1 className="hero-name">{meta.name}</h1>` with a new `AnimatedPixelRobot` (same silhouette/palette as `PixelRobot`, minimal idle motion — blink, bob, tilt — frozen under reduced motion). `Nav.jsx` logo untouched. **Human checkpoint: present result for approval before continuing to the next task.** | — | In Progress |
+| R1-T01 | Home hero: replace `<h1 className="hero-name">{meta.name}</h1>` with a new `AnimatedPixelRobot` (same silhouette/palette as `PixelRobot`, minimal idle motion — blink, bob, tilt — frozen under reduced motion). `Nav.jsx` logo untouched. **Human checkpoint: present result for approval before continuing to the next task.** | — | Done (awaiting approval) |
 | R1-T02 | Publish an Artifact presenting 4–6 alternate `PixelRobot` color-combination recommendations (light + dark background contexts). Human-decision checkpoint (like `P5-T00`) — do not apply site-wide; record as awaiting-decision and move on. | R1-T01 | Not Started |
 | R1-T03 | Remove `ScrollProgressIndicator`'s LED dots (`.scroll-indicator__leds`/`__led` + the `currentSection`-matching logic that drives them); keep the track/fill/notch gauge. | — | Not Started |
 | R1-T04 | Delete `CursorCompanion.jsx` + `cursor-companion.css` and its `AppShell` mount entirely; add a plain custom retro-pixel CSS `cursor` (data-URI SVG) site-wide instead. Remove the now-dead `data-cursor` attributes added in P4-T03 (`Work.jsx`, `Lab.jsx`, `ProjectPage.jsx`, `ProjectNav.jsx`, `Nav.jsx`). | — | Not Started |

@@ -5,6 +5,7 @@ import { experiences } from '../data/experience'
 import { skillGroups } from '../data/skills'
 import { now } from '../data/now'
 import PixelRobot from '../components/common/PixelRobot'
+import AnimatedPixelRobot from '../components/common/AnimatedPixelRobot'
 import ScrollReveal from '../components/common/ScrollReveal'
 import VelocityEffects from '../components/systems/VelocityEffects'
 import { SectionBackground } from '../components/systems/SectionBackground'
@@ -24,7 +25,10 @@ export default function Home() {
             <div>
               <ScrollReveal>
                 <div className="hero-title">{meta.subtitle}</div>
-                <h1 className="hero-name">{meta.name}</h1>
+                <h1 className="hero-name-wrap">
+                  <span className="sr-only">{meta.name}</span>
+                  <AnimatedPixelRobot />
+                </h1>
                 <p className="hero-desc">{meta.summary}</p>
                 <div className="hero-actions">
                   <Link to="/work" className="btn btn-primary">View Work</Link>

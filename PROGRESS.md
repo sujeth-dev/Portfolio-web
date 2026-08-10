@@ -16,7 +16,7 @@ The user reviewed the production preview of Phases 0–4 and gave a large batch 
 
 ## Current task
 
-**R1-T01** — Home hero: replace `<h1 className="hero-name">{meta.name}</h1>` with a new `AnimatedPixelRobot` component (minimal idle motion: blink/bob/tilt, frozen under reduced motion). `Nav.jsx` logo stays unchanged. **This task has a human-approval checkpoint** — after building and verifying it, present the result to the user and pause before starting R1-T02, per their explicit request to see this one first.
+**R1-T01 built and verified, awaiting user approval before R1-T02 starts.** Replaced `Home.jsx`'s `<h1 className="hero-name">{meta.name}</h1>` with a new `AnimatedPixelRobot` component (`src/components/common/AnimatedPixelRobot.jsx` + `src/styles/animated-pixel-robot.css`) — same silhouette/palette as `PixelRobot`, wrapped in `<h1 className="hero-name-wrap"><span className="sr-only">{meta.name}</span><AnimatedPixelRobot /></h1>` so the page keeps a real, screen-reader-visible `<h1>` with the name while sighted users see the animated mascot (blink + bob/tilt idle loop, frozen under reduced motion via a new `.sr-only` utility added to `src/index.css`). `Nav.jsx` logo confirmed unchanged. Verified via Playwright against the production preview: sr-only h1 text correct, old `.hero-name` gone, animations running normally and `none` under `reducedMotion: 'reduce'`, Nav robot/text untouched, no console errors, mobile (375px) robot centered. `npm test` 6/6, `npm run build` clean. **Per the user's explicit request, this is a stop-and-show checkpoint — do not start R1-T02 until they've seen and approved it.**
 
 ## Completed tasks
 

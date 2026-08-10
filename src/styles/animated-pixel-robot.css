@@ -1,0 +1,50 @@
+.animated-pixel-robot {
+  display: block;
+  width: clamp(72px, 9vw + 24px, 140px);
+  height: auto;
+  overflow: visible;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 768px) {
+  .animated-pixel-robot {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.animated-pixel-robot__body {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: apr-drift 6.4s ease-in-out infinite;
+}
+
+.animated-pixel-robot__eye {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: apr-blink 4.8s ease-in-out infinite;
+}
+
+.animated-pixel-robot__eye--right {
+  animation-delay: 0.04s;
+}
+
+@keyframes apr-drift {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-4%) rotate(-2deg); }
+  50% { transform: translateY(0) rotate(0deg); }
+  75% { transform: translateY(-2%) rotate(2deg); }
+}
+
+@keyframes apr-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animated-pixel-robot__body,
+  .animated-pixel-robot__eye {
+    animation: none !important;
+    transform: none !important;
+  }
+}

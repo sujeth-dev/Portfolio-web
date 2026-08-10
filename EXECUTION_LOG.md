@@ -808,3 +808,35 @@ Git:
 
 Next:
 `R1-T01` — build `AnimatedPixelRobot`, replace the hero name heading on `Home.jsx`, verify (dev server + production preview, reduced-motion check), then stop and present the result to the user for approval before starting `R1-T02`.
+
+## 2026-08-10 15:35 — R1-T01
+
+Action:
+Replaced `Home.jsx`'s hero `<h1 className="hero-name">{meta.name}</h1>` with a new `AnimatedPixelRobot` component. Created `src/components/common/AnimatedPixelRobot.jsx`: renders the exact same 5-rect pixel silhouette/palette as `PixelRobot.jsx` (no redesign), grouped into a `.animated-pixel-robot__body` wrapper plus two `.animated-pixel-robot__eye` rects, with idle motion added purely via CSS (`src/styles/animated-pixel-robot.css`): a single combined `apr-drift` keyframe (translateY + rotate, ~6.4s loop) on the body for a subtle bob/tilt "thinking" motion, and a separate `apr-blink` keyframe (scaleY dip, ~4.8s loop, slightly offset between the two eyes) for blinking. Kept both as one `transform`-driving keyframe per element rather than stacking multiple `animation` declarations on the same property, since CSS animations don't composite `transform` across separate animations on the same element — an earlier draft with separate bob and tilt animations would have had the second silently override the first.
+
+**Accessibility call not explicitly specified in the plan, made and documented here:** removing the `<h1>` text entirely would have left the page with no semantic top-level heading and no screen-reader-audible name. Instead of dropping the heading, kept `<h1 className="hero-name-wrap">` as the real heading element, containing a new `.sr-only` utility span (added to `src/index.css`'s reset block — a standard clip-based visually-hidden pattern, this codebase had none yet) with `{meta.name}` as its accessible text, followed by the visible `<AnimatedPixelRobot />`. Sighted users see only the robot where the name used to be; screen readers still announce the name as the page's `<h1>`, matching the icon-replacing-text pattern this design system already uses for things like `PixelRobot`'s own `aria-hidden` (the opposite case — decorative-only) but here the accessible name has to survive since it's the *only* representation of the page's h1 content.
+
+`Nav.jsx`'s logo (separate small `PixelRobot` + "SUJETH" text) was explicitly left untouched per the user's correction.
+
+Changed:
+- src/pages/Home.jsx
+- src/index.css (added `.sr-only` utility)
+- src/components/common/AnimatedPixelRobot.jsx (new)
+- src/styles/animated-pixel-robot.css (new)
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (CSS 35.88KB / 7.53KB gzip; main JS 426.94KB / 141.04KB gzip)
+- Playwright pass against production preview (`vite preview`, port 4173): sr-only h1 text reads "Sujeth A S"; exactly one `AnimatedPixelRobot` svg inside the h1; old `.hero-name` element count is 0; `.animated-pixel-robot__body`/`__eye` both have a live `animation-name` under normal motion (`apr-drift`/`apr-blink`) and `none` under `reducedMotion: 'reduce'` emulation; `.nav-logo` still has exactly 1 svg and the text "SUJETH", confirming it wasn't touched; zero console/page errors; at 375px the robot renders centered in the hero container (mobile `.hero-grid` centering still applies to the new block element)
+- visual screenshot review (temporary, deleted before commit): hero reads correctly — subtitle, robot mascot where the name was, description, actions, ticker, all still in place with reasonable spacing
+- working-tree cleanliness: PASS — temporary Playwright script and screenshot removed before staging
+
+Git:
+- commit: self (pending, see below)
+- push: pending
+
+Next:
+**Stop and present this task's result to the user for explicit approval before starting R1-T02**, per their request to see the hero-robot change first. Do not proceed automatically.
