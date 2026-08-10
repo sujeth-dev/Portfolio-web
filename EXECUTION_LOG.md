@@ -457,3 +457,29 @@ Git:
 
 Next:
 P3-T01 — create the three-layer parallax hook with responsive and reduced-motion behavior.
+
+## 2026-08-10 11:00 — P3-T01
+
+Action:
+Created the §2C `useParallax` hook. It reads the provider's lerped mouse position via a render-updated ref (matching the `useMouseProximity` pattern) and drives a per-element GSAP `gsap.set` transform on the shared ticker: mouse offset scaled by viewport dimensions and the layer's `mouseStrength`, plus a scroll-linked offset from a local ScrollTrigger (`top bottom` → `bottom top`, scrubbed) scaled by `scrollStrength`. Layer 1/2/3 default strengths match the design doc table exactly (0.01/0.02, 0.03/0.05, 0.05/0.03) and can be overridden per call. Reduced motion or mobile clears any transform and skips creating a ticker callback or ScrollTrigger entirely.
+
+Changed:
+- src/hooks/useParallax.js
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (unchanged bundle — hook not yet consumed by any component)
+- direct hook bundle check: PASS (`esbuild`, browser ESM)
+- §2C signature/strength-table review: PASS (matches `useParallax(elementRef, { layer, mouseStrength, scrollStrength, axis })`; layer table exact)
+- reduced-motion/mobile no-op review: PASS (early return, `clearProps: 'transform'`, no ticker/trigger created)
+- task-specific manual checks: not applicable until P3-T03 (`ParallaxLayer`) consumes the hook
+
+Git:
+- commit: self (`P3-T01: add parallax hook`)
+- push: SUCCESS
+
+Next:
+P3-T02 — create `useSectionProgress.js` as a thin ScrollTrigger wrapper for theme crossfade.
