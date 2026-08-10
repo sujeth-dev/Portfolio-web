@@ -140,6 +140,31 @@ This means **mobile needs its own real system, not a disabled fallback.** The pl
 
 ---
 
+## Phase R1 — User Revision Round (Preview Feedback, 2026-08-10)
+
+**Goal:** Address a batch of feedback the user gave after reviewing the production preview of Phases 0–4, before continuing to Phase 6. Recorded per `DEVELOPMENT_LOOP.md` §11 ("this file is allowed to evolve"). Full triage context, investigation findings, and the Plan-agent validation for R1-T05 live in the approved plan at the time this phase was added; summarized here for execution.
+**Depends on:** P0–P4 done (all satisfied). Independent of Phase 6 — this phase is simply prioritized ahead of it in execution order per the user's explicit request.
+**Status:** In Progress
+
+| ID | Task | Depends on | Status |
+|---|---|---|---|
+| R1-T01 | Home hero: replace `<h1 className="hero-name">{meta.name}</h1>` with a new `AnimatedPixelRobot` (same silhouette/palette as `PixelRobot`, minimal idle motion — blink, bob, tilt — frozen under reduced motion). `Nav.jsx` logo untouched. **Human checkpoint: present result for approval before continuing to the next task.** | — | In Progress |
+| R1-T02 | Publish an Artifact presenting 4–6 alternate `PixelRobot` color-combination recommendations (light + dark background contexts). Human-decision checkpoint (like `P5-T00`) — do not apply site-wide; record as awaiting-decision and move on. | R1-T01 | Not Started |
+| R1-T03 | Remove `ScrollProgressIndicator`'s LED dots (`.scroll-indicator__leds`/`__led` + the `currentSection`-matching logic that drives them); keep the track/fill/notch gauge. | — | Not Started |
+| R1-T04 | Delete `CursorCompanion.jsx` + `cursor-companion.css` and its `AppShell` mount entirely; add a plain custom retro-pixel CSS `cursor` (data-URI SVG) site-wide instead. Remove the now-dead `data-cursor` attributes added in P4-T03 (`Work.jsx`, `Lab.jsx`, `ProjectPage.jsx`, `ProjectNav.jsx`, `Nav.jsx`). | — | Not Started |
+| R1-T05 | Restructure `ProjectPage.jsx`: collapse the 55/45 grid to a single column — hero → full-width sticky `ProjectStage` (own dedicated scroll-track `min-height`, decoupled from case-study height) → new collapsed-by-default `CaseStudyPanel` accordion (all 7 case-study sections moved in, unchanged content) → `ProjectNav`. `ScrollTrigger.refresh()` on toggle. No changes to `ProjectStage.jsx`/`useScrollEngine.js`/`useSectionProgress.js`/`CompactHeader.jsx`/`ProjectNav.jsx`. | P1 (done) | Not Started |
+| R1-T06 | Enrich the project-page visual system's background (richer pattern/per-project accent on the `technical` theme instance used by `ProjectStage`'s `SectionBackground`, scoped so the shared `.bg-technical` used elsewhere is untouched). | R1-T05 | Not Started |
+| R1-T07 | Make Home hero's `.bg-open` background livelier: add a second dot layer at a different scale + a slow continuous ambient `@keyframes` drift, off under reduced motion. | — | Not Started |
+| R1-T08 | Home's `#experience` section starts collapsed (heading + toggle only) and expands the full `.exp-list` on click, via the same accordion idiom as R1-T05. | — | Not Started |
+| R1-T09 | Animate Contact section's `.bg-signal` ring pattern with a slow continuous drift/rotation, off under reduced motion. | — | Not Started |
+| R1-T10 | Fix the zigzag/"paper-cut" border (currently invisible — `.zigzag`/`.zigzag-dark` alternate `var(--bg)` against sections that are also `var(--bg)`, a zero-contrast no-op) so it reads as a visible torn edge regardless of neighboring section color; extend the same treatment to `Nav`/`CompactHeader` (bottom edge) and `Footer` (top edge). | — | Not Started |
+
+**Acceptance criteria (phase-level):** All ten tasks' individual acceptance criteria met; no regression to Phases 0–4's existing acceptance criteria; `npm test`/`npm run build` clean throughout; reduced-motion and mobile (375px) regressions checked wherever a task touches animation/layout (R1-T01, T05–T10).
+
+**Required tests:** `npm test`, `npm run build` per task; task-specific manual/visual passes as detailed per task above (dev server + production `vite preview`); reduced-motion toggle; mobile viewport; keyboard-only pass for the two new accordions (R1-T05, R1-T08).
+
+---
+
 ## Phase 5 — Robot Integration Across Site
 
 **Goal:** A companion robot appears at strategic points across all pages (not just project pages), responds to mouse proximity.

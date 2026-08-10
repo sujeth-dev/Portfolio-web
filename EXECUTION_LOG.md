@@ -780,3 +780,31 @@ Git:
 Next:
 Phase 4 is fully Done. Phase 5 is NOT next: even though a robot decision is already recorded (`MASTER_PLAN.md` line 24, 2026-08-09), `P5-T00` is explicitly named in `DEVELOPMENT_LOOP.md` §2 as a task this loop must never guess on — treat it as blocker handling (§6), not silent proceeding, regardless of a decision existing elsewhere. Leaving Phase 5 alone. Phase 6 (Typography Motion, depends only on P1, already Done) has no such gate — starting there. `P6-T01`: create `TypographyMotion.jsx` + `typography-motion.css`.
 Phase 3 is fully Done. Phase 4 (`P4-T01` — `CursorCompanion.jsx`) is the next eligible phase per the dependency graph (depends only on P0, already done); Phase 6 (Typography Motion, depends only on P1) is also eligible in parallel if preferred.
+
+## 2026-08-10 15:10 — Phase R1 planning (no code changed)
+
+Action:
+User reviewed the production preview (`vite preview`, port 4173) of Phases 0–4 and gave a large batch of feedback, delivered as a voice transcript covering nine distinct concerns: (1) wants alternative color-combination recommendations for the `PixelRobot` mascot before picking one to roll out everywhere; (2) `ScrollProgressIndicator`'s green LED dots "light up randomly" / "it'll not work" — remove them; (3) `CursorCompanion`'s `VIEW`-label pill on Work project cards "is also not good" — replace the whole label-pill interaction with a retro-style cursor; (4) on `ProjectPage`, the visual system (`ProjectStage`) should become the primary content, with the written case study becoming a small, secondary, optionally-viewable element instead of the current 55/45 dominant-text layout; (5) further improve the project pages' visual-system background; (6) Home's hero `.bg-open` dot pattern should be made livelier/more animated; (7) Home's Experience section should start collapsed and expand on interaction instead of being fully expanded on load; (8) Contact section's background circles (already praised as "very, very beautiful") should move slowly instead of being static; (9) a "paper-cut" (zigzag) border that previously existed between sections is missing and should be restored, plus newly added to the header and footer.
+
+Entered plan mode to triage this into tracked work rather than acting ad hoc, per the user's explicit "note this down page by page" request. Read the current live state of every file involved (`ProjectPage.jsx`, `ProjectStage.jsx`, `Home.jsx`, `Work.jsx`, `Nav.jsx`, `Footer.jsx`, `CursorCompanion.jsx`/css, `ScrollProgressIndicator.jsx`/css, `SectionBackground.jsx`, `ParallaxLayer.jsx`, `useParallax.js`, `section-backgrounds.css`, `index.css`'s zigzag rules) and ran a Plan sub-agent against the real code specifically for the riskiest item (the ProjectPage restructure), to validate the sticky-scroll mechanics before committing to an approach in the plan.
+
+**Two investigation findings worth recording:**
+- The "missing paper-cut border" is a real, explainable regression, not a misperception: `.zigzag`/`.zigzag-dark` (`src/index.css:264-282`) already exist and are already mounted in all three intended locations, but the pattern works by alternating `var(--bg)` against transparent — and `body`, `.bg-open`, and `.bg-technical` (the section pair the strip sits between on Home) all resolve to the identical `var(--bg)` (#F5EEDC). The strip is rendering with zero contrast on both sides today, not absent. R1-T10 fixes the underlying contrast logic, not just "re-adds" the div.
+- Initial plan draft (R1-T01: remove per-card `PixelRobot` repetition, R1-T04: keep `CursorCompanion` but swap its text pill for a cursor-following glyph) was rejected on first review. User clarified: (a) the actual hero-related ask was to replace `Home.jsx`'s `<h1 className="hero-name">` with a new, minimally-animated `PixelRobot` variant (blink/bob/tilt idle motion) — not about reducing repeated card icons, and this specific task should be built first and shown to the user for explicit approval before continuing; (b) `Nav.jsx`'s logo instance stays untouched; (c) `CursorCompanion` should be deleted entirely, not reworked — replaced with a plain custom CSS `cursor` (retro pixel-art data-URI), no React tracking component at all; (d) the ProjectPage restructure plan (R1-T05) was approved as drafted, with one confirmation: preserve the existing scroll-driven "slide by slide" state-reveal feel exactly as it behaves today, just make the stage full-width/primary and the case study collapsible.
+
+Recorded the corrected plan as a new **Phase R1 — User Revision Round (Preview Feedback, 2026-08-10)** in `MASTER_PLAN.md`, inserted after Phase 4 (before Phase 5), 10 tasks (`R1-T01`–`R1-T10`), depending only on already-Done P0–P4 so it doesn't conflict with Phase 6's dependency graph — Phase 6 is deprioritized in execution order only, not removed. `R1-T01` and `R1-T02` are flagged as human-checkpoint tasks (present-and-pause), matching the existing `P5-T00` precedent in this plan for tasks needing a human decision rather than a guess.
+
+Changed:
+- MASTER_PLAN.md (new Phase R1 block, 10 tasks)
+- PROGRESS.md (current phase/task/next-action repointed to Phase R1 / R1-T01)
+- EXECUTION_LOG.md (this entry)
+
+Validation:
+- No code changed in this entry — planning/documentation only, so no test/build gate applies.
+
+Git:
+- commit: pending (bundled with this entry's push, see below)
+- push: pending
+
+Next:
+`R1-T01` — build `AnimatedPixelRobot`, replace the hero name heading on `Home.jsx`, verify (dev server + production preview, reduced-motion check), then stop and present the result to the user for approval before starting `R1-T02`.

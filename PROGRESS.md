@@ -2,20 +2,21 @@
 
 > Machine-readable-ish status snapshot. Updated after every task per `DEVELOPMENT_LOOP.md` §11. If this file and `EXECUTION_LOG.md` ever disagree, `EXECUTION_LOG.md` (append-only, chronological) wins — fix this file to match it.
 
-**Last updated:** 2026-08-10 14:40
+**Last updated:** 2026-08-10 15:10
 **Branch:** `work`
 
 ---
 
 ## Current phase
 
-**Phase 4 — Cursor Companion + Scroll Progress** (`MASTER_PLAN.md` → Phase 4)
-Status: Done
+**Phase R1 — User Revision Round (Preview Feedback, 2026-08-10)** (`MASTER_PLAN.md` → Phase R1)
+Status: In Progress
+
+The user reviewed the production preview of Phases 0–4 and gave a large batch of feedback (logo/robot treatment, removing two Phase 4 patterns they disliked, a ProjectPage visual-primary restructure, background/animation polish, an Experience collapse behavior, a missing paper-cut border). This phase was inserted ahead of Phase 6 to address it — see `MASTER_PLAN.md`'s Phase R1 table for the 10 tasks. `P6-T01` (Typography Motion) is deferred, not abandoned; resumes after Phase R1.
 
 ## Current task
 
-**P6-T01** — Create `src/components/systems/TypographyMotion.jsx` + `src/styles/typography-motion.css`.
-Dependency P1 is complete. Phase 5 is intentionally skipped for now: `P5-T00` is explicitly named in `DEVELOPMENT_LOOP.md` §2 as a task this loop must never guess on, even though a robot decision is already recorded (see Blockers below) — it stays untouched pending explicit human sign-off, not silently executed.
+**R1-T01** — Home hero: replace `<h1 className="hero-name">{meta.name}</h1>` with a new `AnimatedPixelRobot` component (minimal idle motion: blink/bob/tilt, frozen under reduced motion). `Nav.jsx` logo stays unchanged. **This task has a human-approval checkpoint** — after building and verifying it, present the result to the user and pause before starting R1-T02, per their explicit request to see this one first.
 
 ## Completed tasks
 
@@ -57,7 +58,7 @@ None currently active.
 
 ## Next action
 
-Start `P6-T01`: create `src/components/systems/TypographyMotion.jsx` + `src/styles/typography-motion.css` (`slide-in`/`mask-reveal`/`parallax-drift` effects per design doc §2, ScrollTrigger scrub, immediate render under reduced motion). Depends only on P1, already Done. Phase 5 stays untouched (see Current task note).
+Start `R1-T01` (see Current task above). After it clears its human-approval checkpoint, proceed to `R1-T02` (robot color recommendations, publish-and-move-on) then `R1-T03`..`R1-T10` in the order recorded in `MASTER_PLAN.md`'s Phase R1 table. `P6-T01` (Typography Motion, unchanged scope) resumes once Phase R1 is Done. Phase 5 stays untouched (see Blockers note).
 
 ## Repository baseline at plan creation (2026-08-09)
 
