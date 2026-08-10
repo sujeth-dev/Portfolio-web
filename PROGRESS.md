@@ -9,16 +9,18 @@
 
 ## Current phase
 
-**Phase 6 — Typography Motion** (`MASTER_PLAN.md` → Phase 6)
+**Phase R2 — User Revision Round 2** (`MASTER_PLAN.md` → Phase R2)
 Status: In Progress
 
 Phase R1 — User Revision Round (Preview Feedback, 2026-08-10) is Done (10/10 tasks). One follow-up outside that table: `R1-T02`'s robot color pick is still awaiting the user; apply site-wide once chosen.
 
-The user reviewed the production preview of Phases 0–4 and gave a large batch of feedback (logo/robot treatment, removing two Phase 4 patterns they disliked, a ProjectPage visual-primary restructure, background/animation polish, an Experience collapse behavior, a missing paper-cut border). This phase was inserted ahead of Phase 6 to address it — see `MASTER_PLAN.md`'s Phase R1 table for the 10 tasks. `P6-T01` (Typography Motion) is deferred, not abandoned; resumes after Phase R1.
+The user reviewed the R1 preview and gave a second batch of feedback (tame + enliven the hero background, match the project-page background to it, a minimal single-line scroll indicator, remove the Workshop Status card, a symmetric Selected Work grid, a real ripple on the Contact circle, curated robot micro-interactions, more robot color options, an About-page duplicate-name fix, and — once they supplied a concrete reference — a paper-cut-border redesign). This phase is inserted ahead of Phase 6's continuation, same precedent as R1. See `MASTER_PLAN.md`'s Phase R2 table for the 10 tasks.
 
 ## Current task
 
-**R1-T01 approved by the user (2026-08-10).** R1-T02 done: published an Artifact (`PixelRobot — Color Study`), expanded to 10 named color combinations after the user asked for more blue/white/black options — baseline "Signal Red" + Toolbox Yellow, Systems Green, Workshop Brown, Night Ink (existing site tokens) + Blueprint Blue, Deep Navy, Sky Cyan, Ice White, Blackout (new colors, added on request, with an `outline` flag added to the SVG generator so the white option stays legible against the light stage). Human-decision checkpoint (like `P5-T00`) — **still awaiting the user's pick, not applied to any site file.** Per the plan, not blocking the loop on it.
+**Phase R2, starting at `R2-T04`** (first eligible per the dependency graph — `R2-T01` depends on it since removing the Workshop Status card changes the hero-grid layout `R2-T01` also touches).
+
+**Phase R1 recap:** `R1-T01` approved by the user (2026-08-10). `R1-T02` done: published an Artifact (`PixelRobot — Color Study`), expanded to 10 named color combinations after the user asked for more blue/white/black options — baseline "Signal Red" + Toolbox Yellow, Systems Green, Workshop Brown, Night Ink (existing site tokens) + Blueprint Blue, Deep Navy, Sky Cyan, Ice White, Blackout (new colors, added on request, with an `outline` flag added to the SVG generator so the white option stays legible against the light stage). Human-decision checkpoint (like `P5-T00`) — **still awaiting the user's pick, not applied to any site file.** `R2-T08` will add 4 more options to this same Artifact.
 
 R1-T03 done: removed `ScrollProgressIndicator`'s LED dots (`.scroll-indicator__leds`/`__led` elements and CSS, and the `currentSection`-matching logic in `getSectionMarks` that only existed to drive LED highlighting) — the track/fill/notch gauge itself is unchanged and still tracks scroll position correctly (verified 0→100 `aria-valuenow` across a full scroll on the production preview).
 
@@ -42,9 +44,7 @@ R1-T10 done (last task in Phase R1): fixed the zigzag/"paper-cut" border and ext
 
 **Scope note recorded during PLAN:** P6-T02's originally-planned "Home hero mask-reveal" target no longer exists as text — `R1-T01` replaced the hero name with an animated robot icon. Noted in `MASTER_PLAN.md`'s Phase 6 section; P6-T02 will pick a different target when it runs, not guessed here.
 
-## Current task
-
-**P6-T02** — apply `TypographyMotion` to section titles and selected oversized headings (Skills heading `slide-in` as originally planned; hero target substituted per the scope note above — decide and record the specific substitution during execution).
+**P6-T02 deferred again, same precedent as Phase R1's insertion ahead of Phase 6.** Phase R2 (see "Current phase"/"Current task" above) takes priority; P6-T02 resumes once Phase R2 is Done.
 
 ## Completed tasks
 

@@ -27,66 +27,22 @@ export default function Home() {
         <SectionBackground theme="open" />
         <div className="container">
           <div className="hero-grid">
-            <div>
-              <ScrollReveal>
-                <div className="hero-title">{meta.subtitle}</div>
-                <h1 className="hero-name-wrap">
-                  <span className="sr-only">{meta.name}</span>
-                  <AnimatedPixelRobot />
-                </h1>
-                <p className="hero-desc">{meta.summary}</p>
-                <div className="hero-actions">
-                  <Link to="/work" className="btn btn-primary">View Work</Link>
-                  <a href={`mailto:${meta.email}`} className="btn btn-secondary">Get in Touch</a>
-                </div>
-                <div className="ticker">
-                  <span className="led led-on" />
-                  <span>currently building: {now.building[0]}</span>
-                </div>
-              </ScrollReveal>
-            </div>
-            <div className="workshop-vignette">
-              <ScrollReveal delay={200}>
-                <div style={{
-                  border: 'var(--border-md)',
-                  background: 'var(--bg-card)',
-                  padding: 32,
-                  boxShadow: 'var(--shadow-lg)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: 16,
-                }}>
-                  <PixelRobot size={64} />
-                  <div style={{
-                    fontFamily: 'var(--font-label)',
-                    fontSize: 11,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.08em',
-                    color: 'var(--muted)',
-                    textAlign: 'center',
-                  }}>
-                    Workshop Status
-                  </div>
-                  <div style={{ display: 'flex', gap: 12 }}>
-                    <span className="led led-on" />
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--green)' }}>
-                      ALL SYSTEMS ONLINE
-                    </span>
-                  </div>
-                  <div style={{
-                    display: 'flex',
-                    gap: 8,
-                    flexWrap: 'wrap',
-                    justifyContent: 'center',
-                  }}>
-                    {['React', 'Node', 'Postgres', 'Ship'].map((s) => (
-                      <span key={s} className="tag">{s}</span>
-                    ))}
-                  </div>
-                </div>
-              </ScrollReveal>
-            </div>
+            <ScrollReveal>
+              <div className="hero-title">{meta.subtitle}</div>
+              <h1 className="hero-name-wrap">
+                <span className="sr-only">{meta.name}</span>
+                <AnimatedPixelRobot />
+              </h1>
+              <p className="hero-desc">{meta.summary}</p>
+              <div className="hero-actions">
+                <Link to="/work" className="btn btn-primary">View Work</Link>
+                <a href={`mailto:${meta.email}`} className="btn btn-secondary">Get in Touch</a>
+              </div>
+              <div className="ticker">
+                <span className="led led-on" />
+                <span>currently building: {now.building[0]}</span>
+              </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>

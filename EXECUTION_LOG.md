@@ -1151,3 +1151,28 @@ Git:
 
 Next:
 `P6-T02` — apply `TypographyMotion` to section titles and selected oversized headings: `slide-in` on the Skills heading (unaffected by the R1 changes, proceeds as originally planned), plus a replacement target for the stale "Home hero mask-reveal" (see the scope note in `MASTER_PLAN.md`'s Phase 6 section — to be decided during that task's PLAN step, not guessed here).
+
+## 2026-08-10 17:00 — R2-T04
+
+Action:
+User gave a second batch of preview feedback (10 items); inserted `MASTER_PLAN.md` Phase R2 (10 tasks, `R2-T01`–`R2-T10`) ahead of `P6-T02`'s resumption, same precedent as Phase R1. Started at `R2-T04` (first eligible per the dependency graph, since `R2-T01` depends on it). Removed Home hero's `.workshop-vignette` block entirely (`Home.jsx` — the "Workshop Status / ALL SYSTEMS ONLINE / React·Node·Postgres·Ship" card), per the user's explicit "this not needed, remove it" instruction. Collapsed `.hero-grid` from a 2-column grid to a single column (`max-width: 640px`) now that the second column is empty, rather than leaving a stretched-empty grid track.
+
+Changed:
+- src/pages/Home.jsx
+- src/index.css (`.hero-grid` single-column; removed the now-dead `.workshop-vignette` block; kept `.led`/`.led-on` — still used by the hero ticker — and `.tag` — still used by project cards)
+- MASTER_PLAN.md (new Phase R2 table; R2-T04 marked Done)
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (74 modules, clean)
+- code review: PASS — confirmed `PixelRobot` import in `Home.jsx` still has two live call sites (project-card footer, Contact section) after removing the workshop-vignette's usage; confirmed no other file references `.workshop-vignette`
+- manual/visual browser check: NOT PERFORMED this session — no browser-automation tool available (unlike prior sessions' Playwright access). Recommend the user confirm visually via `npm run dev`.
+
+Git:
+- commit: self (pending, see below)
+- push: pending
+
+Next:
+R2-T01 — tame + enliven Home hero background.
