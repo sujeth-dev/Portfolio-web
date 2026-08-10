@@ -32,7 +32,9 @@ The user reviewed the R1 preview and gave a second batch of feedback (tame + enl
 
 **R2-T07 done:** `AnimatedPixelRobot` is now stateful — cursor-tracking eyes (merged with idle look-around into one mechanism, driven by the existing global `--mouse-x-norm`/`--mouse-y-norm` vars, no `useMouseProximity` needed after all), 45s AFK/sleep mode with floating Zzz, CRT glitch flicker, hover head-bop (pure CSS, no JS), and click expression cycling (happy/surprised/wink/dizzy, auto-reverts after 1.8s). Out-of-scope items recorded in `MASTER_PLAN.md`'s R2-T07 row.
 
-**Current task: R2-T08** — add 4 new color options to the `PixelRobot — Color Study` Artifact.
+**R2-T08 done:** the `PixelRobot — Color Study` Artifact now has 14 options (added Phosphor Amber, Arcade Tangerine, Amber Ink Hybrid, Terminal Invert), republished to the same URL. Still awaiting the user's pick — nothing applied to any site file.
+
+**Current task: R2-T09** — fix About page's duplicate name (standalone `<h1>` vs. `.dev-card-name`).
 
 **Phase R1 recap:** `R1-T01` approved by the user (2026-08-10). `R1-T02` done: published an Artifact (`PixelRobot — Color Study`), expanded to 10 named color combinations after the user asked for more blue/white/black options — baseline "Signal Red" + Toolbox Yellow, Systems Green, Workshop Brown, Night Ink (existing site tokens) + Blueprint Blue, Deep Navy, Sky Cyan, Ice White, Blackout (new colors, added on request, with an `outline` flag added to the SVG generator so the white option stays legible against the light stage). Human-decision checkpoint (like `P5-T00`) — **still awaiting the user's pick, not applied to any site file.** `R2-T08` will add 4 more options to this same Artifact.
 

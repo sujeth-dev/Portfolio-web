@@ -1337,3 +1337,26 @@ Git:
 
 Next:
 R2-T08 — add 4 new color options to the PixelRobot color-study Artifact.
+
+## 2026-08-10 18:30 — R2-T08
+
+Action:
+Added 4 new color options to the existing `R1-T02` Artifact ("PixelRobot — Color Study") per the user's request: Phosphor Amber (`#FF9E00`/`#221E1C`/`#121212`), Arcade Tangerine (`#FF6B35`/`#F5EEDC`/`#221E1C`), Amber Ink Hybrid (`#FF8C00`/`#221E1C`/`#221E1C`), Terminal Invert (`#221E1C`/`#FF9E00`/`#FF9E00`), each with the user's own rationale text adapted into the Artifact's existing per-combo prose style. Gave the 4 new entries their own `NEW` tag (amber `combo__tag--newest`, distinct from the existing red `CURRENT` and yellow `OPTION` tags) so they're visually distinguishable as the latest addition. Updated the h1 ("Ten ways" → "14 ways") and intro paragraph to describe the new set. Republished to the same Artifact URL (`https://claude.ai/code/artifact/348b7f0f-f813-4600-a514-d6933459cd42`) so the existing link stays valid — confirmed via `Artifact(url: <existing URL>)`, not a fresh publish. Still a human-decision checkpoint like `R1-T02` itself: nothing applied to any site file, all 14 options remain recommendations only.
+
+Changed:
+- (external) Artifact `348b7f0f-f813-4600-a514-d6933459cd42`, republished — no repo source files
+- MASTER_PLAN.md (R2-T08 marked Done)
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: not applicable (no repo code changed)
+- build: not applicable (no repo code changed)
+- Artifact publish: PASS (tool confirmed publish to the same URL, no new URL minted)
+
+Git:
+- commit: self (pending, see below)
+- push: pending
+
+Next:
+R2-T09 — fix About page duplicate name.
