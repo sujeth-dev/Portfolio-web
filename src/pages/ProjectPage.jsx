@@ -4,6 +4,7 @@ import ScrollReveal from '../components/common/ScrollReveal'
 import ArchDiagram from '../components/project/ArchDiagram'
 import ProjectNav from '../components/project/ProjectNav'
 import ProjectStage from '../components/project/ProjectStage'
+import VelocityEffects from '../components/systems/VelocityEffects'
 import { projects, getBySlug } from '../data/projects'
 import { useScrollEngine } from '../hooks/useScrollEngine'
 
@@ -29,7 +30,11 @@ function ProjectScene({ project, prev, next }) {
       aria-labelledby="project-title"
     >
       <div className="container project-scene__grid">
-          <article className="project-scroll-content">
+          <VelocityEffects
+            className="project-scroll-content"
+            effects={['skew', 'stretch', 'lag']}
+          >
+          <article>
             <header className="project-hero">
               <ScrollReveal>
                 <p className="project-scene__eyebrow silkscreen">Case study</p>
@@ -146,6 +151,7 @@ function ProjectScene({ project, prev, next }) {
               )}
             </div>
           </article>
+          </VelocityEffects>
 
           <div className="project-stage-container">
             <ProjectStage project={project} scrollProgress={progress} />

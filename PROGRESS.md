@@ -2,20 +2,20 @@
 
 > Machine-readable-ish status snapshot. Updated after every task per `DEVELOPMENT_LOOP.md` §11. If this file and `EXECUTION_LOG.md` ever disagree, `EXECUTION_LOG.md` (append-only, chronological) wins — fix this file to match it.
 
-**Last updated:** 2026-08-10 10:41
+**Last updated:** 2026-08-10 10:44
 **Branch:** `work`
 
 ---
 
 ## Current phase
 
-**Phase 2 — ScrollReveal Upgrade + Velocity** (`MASTER_PLAN.md` → Phase 2)
+**Phase 3 — Parallax + Section Backgrounds + Mobile Scroll System** (`MASTER_PLAN.md` → Phase 3)
 Status: In Progress
 
 ## Current task
 
-**P2-T03** — Apply VelocityEffects to project pages and the named Home Skills and Thoughts card groups.
-Dependency P2-T02 is complete.
+**P3-T01** — Create `src/hooks/useParallax.js` with the three specified layer strengths and responsive/reduced-motion behavior.
+Dependency Phase 1 is complete; Phase 2 is also complete.
 
 ## Completed tasks
 
@@ -33,6 +33,7 @@ Dependency P2-T02 is complete.
 - **P1-T08** — Centralized route-aware header selection in App so featured project routes render only CompactHeader while all other routes retain the full Nav; completed the Phase 1 regression gate.
 - **P2-T01** — Migrated ScrollReveal internals from IntersectionObserver/CSS transitions to one-shot GSAP ScrollTriggers while preserving every existing prop and call site, including delay and reduced-motion behavior.
 - **P2-T02** — Added the reusable VelocityEffects wrapper with capped skew/stretch/lag transforms, a 20ms lag response, bounded will-change activation, exact settling, and reduced-motion neutralization.
+- **P2-T03** — Applied combined restrained velocity response to the project narrative and lag-only response to all four Home skill-group cards; confirmed the planned Thoughts target has no current Home section or call site.
 
 (Prerequisite work — PixelRobot rollout, card-grid fixes — was already completed on `main`/`work` before this plan existed: commits `5209461` and `1475eb7`. See `EXECUTION_LOG.md` P0-T00 entry for the baseline this plan starts from.)
 
@@ -44,7 +45,7 @@ None currently active.
 
 ## Next action
 
-Start `P2-T03`: apply VelocityEffects to the project-page narrative and only the named Home Skills and Thoughts cards, then visually verify subtlety and settling.
+Start `P3-T01`: implement the three-layer parallax hook with desktop mouse/scroll strengths and the newly recorded mobile path required by P3-T06.
 
 ## Repository baseline at plan creation (2026-08-09)
 

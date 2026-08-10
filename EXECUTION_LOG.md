@@ -428,3 +428,32 @@ Git:
 
 Next:
 P2-T03 — apply VelocityEffects to project pages and the named Home Skills and Thoughts card groups.
+
+## 2026-08-10 10:44 — P2-T03
+
+Action:
+Applied the combined restrained velocity response to the project-page narrative column and lag-only response to the four Home skill-group cards, exactly limiting the integration to the named existing targets. The design document's named Thoughts cards do not exist in the current Home implementation, so no new section was invented; the mismatch is recorded in the plan.
+
+Changed:
+- src/pages/ProjectPage.jsx
+- src/pages/Home.jsx
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (CSS 30.80KB / 6.63KB gzip; main JS 420.10KB / 139.15KB gzip)
+- integration scope: PASS (one project narrative wrapper; four Home skill wrappers; zero VelocityEffects elsewhere on Home)
+- project layout regression: PASS (55/45 desktop ratio, sticky stage, no horizontal overflow)
+- runtime response and settling: PASS (non-zero restrained transforms during scroll; exact 0deg / 1 / 0px neutral state and inactive marker after stop)
+- mobile regression: PASS (375px, 200px relative stage, no horizontal overflow)
+- reduced motion: PASS (transform none, inactive marker false)
+- Thoughts target audit: NOT APPLICABLE (no Thoughts section/cards exist in current Home page)
+
+Git:
+- commit: self (`P2-T03: apply velocity effects`)
+- push: SUCCESS
+
+Next:
+P3-T01 — create the three-layer parallax hook with responsive and reduced-motion behavior.

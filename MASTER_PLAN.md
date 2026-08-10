@@ -84,13 +84,13 @@ This means **mobile needs its own real system, not a disabled fallback.** The pl
 
 **Goal:** Existing reveal animations migrate to GSAP ScrollTrigger under the same external API; restrained velocity effects added.
 **Depends on:** P1 done.
-**Status:** In Progress
+**Status:** Done
 
 | ID | Task | Depends on | Status |
 |---|---|---|---|
 | P2-T01 | Rewrite `src/components/common/ScrollReveal.jsx` internals to GSAP ScrollTrigger, preserving its existing external props/API so no call sites change | P1 | Done |
 | P2-T02 | Create `src/components/systems/VelocityEffects.jsx` + `src/styles/velocity-effects.css` (skew ≤2deg, stretch ≤1.01 scaleY, 20ms lag — all lerp to 0 on scroll stop) | P1 | Done |
-| P2-T03 | Apply `VelocityEffects` to project pages and a small, named subset of Home sections (per design doc §5 Homepage table: Skills group cards, Thoughts cards) | P2-T02 | Not Started |
+| P2-T03 | Apply `VelocityEffects` to project pages and a small, named subset of Home sections (per design doc §5 Homepage table: Skills group cards; no Thoughts section currently exists in Home) | P2-T02 | Done |
 
 **Acceptance criteria:** Every existing `ScrollReveal` call site behaves identically (no prop changes needed); velocity effects are visually subtle and fully settle within ~300ms of scroll stopping; reduced motion disables velocity effects entirely.
 
@@ -102,7 +102,7 @@ This means **mobile needs its own real system, not a disabled fallback.** The pl
 
 **Goal:** Living, per-section backgrounds with 3-layer parallax depth on desktop; a real scroll-driven mobile version of `ProjectStage` replacing the static fallback strip.
 **Depends on:** P1 done (P2 not required but recommended done first for a stable base).
-**Status:** Not Started
+**Status:** In Progress
 
 | ID | Task | Depends on | Status |
 |---|---|---|---|

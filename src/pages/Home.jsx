@@ -6,6 +6,7 @@ import { skillGroups } from '../data/skills'
 import { now } from '../data/now'
 import PixelRobot from '../components/common/PixelRobot'
 import ScrollReveal from '../components/common/ScrollReveal'
+import VelocityEffects from '../components/systems/VelocityEffects'
 
 const featured = getFeatured()
 const secondary = getSecondary()
@@ -177,14 +178,16 @@ export default function Home() {
           <div className="skills-grid">
             {skillGroups.map((g, i) => (
               <ScrollReveal key={g.label} delay={i * 80}>
-                <div className="skill-group">
-                  <div className="skill-group-label">{g.label}</div>
-                  <div className="skill-group-items">
-                    {g.items.map((s) => (
-                      <span key={s} className="tag">{s}</span>
-                    ))}
+                <VelocityEffects effects={['lag']}>
+                  <div className="skill-group">
+                    <div className="skill-group-label">{g.label}</div>
+                    <div className="skill-group-items">
+                      {g.items.map((s) => (
+                        <span key={s} className="tag">{s}</span>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                </VelocityEffects>
               </ScrollReveal>
             ))}
           </div>
