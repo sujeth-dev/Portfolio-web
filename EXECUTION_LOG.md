@@ -290,3 +290,29 @@ Git:
 
 Next:
 P1-T06 — create `ProjectNav.jsx` with previous/all-work/next navigation and enlarged next-project preview.
+
+## 2026-08-10 10:02 — P1-T06
+
+Action:
+Created the semantic project navigation with previous and all-work routes plus an enlarged, project-accented next-project preview. Added explicit responsive grid placement so the preview stacks first on mobile and the final project collapses without an empty row, with visible hover and keyboard-focus states.
+
+Changed:
+- src/components/project/ProjectNav.jsx
+- src/index.css
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (CSS 20.86KB / 4.64KB gzip; JS 366.93KB / 118.87KB gzip)
+- responsive layout: PASS (1280px and 375px; no horizontal overflow; first/middle/final navigation states checked)
+- link destinations: PASS (previous, all work, and next routes)
+- hover and keyboard focus: PASS (accent transform/shadow; 3px focus-visible outline)
+
+Git:
+- commit: self (`P1-T06: add project navigation`)
+- push: SUCCESS
+
+Next:
+P1-T07 — mount the compact header, scrolling content, sticky ProjectStage, and ProjectNav in the restructured project page.
