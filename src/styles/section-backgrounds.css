@@ -1,0 +1,77 @@
+/* ── Section Backgrounds ── */
+/* Each theme paints the section-wash color on .section-background itself;
+   the actual pattern lives on its .section-background__pattern child
+   (a ParallaxLayer), which is nudged by useParallax's own mouse/scroll
+   response — no separate CSS transform is layered on top of it. */
+
+.bg-open {
+  background: var(--bg);
+}
+
+.bg-open .section-background__pattern {
+  background-image: radial-gradient(circle, var(--border) 1.5px, transparent 1.5px);
+  background-size: 64px 64px;
+  opacity: 0.6;
+}
+
+.bg-technical {
+  background: var(--bg);
+}
+
+.bg-technical .section-background__pattern {
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px),
+    radial-gradient(circle, var(--faint) 1px, transparent 1px);
+  background-size:
+    40px 40px,
+    40px 40px,
+    20px 20px;
+  opacity: 0.45;
+}
+
+.bg-messy {
+  background: var(--bg);
+}
+
+.bg-messy .section-background__pattern {
+  background-image:
+    radial-gradient(circle at 10% 20%, var(--faint) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 70% 60%, var(--border) 2px, transparent 2px),
+    radial-gradient(circle at 40% 85%, var(--faint) 1px, transparent 1px),
+    radial-gradient(circle at 90% 15%, var(--border) 1.5px, transparent 1.5px);
+  background-size:
+    180px 180px,
+    220px 220px,
+    140px 140px,
+    260px 260px;
+  opacity: 0.55;
+}
+
+.bg-warm {
+  background: var(--cream);
+}
+
+.bg-warm .section-background__pattern {
+  background-image: radial-gradient(
+    circle at 50% 40%,
+    rgba(242, 183, 5, 0.18),
+    transparent 60%
+  );
+  opacity: 1;
+}
+
+.bg-signal {
+  background: var(--bg-dark);
+}
+
+.bg-signal .section-background__pattern {
+  background-image: repeating-radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 253, 245, 0.08) 0,
+    rgba(255, 253, 245, 0.08) 1px,
+    transparent 1px,
+    transparent 48px
+  );
+  opacity: 0.8;
+}

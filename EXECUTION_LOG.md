@@ -537,3 +537,30 @@ Git:
 
 Next:
 P3-T04 — create `src/styles/section-backgrounds.css` with all 5 themes.
+
+## 2026-08-10 11:18 — P3-T04
+
+Action:
+Created `section-backgrounds.css` with the five themes named in the design doc (`.bg-open`, `.bg-technical`, `.bg-messy`, `.bg-warm`, `.bg-signal`), built entirely from existing `index.css` design tokens (no new colors introduced). Each theme sets the section wash color on `.section-background` itself and a distinct dot/grid/scatter/glow/ring pattern on the `.section-background__pattern` child. Deliberately did not add a separate CSS `--mouse-x-norm`/`--mouse-y-norm` transform rule on that pattern element: it's already the `ParallaxLayer` from P3-T03, whose `useParallax` hook writes an inline GSAP transform every frame from the same underlying lerped mouse position — a competing CSS transform rule on the same element/property would just be silently overridden by the inline style, so the §6 "responds to pointer position" criterion is met through the existing JS path instead of a redundant one. Imported the new stylesheet directly in `SectionBackground.jsx`, matching this codebase's per-component CSS import convention.
+
+Changed:
+- src/styles/section-backgrounds.css
+- src/components/systems/SectionBackground.jsx
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (bundle unchanged — `SectionBackground` still unconsumed by any page)
+- direct CSS bundle/parse check: PASS (`esbuild` CSS bundler, 1.8kb output)
+- direct component bundle check: PASS (`esbuild`, browser ESM, CSS import stubbed)
+- theme/token review: PASS (all 5 themes present; colors sourced only from existing `--bg`/`--bg-dark`/`--cream`/`--border`/`--faint`/`--yellow` tokens)
+- task-specific manual/visual checks: not applicable until P3-T05 mounts `SectionBackground` on real pages
+
+Git:
+- commit: self (`P3-T04: add section background themes`)
+- push: SUCCESS
+
+Next:
+P3-T05 — mount SectionBackground on project pages first, validate, then Home page sections.

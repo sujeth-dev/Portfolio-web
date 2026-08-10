@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { useInteraction } from '../../systems/InteractionContext'
 import { useSectionProgress } from '../../hooks/useSectionProgress'
 import { ParallaxLayer } from './ParallaxLayer'
+import '../../styles/section-backgrounds.css'
 
 const FADE_BAND = 0.15
 
