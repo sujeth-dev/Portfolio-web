@@ -12,16 +12,20 @@
   background-image:
     radial-gradient(circle, var(--border) 1.5px, transparent 1.5px),
     radial-gradient(circle, var(--faint) 1px, transparent 1px);
-  background-size: 64px 64px, 28px 28px;
+  background-size: 96px 96px, 44px 44px;
   background-position: 0 0, 14px 14px;
-  opacity: 0.6;
+  opacity: 0.13;
   animation: bg-open-drift 48s linear infinite;
+  /* Dots stay visible near the hero's own center and fade out toward the
+     edges — a texture behind the content, not a wall-to-wall pattern. */
+  mask-image: radial-gradient(ellipse 65% 65% at 50% 42%, black 0%, black 35%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 65% 65% at 50% 42%, black 0%, black 35%, transparent 78%);
 }
 
 /* Moves each layer exactly one of its own tile widths so the loop is seamless. */
 @keyframes bg-open-drift {
   from { background-position: 0 0, 14px 14px; }
-  to { background-position: 64px 64px, 42px 42px; }
+  to { background-position: 96px 96px, 58px 58px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

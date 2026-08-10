@@ -480,6 +480,46 @@ h1, h2, h3, h4 {
   padding: clamp(48px, 10vw, 120px) 0 clamp(40px, 8vw, 80px);
 }
 
+/* Cursor-illumination glow: a soft light that follows the pointer, driven
+   entirely by the already-lerped global --mouse-x/--mouse-y (no extra JS).
+   Desktop-with-precise-pointer only — a glow parked at a stale touch
+   coordinate would read as a bug, not a feature. */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-env);
+  pointer-events: none;
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hero::after {
+    display: block;
+    background: radial-gradient(
+      circle 360px at calc(var(--mouse-x) * 100%) calc(var(--mouse-y) * 100%),
+      rgba(226, 64, 45, 0.10),
+      transparent 70%
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero::after { display: none !important; }
+}
+
+/* Low-opacity grain so the tamed-down dot background reads as a deliberate
+   texture rather than an empty screen. */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-fg);
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
 .hero-grid {
   display: grid;
   grid-template-columns: 1fr;

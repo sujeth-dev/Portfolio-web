@@ -1176,3 +1176,29 @@ Git:
 
 Next:
 R2-T01 — tame + enliven Home hero background.
+
+## 2026-08-10 17:20 — R2-T01
+
+Action:
+Tamed `.bg-open .section-background__pattern` (Home hero dots): opacity `0.6` → `0.13`, tile spacing `64px/28px` → `96px/44px`, and added a `mask-image` radial fade (visible near center, transparent by the edges) so the dots read as a texture behind the headline rather than a wall-to-wall pattern — the drift keyframe's end position was rescaled to match the new 96px tile so the loop stays seamless. Added a cursor-illumination glow (`.hero::after`, `radial-gradient` centered on the already-lerped global `--mouse-x`/`--mouse-y` custom properties — no new JS tracking needed) gated to `(hover: hover) and (pointer: fine)` so it never shows a stale position on touch. Added a low-opacity (3.5%) CSS-only grain texture (`.hero::before`, inline `feTurbulence` SVG data-URI) so the now-sparser background doesn't read as empty. Split the hero's single `ScrollReveal` wrapper into four staggered ones (eyebrow → robot heading → description → actions+ticker, 150ms apart) using the existing `ScrollReveal` component — deliberately did not add Framer Motion, per the design doc's own recorded "why not Framer Motion" decision (`docs/FUTURE-ENVIRONMENT-LAYER.md` §1) and to stay consistent with every other reveal on the site. The "pulse a status LED" suggestion from the user's feedback was already satisfied by existing code: `.led-on` (used on the hero ticker, `Home.jsx`) already has a `led-blink` opacity-pulse animation — no new work needed there, and it's the closest surviving status-indicator now that R2-T04 removed the Workshop Status card.
+
+Changed:
+- src/styles/section-backgrounds.css (`.bg-open` tamed + masked)
+- src/index.css (`.hero::before`/`.hero::after` glow + grain layers)
+- src/pages/Home.jsx (hero `ScrollReveal` split into 4 staggered blocks)
+- MASTER_PLAN.md (R2-T01 marked Done)
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (74 modules; CSS 38.50KB / 8.24KB gzip, +0.94KB/+0.29KB gzip from the new pseudo-element rules)
+- code review: PASS — confirmed `.hero` already has `position: relative` via the `interaction-layer` class already on the section (`className="hero interaction-layer"`), so the new `::before`/`::after` anchor correctly; confirmed the global reduced-motion catch-all (`index.css:1497`, `*, *::before, *::after { animation-duration: 0.01ms !important; ... }`) already neutralizes `led-blink` and the drift keyframe, and the explicit `display: none` on `.hero::after` under reduced motion is a belt-and-suspenders duplicate of that catch-all, not a gap
+- manual/visual browser check: NOT PERFORMED this session — no browser-automation tool available. Recommend the user confirm visually via `npm run dev` (mouse glow only shows with a real mouse pointer, not touch/reduced-motion).
+
+Git:
+- commit: self (pending, see below)
+- push: pending
+
+Next:
+R2-T02 — simplify ProjectPage background to dots-only, matching the tamed hero treatment.

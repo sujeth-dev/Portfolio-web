@@ -18,7 +18,11 @@ The user reviewed the R1 preview and gave a second batch of feedback (tame + enl
 
 ## Current task
 
-**Phase R2, starting at `R2-T04`** (first eligible per the dependency graph — `R2-T01` depends on it since removing the Workshop Status card changes the hero-grid layout `R2-T01` also touches).
+**R2-T04 done:** removed Home hero's `.workshop-vignette` card entirely; collapsed `.hero-grid` to a single column.
+
+**R2-T01 done:** tamed `.bg-open` (opacity 0.6→0.13, wider tile spacing, radial mask fade); added a mouse-following glow (`.hero::after`, driven by the existing global `--mouse-x`/`--mouse-y`, desktop-pointer-only) and a low-opacity grain texture (`.hero::before`) to `.hero`; split the hero's single `ScrollReveal` into 4 staggered reveals. The "pulse a status LED" ask was already satisfied by the existing `.led-on`/`led-blink` animation on the hero ticker.
+
+**Current task: R2-T02** — simplify ProjectPage's `.bg-technical` background to dots-only (drop the grid lines), matching R2-T01's tamed treatment, while keeping the per-project accent color layers untouched.
 
 **Phase R1 recap:** `R1-T01` approved by the user (2026-08-10). `R1-T02` done: published an Artifact (`PixelRobot — Color Study`), expanded to 10 named color combinations after the user asked for more blue/white/black options — baseline "Signal Red" + Toolbox Yellow, Systems Green, Workshop Brown, Night Ink (existing site tokens) + Blueprint Blue, Deep Navy, Sky Cyan, Ice White, Blackout (new colors, added on request, with an `outline` flag added to the SVG generator so the white option stays legible against the light stage). Human-decision checkpoint (like `P5-T00`) — **still awaiting the user's pick, not applied to any site file.** `R2-T08` will add 4 more options to this same Artifact.
 

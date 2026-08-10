@@ -29,11 +29,17 @@ export default function Home() {
           <div className="hero-grid">
             <ScrollReveal>
               <div className="hero-title">{meta.subtitle}</div>
+            </ScrollReveal>
+            <ScrollReveal delay={150}>
               <h1 className="hero-name-wrap">
                 <span className="sr-only">{meta.name}</span>
                 <AnimatedPixelRobot />
               </h1>
+            </ScrollReveal>
+            <ScrollReveal delay={300}>
               <p className="hero-desc">{meta.summary}</p>
+            </ScrollReveal>
+            <ScrollReveal delay={450}>
               <div className="hero-actions">
                 <Link to="/work" className="btn btn-primary">View Work</Link>
                 <a href={`mailto:${meta.email}`} className="btn btn-secondary">Get in Touch</a>
