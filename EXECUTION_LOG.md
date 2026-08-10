@@ -1004,3 +1004,26 @@ Git:
 
 Next:
 `R1-T07` — make Home's hero `.bg-open` background livelier (second dot layer + slow ambient drift, off under reduced motion).
+
+## 2026-08-10 17:30 — R1-T07
+
+Action:
+Made Home's hero background livelier per the user's "dot dot dot... can be made a proper environment" feedback. `.bg-open .section-background__pattern` now layers a second, smaller dot grid (28px tile, `--faint` color) on top of the original (64px tile, `--border` color) — "another dot more," per the request — plus a slow continuous ambient `bg-open-drift` keyframe animation (48s linear, infinite) shifting `background-position` for both layers by exactly one of their own tile widths (64px/64px for the first layer, 28px/28px for the second), so the loop wraps seamlessly with no visible jump. This motion is independent of scroll/mouse (unlike the existing layer-1 parallax nudge, which still applies on top via the same `ParallaxLayer` mechanism as before). Disabled under `prefers-reduced-motion: reduce` via a dedicated rule in `section-backgrounds.css`.
+
+Changed:
+- src/styles/section-backgrounds.css
+- MASTER_PLAN.md
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (73 modules; CSS 37.24KB / 7.93KB gzip; main JS 426.09KB / 140.87KB gzip)
+- Playwright pass against production preview: `.hero .section-background__pattern` computed `animation-name` is `bg-open-drift` under normal motion; background-image resolves to 2 `radial-gradient` layers; `animation-name` is `none` under `reducedMotion: 'reduce'` emulation
+
+Git:
+- commit: self (pending, see below)
+- push: pending
+
+Next:
+`R1-T08` — Home's `#experience` section starts collapsed, expands on interaction, using the same accordion idiom as `CaseStudyPanel` (R1-T05).

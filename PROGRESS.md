@@ -26,9 +26,11 @@ R1-T05 done: restructured `ProjectPage.jsx`'s `ProjectScene` from the 55/45 text
 
 R1-T06 done: enriched `ProjectStage`'s `technical`-theme background with a `project-stage-bg` modifier class (passed via `SectionBackground`'s existing `className` prop) — a soft per-project accent glow (`::before`, `color-mix(var(--project-accent) 18%, transparent)`, inherited from `.project-scene`) plus a second, looser accent-tinted dot layer (`::after` on the pattern child, moves with the same parallax transform). Scoped entirely to this instance; confirmed Home's Selected Work section (also `bg-technical`) has neither the class nor any `::before` content.
 
+R1-T07 done: `.bg-open .section-background__pattern` (Home hero) now layers a second, smaller dot grid (28px tiles vs the original 64px) alongside the original, plus a slow 48s linear `bg-open-drift` keyframe animation shifting `background-position` by exactly one tile width per layer so the loop is seamless. Disabled under reduced motion via a dedicated media query in `section-backgrounds.css`.
+
 ## Current task
 
-**R1-T07** — make Home's hero `.bg-open` background livelier: a second dot layer at a different scale plus a slow continuous ambient drift, off under reduced motion.
+**R1-T08** — Home's `#experience` section starts collapsed (heading + toggle only), expands the full `.exp-list` on click, via the same accordion idiom as `CaseStudyPanel`.
 
 ## Completed tasks
 

@@ -9,9 +9,25 @@
 }
 
 .bg-open .section-background__pattern {
-  background-image: radial-gradient(circle, var(--border) 1.5px, transparent 1.5px);
-  background-size: 64px 64px;
+  background-image:
+    radial-gradient(circle, var(--border) 1.5px, transparent 1.5px),
+    radial-gradient(circle, var(--faint) 1px, transparent 1px);
+  background-size: 64px 64px, 28px 28px;
+  background-position: 0 0, 14px 14px;
   opacity: 0.6;
+  animation: bg-open-drift 48s linear infinite;
+}
+
+/* Moves each layer exactly one of its own tile widths so the loop is seamless. */
+@keyframes bg-open-drift {
+  from { background-position: 0 0, 14px 14px; }
+  to { background-position: 64px 64px, 42px 42px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-open .section-background__pattern {
+    animation: none;
+  }
 }
 
 .bg-technical {
