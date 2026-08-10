@@ -1410,3 +1410,26 @@ Git:
 
 Next:
 Phase R2 is fully Done (10/10 tasks). Resume `P6-T02` (Typography Motion) next, per `PROGRESS.md`.
+
+## 2026-08-10 19:15 — R2-T10 (correction)
+
+Action:
+The user reported the paper-cut border still looked wrong and pasted a screenshot — which turned out to be from a stale Vercel preview deployment (proven by the Workshop Status card still being visible in it, which `R2-T04` had already removed from `work` HEAD), not the code just shipped. To resolve the confusion, actually launched the app for the first time this session — no project-specific `run` skill existed, so followed the generic browser-driven-app pattern: started `npm run dev` (Vite, `localhost:5173`), confirmed `playwright@1.62.1` was already an installed dependency, and drove a real headless Chromium against it (temporary script under a gitignored scratch dir, deleted before committing — not part of the repo's own test suite). This confirmed the actual `work`-branch zigzag *was* rendering correctly per the R2-T10 design (`getComputedStyle` showed the expected `clip-path` polygon and `::before`/`::after` colors, zero console/page errors) — so the "still broken" report was the stale-deployment mismatch, not a real bug.
+
+However, once the user clarified what they actually wanted ("the border as in the screenshot... color also like in the SS"), the stale screenshot's *visual proportions* (an ink-dominant band with only a thin jagged cream sliver at the top) turned out to be the actual target look, and R2-T10's first pass had built the inverse: the reference brand-kit's polygon closes at the *bottom*, so the wash color (cream) filled the majority of the 24px strip with only thin ink notches poking through — cream-dominant, opposite of what was wanted. Fixed by closing the same jagged point list at the *top* instead of the bottom (traversing the points in reverse to close the shape without self-intersecting), so ink now fills the majority of the band and cream only fills the thin torn sliver at the top edge — verified visually via fresh Playwright screenshots against the live dev server at the Nav, Hero→Work divider, and Selected Work grid (also incidentally re-confirming R2-T01's tamed/masked hero dots, R2-T04's removed Workshop Status card, and R2-T05's symmetric 3-column grid are all genuinely live, not just build-passing).
+
+Changed:
+- src/index.css (`.zigzag::after`'s `clip-path` polygon inverted to close at the top)
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (CSS 41.16KB / 8.74KB gzip)
+- **Actual browser verification performed this time** (Playwright against `npm run dev`, not build-only): `.zigzag` count on Home = 4; computed `::before`/`::after` backgrounds and `clip-path` matched the new CSS exactly; zero console/page errors; screenshots visually confirm an ink-dominant band with a thin jagged cream top edge at both the Nav and the Hero→Work divider, consistent with the user's reference image.
+
+Git:
+- commit: self (pending, see below)
+- push: pending
+
+Next:
+Resume `P6-T02` (Typography Motion), per `PROGRESS.md`.

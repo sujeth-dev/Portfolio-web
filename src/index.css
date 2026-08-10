@@ -291,15 +291,20 @@ h1, h2, h3, h4 {
 }
 
 /* ── Zigzag Separator (paper-cut border) ── */
-/* An irregular hand-torn edge, not a uniform repeating sawtooth — the exact
+/* A solid ink band with an irregular hand-torn cream edge along the top —
+   ink dominant, cream just the "torn flap" peeling off the top, per the
+   user's explicit reference screenshot. The jagged boundary is the exact
    `clip-path` polygon from the "Retro Toy" brand reference (the paper-cutout
    separator reused verbatim across its Landing Page / Dashboard / Component
    Library / Artifacts pages), stretched to fill the strip's width instead of
-   a fixed max-width container since our sections run full-bleed. Sits over
-   its own opaque ink backing rather than relying on page context for
-   contrast: the wash color paints the torn block, ink fills the notches
-   above the tear, so the edge stays visible regardless of what's on either
-   side (the bug R1-T10 fixed for the old uniform-tile version). */
+   a fixed max-width container since our sections run full-bleed, and closed
+   at the top edge (rather than the bottom, as the reference itself does)
+   so the wash color only fills the torn sliver instead of the whole band.
+   Sits over its own opaque ink backing rather than relying on page context
+   for contrast, so the edge stays visible regardless of what's on either
+   side (the bug R1-T10 fixed for the old uniform-tile version) — applies
+   to every usage (section dividers, Nav, Footer, CompactHeader) since
+   they all share this one pair of rules. */
 .zigzag {
   position: relative;
   width: 100%;
@@ -318,7 +323,7 @@ h1, h2, h3, h4 {
   position: absolute;
   inset: 0;
   background: var(--bg);
-  clip-path: polygon(0 42%, 5% 22%, 11% 46%, 18% 20%, 26% 44%, 34% 18%, 42% 44%, 51% 22%, 60% 46%, 68% 20%, 76% 44%, 84% 22%, 92% 46%, 100% 24%, 100% 100%, 0 100%);
+  clip-path: polygon(0 0%, 100% 0%, 100% 24%, 92% 46%, 84% 22%, 76% 44%, 68% 20%, 60% 46%, 51% 22%, 42% 44%, 34% 18%, 26% 44%, 18% 20%, 11% 46%, 5% 22%, 0 42%);
 }
 
 .zigzag-dark::after {
