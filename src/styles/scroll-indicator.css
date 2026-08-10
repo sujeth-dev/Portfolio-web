@@ -1,0 +1,76 @@
+.scroll-indicator {
+  position: fixed;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: var(--z-scroll-indicator);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.scroll-indicator__track {
+  position: relative;
+  width: 6px;
+  height: 160px;
+  background: var(--cream);
+  border: 2px solid var(--ink);
+}
+
+.scroll-indicator__fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: var(--yellow);
+  transition: height 0.1s linear;
+}
+
+.scroll-indicator__notch {
+  position: absolute;
+  left: -2px;
+  width: 10px;
+  height: 2px;
+  background: var(--ink);
+  transform: translateY(-50%);
+}
+
+.scroll-indicator__leds {
+  position: relative;
+  width: 6px;
+  height: 160px;
+}
+
+.scroll-indicator__led {
+  position: absolute;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cream);
+  border: 1.5px solid var(--ink);
+  transform: translateY(-50%);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.scroll-indicator__led[data-active='true'] {
+  background: var(--green);
+  box-shadow: 0 0 6px var(--green);
+}
+
+@media (max-width: 767px) {
+  .scroll-indicator {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-indicator {
+    display: none !important;
+  }
+
+  .scroll-indicator__fill {
+    transition: none !important;
+  }
+}
