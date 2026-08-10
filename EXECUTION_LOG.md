@@ -1202,3 +1202,27 @@ Git:
 
 Next:
 R2-T02 — simplify ProjectPage background to dots-only, matching the tamed hero treatment.
+
+## 2026-08-10 17:35 — R2-T02
+
+Action:
+Simplified the project-page background from "grid + dots" to dots-only, matching R2-T01's tamed hero treatment (same 44px dot size, 0.13 opacity, radial mask fade — recentered slightly higher at 35% since the project stage's content starts nearer the top than the hero's). Scoped this via a new `.bg-technical.project-stage-bg .section-background__pattern` rule (three-class specificity, guaranteed to win over the shared `.bg-technical .section-background__pattern` base rule regardless of source order) rather than editing `.bg-technical` itself, since that base theme is also used by Home's Selected Work and Skills sections, which the user did not ask to change. Left `.project-stage-bg::before` (per-project accent glow) and `.project-stage-bg .section-background__pattern::after` (accent dot layer) completely untouched, per the user's explicit "the color feel let that be there."
+
+Changed:
+- src/styles/section-backgrounds.css
+- MASTER_PLAN.md (R2-T02 marked Done)
+- PROGRESS.md
+- EXECUTION_LOG.md
+
+Validation:
+- unit tests: PASS (6/6)
+- build: PASS (CSS 38.82KB / 8.27KB gzip)
+- code review: PASS — confirmed `ProjectPage.jsx:37` renders `<SectionBackground theme="technical" className="project-stage-bg" />`, so the container carries both `.bg-technical` and `.project-stage-bg`, matching the new selector; confirmed `.bg-technical`'s own rule (used standalone by `Home.jsx`'s Selected Work/Skills `SectionBackground` instances, no `project-stage-bg` class there) is byte-for-byte unchanged.
+- manual/visual browser check: NOT PERFORMED this session — no browser-automation tool available. Recommend the user confirm visually via `npm run dev` on a project page.
+
+Git:
+- commit: self (pending, see below)
+- push: pending
+
+Next:
+R2-T03 — simplify ScrollProgressIndicator to a single minimal line.

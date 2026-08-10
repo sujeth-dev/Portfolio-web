@@ -134,6 +134,20 @@
    the shared technical wash without touching `.bg-technical` itself
    (which Home's Selected Work section also uses). `--project-accent` is
    inherited from `.project-scene`, so this recolors per project for free. */
+/* Project pages get the same tamed, dots-only treatment as the Home hero
+   (`.bg-open`) instead of the denser grid+dots `.bg-technical` wash used
+   elsewhere (Home's Selected Work / Skills sections) — higher specificity
+   than `.bg-technical .section-background__pattern` so it wins regardless
+   of source order, without touching the shared base rule those sections
+   still use. */
+.bg-technical.project-stage-bg .section-background__pattern {
+  background-image: radial-gradient(circle, var(--faint) 1px, transparent 1px);
+  background-size: 44px 44px;
+  opacity: 0.13;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 35%, black 0%, black 35%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 35%, black 0%, black 35%, transparent 78%);
+}
+
 .project-stage-bg::before {
   content: '';
   position: absolute;
