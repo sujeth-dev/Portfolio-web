@@ -44,10 +44,6 @@ export default function Home() {
                 <Link to="/work" className="btn btn-primary">View Work</Link>
                 <a href={`mailto:${meta.email}`} className="btn btn-secondary">Get in Touch</a>
               </div>
-              <div className="ticker">
-                <span className="led led-on" />
-                <span>currently building: {now.building[0]}</span>
-              </div>
             </ScrollReveal>
           </div>
         </div>
@@ -249,12 +245,6 @@ export default function Home() {
                 <div className="currently-label">Exploring</div>
                 <ul className="currently-list">
                   {now.exploring.map((item, i) => <li key={i}>▸ {item}</li>)}
-                </ul>
-              </div>
-              <div className="currently-item">
-                <div className="currently-label">Learning</div>
-                <ul className="currently-list">
-                  {now.learning.map((item, i) => <li key={i}>▸ {item}</li>)}
                 </ul>
               </div>
             </div>
